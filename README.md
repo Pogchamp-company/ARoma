@@ -1,7 +1,7 @@
 # ARoma
-Shop powered with Golang and ReactJS
 
 ## Description
+Shop powered with Golang and ReactJS
 
 ### Short
 Shop
