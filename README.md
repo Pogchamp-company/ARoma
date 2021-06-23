@@ -15,7 +15,7 @@ TODO make full description
 
 ## Authors
 
-* **Alexandrov Roman** - *Backend, Frontend* - [Github](https://github.com/AlexandrovRoman)
+* **Roman Alexandrov** - *Backend, Frontend* - [Github](https://github.com/AlexandrovRoman)
 * **Artem Golovin** - *Backend, Frontend* - [Github](https://github.com/RustyGuard)
 
 ## License
