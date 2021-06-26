@@ -1,15 +1,29 @@
 # ARoma
 
 ## Description
-Shop powered with Golang and ReactJS
 
 ### Short
 Shop
 
 ### Full
-TODO make full description
+Shop powered with Golang and ReactJS
 
-### Tasks
+## Run
+### Serve golang (api) server
+```shell
+cd backend-app
+go mod init
+go build main.go
+```
+### Serve node (frontend) server
+```shell
+cd frontend-app
+npm install
+npm run build
+node nodeapp/app.js
+```
+
+## Tasks
 * [Trello Desk](https://trello.com/b/odFHaFib/aroma)
 
 
