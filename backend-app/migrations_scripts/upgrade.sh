@@ -1,0 +1,1 @@
+migrate -database "${POSTGRESQL_URL}" -path migrations up
