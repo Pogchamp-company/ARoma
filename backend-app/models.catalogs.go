@@ -1,4 +1,4 @@
-package models
+package main
 
 type Catalog struct {
 	ID    uint   `sql:"AUTO_INCREMENT" gorm:"primary_key"`
