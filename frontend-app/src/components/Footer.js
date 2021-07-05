@@ -41,12 +41,12 @@ export default class Footer extends Component {
                                 <div className="single-footer-widget instafeed">
                                     <h4 className="footer_title">Gallery</h4>
                                     <ul className="list instafeed d-flex flex-wrap">
-                                        <li><img src="img/gallery/r1.jpg" alt=""/></li>
-                                        <li><img src="img/gallery/r2.jpg" alt=""/></li>
-                                        <li><img src="img/gallery/r3.jpg" alt=""/></li>
-                                        <li><img src="img/gallery/r5.jpg" alt=""/></li>
-                                        <li><img src="img/gallery/r7.jpg" alt=""/></li>
-                                        <li><img src="img/gallery/r8.jpg" alt=""/></li>
+                                        <li><img src="/img/gallery/r1.jpg" alt=""/></li>
+                                        <li><img src="/img/gallery/r2.jpg" alt=""/></li>
+                                        <li><img src="/img/gallery/r3.jpg" alt=""/></li>
+                                        <li><img src="/img/gallery/r5.jpg" alt=""/></li>
+                                        <li><img src="/img/gallery/r7.jpg" alt=""/></li>
+                                        <li><img src="/img/gallery/r8.jpg" alt=""/></li>
                                     </ul>
                                 </div>
                             </div>
@@ -98,6 +98,6 @@ export default class Footer extends Component {
                     </div>
                 </div>
             </footer>
-    )
+        )
     }
 }

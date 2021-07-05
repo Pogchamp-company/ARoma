@@ -13,15 +13,14 @@ app.get('/ping', (req, res) => {
     res.json({message: 'pong'});
 });
 
-app.get('/', (req, res) => {
+function reactHandler(req, res) {
     res.statusCode = 200;
     res.sendFile(path.join(__dirname + '/templates/index.html'));
-})
+}
 
-app.get('/search_products', (req, res) => {
-    res.statusCode = 200;
-    res.sendFile(path.join(__dirname + '/templates/index.html'));
-})
+app.get('/', reactHandler)
+app.get('/search_products', reactHandler)
+app.get('/product/:id', reactHandler)
 
 app.use(express.static('static'));
 
