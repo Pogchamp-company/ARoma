@@ -34,10 +34,18 @@ func NewProduct(title string, catalog Catalog, attributes map[string]string) (Pr
 	return product, nil
 }
 
-func (product Product) ToString() string {
-	return product.Title
+func (obj Product) Str() string {
+	return obj.Title
 }
 
-func (product Product) Repr() string {
-	return fmt.Sprintf("<Product (id=%s, title=%s)>", fmt.Sprint(product.ID), product.Title)
+func (obj Product) Repr() string {
+	return fmt.Sprintf("<Product (id=%s, title=%s)>", fmt.Sprint(obj.ID), obj.Title)
+}
+
+func (obj Product) Bool() bool {
+	return obj.ID != 0
+}
+
+func (obj *Product) LoadByID(id int) {
+	Db.Preload("Catalog").First(&obj, id)
 }

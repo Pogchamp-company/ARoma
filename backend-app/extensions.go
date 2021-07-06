@@ -5,17 +5,22 @@ import (
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"net/url"
 	"os"
 )
 
 var App = gin.Default()
 
-var dsn = fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", // Data source name
-	os.Getenv("DB_HOST"),
-	os.Getenv("DB_USER"),
-	os.Getenv("DB_PASSWORD"),
-	os.Getenv("DB_NAME"),
-	os.Getenv("DB_PORT"),
-)
+func getDSN(rawurl string) string {
+	url_, _ := url.Parse(rawurl)
+	password, _ := url_.User.Password()
+	return fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable", // Data source name
+		url_.Hostname(),
+		url_.User.Username(),
+		password,
+		url_.Path[1:],
+		url_.Port(),
+	)
+}
 
-var Db, _ = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+var Db, _ = gorm.Open(postgres.Open(getDSN(os.Getenv("POSTGRESQL_URL"))), &gorm.Config{})
