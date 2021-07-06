@@ -19,7 +19,7 @@ function reactHandler(req, res) {
 }
 
 app.get('/', reactHandler)
-app.get('/search_products', reactHandler)
+app.get('/search_products/:id', reactHandler)
 app.get('/product/:id', reactHandler)
 
 app.use(express.static('static'));

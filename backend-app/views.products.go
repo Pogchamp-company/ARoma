@@ -10,7 +10,11 @@ func GetProduct(context *gin.Context) {
 	var product Product
 	Db.Preload("Catalog").First(&product, productId)
 	println(product.Repr())
+	context.Header("Access-Control-Allow-Origin", "http://localhost:8000")
+	context.Header("Access-Control-Allow-Headers", "Content-Type, X-Auth-Token, Authorization, Origin")
+	context.Header("Access-Control-Allow-Methods", "POST, PUT")
+
 	context.JSON(200, gin.H{
-		"product": product,
+		"object": product,
 	})
 }

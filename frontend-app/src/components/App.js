@@ -24,7 +24,7 @@ export default class App extends Component {
                 <Header/>
                 <Switch>
                     <Route exact path="/" component={MainPage}/>
-                    <Route exact path="/search_products" component={SearchProductsPage}/>
+                    <Route exact path="/search_products/:catalogId" component={SearchProductsPage}/>
                     <Route path="/product/:productId" component={ProductPage}/>
                 </Switch>
                 <Footer/>
