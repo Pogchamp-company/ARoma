@@ -44,7 +44,14 @@ export default class SearchProductsPage extends Component {
                         }
                     }
                 ]
-            }
+            },
+            catalogs: [
+                {
+                    ID: 0,
+                    Title: "------",
+                    Count: 0
+                }
+            ]
 
         }
         fetch('http://0.0.0.0:8080/catalog/' + this.catalogId)
@@ -53,7 +60,53 @@ export default class SearchProductsPage extends Component {
                 catalog: catalog_json.obj
             }))
             .catch((e) => console.log('some error', e));
+        this.getAllCategories()
+    }
 
+    fetchProducts(productsQuery, catalogId) {
+        let url = 'http://0.0.0.0:8080/product/search'
+        const params = {}
+        if (productsQuery !== '') params['productsQuery'] = productsQuery
+        if (catalogId !== '') params['catalogId'] = catalogId
+        if (params) {
+            url += `?${Object.entries(params).map(([n, v]) => `${n}=${v}`).join('&')}`
+        }
+        fetch(url)
+            .then(response => response.json())
+            .then(catalog_json => this.setState({
+
+            }))
+            .catch((e) => console.log('some error', e));
+    }
+
+    getAllCategories() {
+        fetch('http://0.0.0.0:8080/catalog')
+            .then(response => response.json())
+            .then(catalog_json => this.setState({
+                catalogs: catalog_json.catalogs
+            }))
+            .catch((e) => console.log('some error', e));
+    }
+
+    renderCategories() {
+        console.log(this.state)
+        return <div className="sidebar-categories">
+            <div className="head">Browse Categories</div>
+            <ul className="main-categories">
+                <li className="common-filter">
+                    <form action="#">
+                        <ul>
+                            {this.state.catalogs.map(val => (
+                                <li className="filter-list"><input className="pixel-radio"
+                                                                   type="radio" id={val.ID}
+                                                                   name="catalog"/><label
+                                    htmlFor={val.ID}>{val.Title}<span> ({val.Count})</span></label></li>
+                            ))}
+                        </ul>
+                    </form>
+                </li>
+            </ul>
+        </div>
     }
 
     renderProducts() {
@@ -89,66 +142,11 @@ export default class SearchProductsPage extends Component {
     render() {
         return (
             <div>
-                <section className="blog-banner-area" id="category">
-                    <div className="container h-100">
-                        <div className="blog-banner">
-                            <div className="text-center">
-                                <h1>Shop Category</h1>
-                                <nav aria-label="breadcrumb" className="banner-breadcrumb">
-                                    <ol className="breadcrumb">
-                                        <li className="breadcrumb-item"><a href="#">Home</a></li>
-                                        <li className="breadcrumb-item active" aria-current="page">Shop Category</li>
-                                    </ol>
-                                </nav>
-                            </div>
-                        </div>
-                    </div>
-                </section>
                 <section className="section-margin--small mb-5">
                     <div className="container">
                         <div className="row">
                             <div className="col-xl-3 col-lg-4 col-md-5">
-                                <div className="sidebar-categories">
-                                    <div className="head">Browse Categories</div>
-                                    <ul className="main-categories">
-                                        <li className="common-filter">
-                                            <form action="#">
-                                                <ul>
-                                                    <li className="filter-list"><input className="pixel-radio"
-                                                                                       type="radio" id="men"
-                                                                                       name="brand"/><label
-                                                        htmlFor="men">Men<span> (3600)</span></label></li>
-                                                    <li className="filter-list"><input className="pixel-radio"
-                                                                                       type="radio" id="women"
-                                                                                       name="brand"/><label
-                                                        htmlFor="women">Women<span> (3600)</span></label></li>
-                                                    <li className="filter-list"><input className="pixel-radio"
-                                                                                       type="radio" id="accessories"
-                                                                                       name="brand"/><label
-                                                        htmlFor="accessories">Accessories<span> (3600)</span></label>
-                                                    </li>
-                                                    <li className="filter-list"><input className="pixel-radio"
-                                                                                       type="radio" id="footwear"
-                                                                                       name="brand"/><label
-                                                        htmlFor="footwear">Footwear<span> (3600)</span></label></li>
-                                                    <li className="filter-list"><input className="pixel-radio"
-                                                                                       type="radio" id="bayItem"
-                                                                                       name="brand"/><label
-                                                        htmlFor="bayItem">Bay item<span> (3600)</span></label></li>
-                                                    <li className="filter-list"><input className="pixel-radio"
-                                                                                       type="radio" id="electronics"
-                                                                                       name="brand"/><label
-                                                        htmlFor="electronics">Electronics<span> (3600)</span></label>
-                                                    </li>
-                                                    <li className="filter-list"><input className="pixel-radio"
-                                                                                       type="radio" id="food"
-                                                                                       name="brand"/><label
-                                                        htmlFor="food">Food<span> (3600)</span></label></li>
-                                                </ul>
-                                            </form>
-                                        </li>
-                                    </ul>
-                                </div>
+                                {this.renderCategories()}
                                 <div className="sidebar-filter">
                                     <div className="top-filter-head">Product Filters</div>
                                     <div className="common-filter">
