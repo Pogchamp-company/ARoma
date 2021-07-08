@@ -5,101 +5,72 @@ import TopProducts from "./TopProducts";
 export default class SearchProductsPage extends Component {
     constructor(props) {
         super(props);
-        this.catalogId = this.props.match.params.catalogId;
         this.state = {
-            catalog: {
-                ID: 0,
-                Title: "---",
-                Products: [
-                    {
-                        ID: 0,
-                        Title: "-----",
-                        Catalog: {
-                            ID: 0,
-                            Title: "-----"
-                        },
-                        Price: 0,
-                        Description: "--------------",
-                        LongDescription: "-----------------------------------------",
-                        Attributes: {
-                            "sus": "amogus",
-                            "sus1": "amogus2",
-                            "sus2": "amogus3"
-                        }
-                    },
-                    {
-                        ID: 0,
-                        Title: "-----",
-                        Catalog: {
-                            ID: 0,
-                            Title: "-----"
-                        },
-                        Price: 0,
-                        Description: "--------------",
-                        LongDescription: "-----------------------------------------",
-                        Attributes: {
-                            "sus": "amogus",
-                            "sus1": "amogus2",
-                            "sus2": "amogus3"
-                        }
-                    }
-                ]
-            },
-            catalogs: [
-                {
-                    ID: 0,
-                    Title: "------",
-                    Count: 0
-                }
-            ]
-
+            products: [],
+            catalogs: []
         }
-        fetch('http://0.0.0.0:8080/catalog/' + this.catalogId)
-            .then(response => response.json())
-            .then(catalog_json => this.setState({
-                catalog: catalog_json.obj
-            }))
-            .catch((e) => console.log('some error', e));
         this.getAllCategories()
+        this.currentCatalog = ''
+        this.fetchProducts()
     }
 
-    fetchProducts(productsQuery, catalogId) {
+    handleSearchChange(event) {
+        this.fetchProducts(event.target.value, this.currentCatalog)
+    }
+
+    handleCatalogSelectChange(event) {
+        this.fetchProducts('', event.target.id)
+        this.currentCatalog = event.target.id
+        document.getElementsByClassName("search-input")[0].value = ""
+    }
+
+    fetchProducts(productsQuery = '', catalogId = '') {
         let url = 'http://0.0.0.0:8080/product/search'
         const params = {}
-        if (productsQuery !== '') params['productsQuery'] = productsQuery
+        if (productsQuery !== '') params['productQuery'] = productsQuery
         if (catalogId !== '') params['catalogId'] = catalogId
         if (params) {
             url += `?${Object.entries(params).map(([n, v]) => `${n}=${v}`).join('&')}`
         }
         fetch(url)
             .then(response => response.json())
-            .then(catalog_json => this.setState({
-
-            }))
+            .then(catalog_json => {
+                let new_state = this.state
+                new_state.products = catalog_json["products"]
+                this.setState({
+                    new_state
+                })
+            })
             .catch((e) => console.log('some error', e));
     }
 
     getAllCategories() {
         fetch('http://0.0.0.0:8080/catalog')
             .then(response => response.json())
-            .then(catalog_json => this.setState({
-                catalogs: catalog_json.catalogs
-            }))
+            .then(catalog_json => {
+                this.setState({
+                    catalogs: catalog_json.catalogs
+                })
+            })
             .catch((e) => console.log('some error', e));
     }
 
     renderCategories() {
-        console.log(this.state)
         return <div className="sidebar-categories">
             <div className="head">Browse Categories</div>
             <ul className="main-categories">
                 <li className="common-filter">
                     <form action="#">
                         <ul>
+                            <li className="filter-list"><input className="pixel-radio"
+                                                               type="radio" id=""
+                                                               name="catalog" checked
+                                                               onChange={(event) => this.handleCatalogSelectChange(event)}/>All<span></span></li>
                             {this.state.catalogs.map(val => (
                                 <li className="filter-list"><input className="pixel-radio"
                                                                    type="radio" id={val.ID}
-                                                                   name="catalog"/><label
+                                                                   name="catalog"
+                                                                   onChange={(event) => this.handleCatalogSelectChange(event)}/><label
                                     htmlFor={val.ID}>{val.Title}<span> ({val.Count})</span></label></li>
                             ))}
                         </ul>
@@ -110,7 +81,7 @@ export default class SearchProductsPage extends Component {
     }
 
     renderProducts() {
-        return this.state.catalog.Products.map((key, index) => (
+        return this.state.products.map((key, index) => (
             <div className="col-md-6 col-lg-4">
                 <div className="card text-center card-product">
                     <div className="card-product__img">
@@ -230,7 +201,8 @@ export default class SearchProductsPage extends Component {
                                     </div>
                                     <div>
                                         <div className="input-group filter-bar-search">
-                                            <input type="text" placeholder="Search"/>
+                                            <input type="text" placeholder="Search" className="search-input"
+                                                   onChange={(event) => this.handleSearchChange(event)}/>
                                             <div className="input-group-append">
                                                 <button type="button"><i className="ti-search"></i></button>
                                             </div>

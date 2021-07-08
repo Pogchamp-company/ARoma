@@ -19,7 +19,7 @@ func SearchProducts(context *gin.Context) {
 	SetHeaders(context)
 	productQuery := context.Request.URL.Query().Get("productQuery")
 	var products []Product
-	query := Db.Where("title ILIKE ?", "%"+productQuery+"%")
+	query := Db.Debug().Where("title ILIKE ?", "%"+productQuery+"%")
 	catalogId := context.Request.URL.Query().Get("catalogId")
 	if catalogId != "" {
 		query = query.Where("catalog_id = ?", catalogId)

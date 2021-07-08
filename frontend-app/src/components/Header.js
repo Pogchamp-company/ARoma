@@ -30,7 +30,7 @@ export default class Header extends Component {
                                            role="button" aria-haspopup="true"
                                            aria-expanded="false">Shop</a>
                                         <ul className="dropdown-menu">
-                                            <li className="nav-item"><Link className="nav-link" to="/search_products/1">Shop
+                                            <li className="nav-item"><Link className="nav-link" to="/search_products">Shop
                                                 Category</Link></li>
                                             <li className="nav-item"><Link className="nav-link" to="/product/1">Product
                                                 Details</Link></li>
