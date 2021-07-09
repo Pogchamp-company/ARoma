@@ -4,8 +4,8 @@
   "description": "Shop powered with Golang and ReactJS",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack --mode development --watch",
-    "build": "webpack --mode production",
+    "dev": "webpack --mode development --watch && rm -f static/bundles/main.js.LICENSE.txt",
+    "build": "webpack --mode production && rm -f static/bundles/main.js.LICENSE.txt",
     "servenode": "node nodeapp/app.js"
   },
   "repository": {
@@ -38,8 +38,10 @@
     "@babel/preset-react": "^7.14.5",
     "babel-loader": "^8.2.2",
     "css-loader": "^5.2.6",
-    "style-loader": "^3.0.0",
-    "webpack": "^5.40.0",
+    "mini-css-extract-plugin": "^2.1.0",
+    "sass": "^1.35.2",
+    "sass-loader": "^12.1.0",
+    "webpack": "^5.43.0",
     "webpack-cli": "^4.7.2",
     "webpack-dev-server": "^3.11.2"
   }

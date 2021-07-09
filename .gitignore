@@ -15,4 +15,4 @@
 # vendor/
 /.idea
 frontend-app/node_modules
-frontend-app/static/js
+frontend-app/static/bundles
