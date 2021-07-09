@@ -63,9 +63,9 @@ export default class SearchProductsPage extends Component {
                     <form action="#">
                         <ul>
                             <li className="filter-list"><input className="pixel-radio"
-                                                               type="radio" id=""
+                                                               type="radio" id="0"
                                                                name="catalog" checked
-                                                               onChange={(event) => this.handleCatalogSelectChange(event)}/>All<span></span></li>
+                                                               onChange={(event) => this.handleCatalogSelectChange(event)}/><label htmlFor={0}>All</label></li>
                             {this.state.catalogs.map(val => (
                                 <li className="filter-list"><input className="pixel-radio"
                                                                    type="radio" id={val.ID}
