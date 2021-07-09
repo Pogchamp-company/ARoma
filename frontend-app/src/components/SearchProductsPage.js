@@ -1,83 +1,12 @@
 import React, {Component} from "react";
 import TopProducts from "./TopProducts";
 
-
-export default class SearchProductsPage extends Component {
+class ProductsContainer extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            products: [],
-            catalogs: []
+            products: []
         }
-        this.getAllCategories()
-        this.currentCatalog = ''
-        this.fetchProducts()
-    }
-
-    handleSearchChange(event) {
-        this.fetchProducts(event.target.value, this.currentCatalog)
-    }
-
-    handleCatalogSelectChange(event) {
-        this.fetchProducts('', event.target.id)
-        this.currentCatalog = event.target.id
-        document.getElementsByClassName("search-input")[0].value = ""
-    }
-
-    fetchProducts(productsQuery = '', catalogId = '') {
-        let url = 'http://0.0.0.0:8080/product/search'
-        const params = {}
-        if (productsQuery !== '') params['productQuery'] = productsQuery
-        if (catalogId !== '') params['catalogId'] = catalogId
-        if (params) {
-            url += `?${Object.entries(params).map(([n, v]) => `${n}=${v}`).join('&')}`
-        }
-        fetch(url)
-            .then(response => response.json())
-            .then(catalog_json => {
-                let new_state = this.state
-                new_state.products = catalog_json["products"]
-                this.setState({
-                    new_state
-                })
-            })
-            .catch((e) => console.log('some error', e));
-    }
-
-    getAllCategories() {
-        fetch('http://0.0.0.0:8080/catalog')
-            .then(response => response.json())
-            .then(catalog_json => {
-                this.setState({
-                    catalogs: catalog_json.catalogs
-                })
-            })
-            .catch((e) => console.log('some error', e));
-    }
-
-    renderCategories() {
-        return <div className="sidebar-categories">
-            <div className="head">Browse Categories</div>
-            <ul className="main-categories">
-                <li className="common-filter">
-                    <form action="#">
-                        <ul>
-                            <li className="filter-list"><input className="pixel-radio"
-                                                               type="radio" id="0"
-                                                               name="catalog" checked
-                                                               onChange={(event) => this.handleCatalogSelectChange(event)}/><label htmlFor={0}>All</label></li>
-                            {this.state.catalogs.map(val => (
-                                <li className="filter-list"><input className="pixel-radio"
-                                                                   type="radio" id={val.ID}
-                                                                   name="catalog"
-                                                                   onChange={(event) => this.handleCatalogSelectChange(event)}/><label
-                                    htmlFor={val.ID}>{val.Title}<span> ({val.Count})</span></label></li>
-                            ))}
-                        </ul>
-                    </form>
-                </li>
-            </ul>
-        </div>
     }
 
     renderProducts() {
@@ -106,11 +35,100 @@ export default class SearchProductsPage extends Component {
                     </div>
                 </div>
             </div>
-
         ))
     }
 
     render() {
+        return (
+            <div className="row">
+                {this.renderProducts()}
+            </div>
+        )
+    }
+}
+
+
+export default class SearchProductsPage extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            products: [],
+            catalogs: []
+        }
+        this.getAllCategories()
+        this.currentCatalog = ''
+        this.fetchProducts()
+        this.productsContainerElement = React.createRef();
+    }
+
+    handleSearchChange(event) {
+        this.fetchProducts(event.target.value, this.currentCatalog)
+    }
+
+    handleCatalogSelectChange(event) {
+        if (event.target.id === "0") this.currentCatalog = ""
+        else this.currentCatalog = event.target.id
+        this.fetchProducts('', this.currentCatalog)
+        document.getElementsByClassName("search-input")[0].value = ""
+    }
+
+    fetchProducts(productsQuery = '', catalogId = '') {
+        let url = 'http://0.0.0.0:8080/product/search'
+        const params = {}
+        if (productsQuery !== '') params['productQuery'] = productsQuery
+        if (catalogId !== '') params['catalogId'] = catalogId
+        if (params) {
+            url += `?${Object.entries(params).map(([n, v]) => `${n}=${v}`).join('&')}`
+        }
+        fetch(url)
+            .then(response => response.json())
+            .then(catalog_json => {
+                this.productsContainerElement.current.setState({
+                    products: catalog_json["products"]
+                })
+            })
+            .catch((e) => console.log('some error', e));
+    }
+
+    getAllCategories() {
+        console.log("dsdasdsdasdadasd")
+        fetch('http://0.0.0.0:8080/catalog')
+            .then(response => response.json())
+            .then(catalog_json => {
+                this.setState({
+                    catalogs: catalog_json.catalogs
+                })
+            })
+            .catch((e) => console.log('some error', e));
+    }
+
+    renderCategories() {
+        return <div className="sidebar-categories">
+            <div className="head">Browse Categories</div>
+            <ul className="main-categories">
+                <li className="common-filter">
+                    <form action="#">
+                        <ul>
+                            <li className="filter-list"><input className="pixel-radio"
+                                                               type="radio" id="0"
+                                                               name="catalog"
+                                                               onChange={(event) => this.handleCatalogSelectChange(event)}/><label htmlFor={0}>All</label></li>
+                            {this.state.catalogs.map(val => (
+                                <li className="filter-list"><input className="pixel-radio"
+                                                                   type="radio" id={val.ID}
+                                                                   name="catalog"
+                                                                   onChange={(event) => this.handleCatalogSelectChange(event)}/><label
+                                    htmlFor={val.ID}>{val.Title}<span> ({val.Count})</span></label></li>
+                            ))}
+                        </ul>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    }
+
+    render() {
+        console.log("rerender")
         return (
             <div>
                 <section className="section-margin--small mb-5">
@@ -210,9 +228,7 @@ export default class SearchProductsPage extends Component {
                                     </div>
                                 </div>
                                 <section className="lattest-product-area pb-40 category-list">
-                                    <div className="row">
-                                        {this.renderProducts()}
-                                    </div>
+                                    <ProductsContainer products={this.state.products} ref={this.productsContainerElement}/>
                                 </section>
                             </div>
                         </div>
