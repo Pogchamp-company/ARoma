@@ -1,16 +1,14 @@
-import React, {Component} from "react";
+import React, {Component, useState} from "react";
 import TopProducts from "./TopProducts";
+import {Link} from "react-router-dom";
 
 class ProductsContainer extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            products: []
-        }
     }
 
     renderProducts() {
-        return this.state.products.map((key, index) => (
+        return this.props.products.map((product, index) => (
             <div className="col-md-6 col-lg-4">
                 <div className="card text-center card-product">
                     <div className="card-product__img">
@@ -18,7 +16,7 @@ class ProductsContainer extends Component {
                              alt=""/>
                         <ul className="card-product__imgOverlay">
                             <li>
-                                <button><i className="ti-search"></i></button>
+                                <Link to={`/product/${product.ID}`}><i className="ti-search"></i></Link>
                             </li>
                             <li>
                                 <button><i className="ti-shopping-cart"></i></button>
@@ -30,8 +28,8 @@ class ProductsContainer extends Component {
                     </div>
                     <div className="card-body">
                         <p>Accessories</p>
-                        <h4 className="card-product__title"><a href="#">{key.Title}</a></h4>
-                        <p className="card-product__price">${key.Price}</p>
+                        <h4 className="card-product__title"><Link to={`/product/${product.ID}`}>{product.Title}</Link></h4>
+                        <p className="card-product__price">${product.Price}</p>
                     </div>
                 </div>
             </div>
@@ -53,22 +51,22 @@ export default class SearchProductsPage extends Component {
         super(props);
         this.state = {
             products: [],
-            catalogs: []
+            catalogs: [],
+            currentCatalog: ''
         }
+
         this.getAllCategories()
-        this.currentCatalog = ''
         this.fetchProducts()
         this.productsContainerElement = React.createRef();
     }
 
     handleSearchChange(event) {
-        this.fetchProducts(event.target.value, this.currentCatalog)
+        this.fetchProducts(event.target.value, this.state.currentCatalog)
     }
 
-    handleCatalogSelectChange(event) {
-        if (event.target.id === "0") this.currentCatalog = ""
-        else this.currentCatalog = event.target.id
-        this.fetchProducts('', this.currentCatalog)
+    setCurrentCatalog(catalog) {
+        this.state.currentCatalog = catalog
+        this.fetchProducts('', this.state.currentCatalog)
         document.getElementsByClassName("search-input")[0].value = ""
     }
 
@@ -83,21 +81,18 @@ export default class SearchProductsPage extends Component {
         fetch(url)
             .then(response => response.json())
             .then(catalog_json => {
-                this.productsContainerElement.current.setState({
-                    products: catalog_json["products"]
-                })
+                this.state.products = catalog_json["products"]
+                this.forceUpdate()
             })
             .catch((e) => console.log('some error', e));
     }
 
     getAllCategories() {
-        console.log("dsdasdsdasdadasd")
         fetch('http://0.0.0.0:8080/catalog')
             .then(response => response.json())
             .then(catalog_json => {
-                this.setState({
-                    catalogs: catalog_json.catalogs
-                })
+                this.state.catalogs = catalog_json.catalogs
+                this.forceUpdate()
             })
             .catch((e) => console.log('some error', e));
     }
@@ -112,13 +107,15 @@ export default class SearchProductsPage extends Component {
                             <li className="filter-list"><input className="pixel-radio"
                                                                type="radio" id="0"
                                                                name="catalog"
-                                                               onChange={(event) => this.handleCatalogSelectChange(event)}/><label htmlFor={0}>All</label></li>
-                            {this.state.catalogs.map(val => (
+                                                               checked={this.state.currentCatalog === ""}
+                                                               onChange={() => this.setCurrentCatalog("")}/><label htmlFor={0}>All</label></li>
+                            {this.state.catalogs.map(catalog => (
                                 <li className="filter-list"><input className="pixel-radio"
-                                                                   type="radio" id={val.ID}
+                                                                   type="radio" id={catalog.ID}
                                                                    name="catalog"
-                                                                   onChange={(event) => this.handleCatalogSelectChange(event)}/><label
-                                    htmlFor={val.ID}>{val.Title}<span> ({val.Count})</span></label></li>
+                                                                   checked={this.state.currentCatalog === catalog.ID.toString()}
+                                                                   onChange={(event) => this.setCurrentCatalog(event.target.id)}/><label
+                                    htmlFor={catalog.ID}>{catalog.Title}<span> ({catalog.Count})</span></label></li>
                             ))}
                         </ul>
                     </form>
@@ -128,7 +125,6 @@ export default class SearchProductsPage extends Component {
     }
 
     render() {
-        console.log("rerender")
         return (
             <div>
                 <section className="section-margin--small mb-5">
@@ -234,39 +230,9 @@ export default class SearchProductsPage extends Component {
                         </div>
                     </div>
                 </section>
-                <section className="related-product-area">
+                <section className="related-product-area section-margin--small mt-0">
                     <TopProducts/>
                 </section>
-                <section className="subscribe-position">
-                    <div className="container">
-                        <div className="subscribe text-center">
-                            <h3 className="subscribe__title">Get Update From Anywhere</h3>
-                            <p>Bearing Void gathering light light his eavening unto dont afraid</p>
-                            <div id="mc_embed_signup">
-                                <form target="_blank"
-                                      action="https://spondonit.us12.list-manage.com/subscribe/post?u=1462626880ade1ac87bd9c93a&amp;id=92a4423d01"
-                                      method="get" className="subscribe-form form-inline mt-5 pt-1">
-                                    <div className="form-group ml-sm-auto">
-                                        <input className="form-control mb-1" type="email" name="EMAIL"
-                                               placeholder="Enter your email" onFocus="this.placeholder = ''"
-                                               onBlur="this.placeholder = 'Your Email Address '"/>
-                                        <div className="info"></div>
-                                    </div>
-                                    <button className="button button-subscribe mr-auto mb-1" type="submit">Subscribe
-                                        Now
-                                    </button>
-                                    <div style={{position: "absolute", left: "-5000px"}}>
-                                        <input name="b_36c4fd991d266f23781ded980_aefe40901a" tabIndex="-1" value=""
-                                               type="text"/>
-                                    </div>
-
-                                </form>
-                            </div>
-
-                        </div>
-                    </div>
-                </section>
-
             </div>
         );
     }

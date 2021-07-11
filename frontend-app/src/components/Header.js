@@ -32,8 +32,6 @@ export default class Header extends Component {
                                         <ul className="dropdown-menu">
                                             <li className="nav-item"><Link className="nav-link" to="/search_products">Shop
                                                 Category</Link></li>
-                                            <li className="nav-item"><Link className="nav-link" to="/product/1">Product
-                                                Details</Link></li>
                                             <li className="nav-item"><a className="nav-link" href="checkout.html">Product
                                                 Checkout</a></li>
                                             <li className="nav-item"><a className="nav-link"
