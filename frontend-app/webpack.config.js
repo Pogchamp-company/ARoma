@@ -27,6 +27,12 @@ module.exports = {
                     loader: "babel-loader",
                 },
             },
+            {
+                test: /\.css$/,
+                use: {
+                    loader: "css-loader?url=false",
+                },
+            }
         ],
     },
     optimization: {
@@ -41,6 +47,11 @@ module.exports = {
         }),
         new MiniCssExtractPlugin({
             filename: "[name].css"
+        }),
+        new webpack.ProvidePlugin({
+            $: 'jquery',
+            jQuery: 'jquery',
+            'window.jQuery': 'jquery'
         }),
     ],
 };
