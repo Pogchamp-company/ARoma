@@ -1,45 +1,96 @@
-import React, {Component, useState} from "react";
+import React, {Component} from "react";
 import TopProducts from "./TopProducts";
 import {Link} from "react-router-dom";
+import NoUiSlider from "./NoUiSlider";
 
 class ProductsContainer extends Component {
-    constructor(props) {
-        super(props);
-    }
-
-    renderProducts() {
-        return this.props.products.map((product, index) => (
-            <div className="col-md-6 col-lg-4">
-                <div className="card text-center card-product">
-                    <div className="card-product__img">
-                        <img className="card-img" src="/img/product/product1.png"
-                             alt=""/>
-                        <ul className="card-product__imgOverlay">
-                            <li>
-                                <Link to={`/product/${product.ID}`}><i className="ti-search"></i></Link>
-                            </li>
-                            <li>
-                                <button><i className="ti-shopping-cart"></i></button>
-                            </li>
-                            <li>
-                                <button><i className="ti-heart"></i></button>
-                            </li>
-                        </ul>
-                    </div>
-                    <div className="card-body">
-                        <p>Accessories</p>
-                        <h4 className="card-product__title"><Link to={`/product/${product.ID}`}>{product.Title}</Link></h4>
-                        <p className="card-product__price">${product.Price}</p>
-                    </div>
-                </div>
-            </div>
-        ))
-    }
-
     render() {
         return (
             <div className="row">
-                {this.renderProducts()}
+                {this.props.products.map((product, index) => (
+                    <div className="col-md-6 col-lg-4">
+                        <div className="card text-center card-product">
+                            <div className="card-product__img">
+                                <img className="card-img" src="/img/product/product1.png"
+                                     alt=""/>
+                                <ul className="card-product__imgOverlay">
+                                    <li>
+                                        <Link to={`/product/${product.ID}`}><i className="ti-search"></i></Link>
+                                    </li>
+                                    <li>
+                                        <button><i className="ti-shopping-cart"></i></button>
+                                    </li>
+                                    <li>
+                                        <button><i className="ti-heart"></i></button>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div className="card-body">
+                                <p>Accessories</p>
+                                <h4 className="card-product__title"><Link
+                                    to={`/product/${product.ID}`}>{product.Title}</Link></h4>
+                                <p className="card-product__price">${product.Price}</p>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        )
+    }
+}
+
+class EnumAttributeFilter extends Component {
+    render() {
+        return (
+            <div className="common-filter">
+                <div className="head">{this.props.attribute.Title}</div>
+                <ul>
+                    {this.props.attribute.Values.map((variant, index) => (
+                        <li className="filter-list"><input className="pixel-radio" type="radio"
+                                                           id="apple" name="brand"/><label
+                            htmlFor="apple">{variant.Title}<span>({variant.Count})</span></label></li>
+                    ))}
+                </ul>
+            </div>
+        )
+    }
+}
+
+class RangeAttributeFilter extends Component {
+    render() {
+        return (
+            <div className="common-filter">
+                <div className="head">{this.props.attribute.Title}</div>
+                <div className="filter-list">
+                    <NoUiSlider title={this.props.attribute.Title} min={this.props.attribute.MinValue} max={this.props.attribute.MaxValue}/>
+
+                    {/*<input type="range" id="volume" name="volume"*/}
+                    {/*       min={this.props.attribute.MinValue} max={this.props.attribute.MaxValue}/>*/}
+                </div>
+            </div>
+        )
+    }
+}
+
+
+class AttributesContainer extends Component {
+    render() {
+        return (
+            <div className="sidebar-filter">
+                <div className="top-filter-head">Product Filters</div>
+                {this.props.attributes.map((attribute, index) => {
+                    if (attribute.Type === "string") {
+                        return <EnumAttributeFilter attribute={attribute}/>
+                    } else if (attribute.Type === "number") {
+                        return <RangeAttributeFilter attribute={attribute}/>
+                    }
+                })}
+                <div className="common-filter">
+                    <div className="head">Price</div>
+                    <div className="price-range-area">
+                        <NoUiSlider title="Price" min={1} max={500000}/>
+                    </div>
+                </div>
             </div>
         )
     }
@@ -52,10 +103,11 @@ export default class SearchProductsPage extends Component {
         this.state = {
             products: [],
             catalogs: [],
+            attributes: [],
             currentCatalog: ''
         }
 
-        this.getAllCategories()
+        this.updateAllCategories()
         this.fetchProducts()
         this.productsContainerElement = React.createRef();
     }
@@ -66,6 +118,7 @@ export default class SearchProductsPage extends Component {
 
     setCurrentCatalog(catalog) {
         this.state.currentCatalog = catalog
+        this.updateFilters()
         this.fetchProducts('', this.state.currentCatalog)
         document.getElementsByClassName("search-input")[0].value = ""
     }
@@ -87,7 +140,7 @@ export default class SearchProductsPage extends Component {
             .catch((e) => console.log('some error', e));
     }
 
-    getAllCategories() {
+    updateAllCategories() {
         fetch('http://0.0.0.0:8080/catalog')
             .then(response => response.json())
             .then(catalog_json => {
@@ -95,6 +148,21 @@ export default class SearchProductsPage extends Component {
                 this.forceUpdate()
             })
             .catch((e) => console.log('some error', e));
+    }
+
+    updateFilters() {
+        if (this.state.currentCatalog === "") return
+
+        fetch(`http://0.0.0.0:8080/catalog/get_attributes?catalogId=${this.state.currentCatalog}`)
+            .then(response => response.json())
+            .then(catalog_json => {
+                if (catalog_json.attributes) this.state.attributes = catalog_json.attributes
+                else this.state.attributes = []
+                console.log("attrs", catalog_json.attributes)
+                this.forceUpdate()
+            })
+            .catch((e) => console.log('some error', e));
+
     }
 
     renderCategories() {
@@ -108,7 +176,8 @@ export default class SearchProductsPage extends Component {
                                                                type="radio" id="0"
                                                                name="catalog"
                                                                checked={this.state.currentCatalog === ""}
-                                                               onChange={() => this.setCurrentCatalog("")}/><label htmlFor={0}>All</label></li>
+                                                               onChange={() => this.setCurrentCatalog("")}/><label
+                                htmlFor={0}>All</label></li>
                             {this.state.catalogs.map(catalog => (
                                 <li className="filter-list"><input className="pixel-radio"
                                                                    type="radio" id={catalog.ID}
@@ -132,70 +201,7 @@ export default class SearchProductsPage extends Component {
                         <div className="row">
                             <div className="col-xl-3 col-lg-4 col-md-5">
                                 {this.renderCategories()}
-                                <div className="sidebar-filter">
-                                    <div className="top-filter-head">Product Filters</div>
-                                    <div className="common-filter">
-                                        <div className="head">Brands</div>
-                                        <form action="#">
-                                            <ul>
-                                                <li className="filter-list"><input className="pixel-radio" type="radio"
-                                                                                   id="apple" name="brand"/><label
-                                                    htmlFor="apple">Apple<span>(29)</span></label></li>
-                                                <li className="filter-list"><input className="pixel-radio" type="radio"
-                                                                                   id="asus" name="brand"/><label
-                                                    htmlFor="asus">Asus<span>(29)</span></label></li>
-                                                <li className="filter-list"><input className="pixel-radio" type="radio"
-                                                                                   id="gionee" name="brand"/><label
-                                                    htmlFor="gionee">Gionee<span>(19)</span></label></li>
-                                                <li className="filter-list"><input className="pixel-radio" type="radio"
-                                                                                   id="micromax" name="brand"/><label
-                                                    htmlFor="micromax">Micromax<span>(19)</span></label></li>
-                                                <li className="filter-list"><input className="pixel-radio" type="radio"
-                                                                                   id="samsung" name="brand"/><label
-                                                    htmlFor="samsung">Samsung<span>(19)</span></label></li>
-                                            </ul>
-                                        </form>
-                                    </div>
-                                    <div className="common-filter">
-                                        <div className="head">Color</div>
-                                        <form action="#">
-                                            <ul>
-                                                <li className="filter-list"><input className="pixel-radio" type="radio"
-                                                                                   id="black" name="color"/><label
-                                                    htmlFor="black">Black<span>(29)</span></label></li>
-                                                <li className="filter-list"><input className="pixel-radio" type="radio"
-                                                                                   id="balckleather"
-                                                                                   name="color"/><label
-                                                    htmlFor="balckleather">Black
-                                                    Leather<span>(29)</span></label></li>
-                                                <li className="filter-list"><input className="pixel-radio" type="radio"
-                                                                                   id="blackred" name="color"/><label
-                                                    htmlFor="blackred">Black
-                                                    with red<span>(19)</span></label></li>
-                                                <li className="filter-list"><input className="pixel-radio" type="radio"
-                                                                                   id="gold" name="color"/><label
-                                                    htmlFor="gold">Gold<span>(19)</span></label></li>
-                                                <li className="filter-list"><input className="pixel-radio" type="radio"
-                                                                                   id="spacegrey" name="color"/><label
-                                                    htmlFor="spacegrey">Spacegrey<span>(19)</span></label></li>
-                                            </ul>
-                                        </form>
-                                    </div>
-                                    <div className="common-filter">
-                                        <div className="head">Price</div>
-                                        <div className="price-range-area">
-                                            <div id="price-range"></div>
-                                            <div className="value-wrapper d-flex">
-                                                <div className="price">Price:</div>
-                                                <span>$</span>
-                                                <div id="lower-value"></div>
-                                                <div className="to">to</div>
-                                                <span>$</span>
-                                                <div id="upper-value"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <AttributesContainer attributes={this.state.attributes}/>
                             </div>
                             <div className="col-xl-9 col-lg-8 col-md-7">
                                 <div className="filter-bar d-flex flex-wrap align-items-center">
@@ -224,7 +230,8 @@ export default class SearchProductsPage extends Component {
                                     </div>
                                 </div>
                                 <section className="lattest-product-area pb-40 category-list">
-                                    <ProductsContainer products={this.state.products} ref={this.productsContainerElement}/>
+                                    <ProductsContainer products={this.state.products}
+                                                       ref={this.productsContainerElement}/>
                                 </section>
                             </div>
                         </div>
