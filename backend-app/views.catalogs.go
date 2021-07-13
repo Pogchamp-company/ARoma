@@ -11,14 +11,12 @@ func GetCatalog(context *gin.Context) {
 	catalogId, _ := strconv.ParseInt(context.Param("catalog_id"), 10, 64)
 	var catalog Catalog
 	catalog.LoadByID(int(catalogId))
-	SetHeaders(context)
 	context.JSON(200, gin.H{
 		"obj": catalog,
 	})
 }
 
 func GetAllCatalogs(context *gin.Context) {
-	SetHeaders(context)
 	var catalogs []Catalog
 	Db.Find(&catalogs)
 	var response []map[string]interface{}
