@@ -51,12 +51,18 @@ func GetAttributes(context *gin.Context) {
 	Db.Model(&Product{}).Where("catalog_id = ?", catalogId).Pluck("attributes", &rawAttributes)
 	var attributesArray []map[string]interface{}
 	json.Unmarshal([]byte("["+strings.Join(rawAttributes[:], ",")+"]"), &attributesArray)
-	var response []map[string]interface{}
+	response := []map[string]interface{}{}
 	var attributeMap map[string]interface{}
 	if len(attributesArray) > 0 {
-		for key, _ := range attributesArray[0] {
+		for key, v := range attributesArray[0] {
 			attributeMap = map[string]interface{}{
 				"Title": key,
+			}
+			switch v.(type) {
+			case string:
+				attributeMap["Type"] = "string"
+			default:
+				attributeMap["Type"] = "number"
 			}
 			response = append(response, attributeMap)
 			for _, attributes := range attributesArray {
@@ -97,8 +103,6 @@ func GetAttributes(context *gin.Context) {
 			}
 
 		}
-	} else {
-		response = []map[string]interface{}{}
 	}
 	context.JSON(200, gin.H{
 		"attributes": response,
