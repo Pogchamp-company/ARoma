@@ -1,15 +1,12 @@
-package main
+package models
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"net/url"
 	"os"
 )
-
-var App = gin.Default()
 
 func getDSN(rawurl string) string {
 	url_, _ := url.Parse(rawurl)

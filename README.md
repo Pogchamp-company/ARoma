@@ -13,7 +13,7 @@ Shop powered with Golang and ReactJS
 ```shell
 cd backend-app
 go mod init
-go build main.go
+go build .
 ```
 ### Serve node (frontend) server
 ```shell

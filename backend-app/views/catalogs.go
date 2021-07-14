@@ -1,6 +1,7 @@
-package main
+package views
 
 import (
+	"aroma/models"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"strconv"
@@ -9,7 +10,7 @@ import (
 
 func GetCatalog(context *gin.Context) {
 	catalogId, _ := strconv.ParseInt(context.Param("catalog_id"), 10, 64)
-	var catalog Catalog
+	var catalog models.Catalog
 	catalog.LoadByID(int(catalogId))
 	context.JSON(200, gin.H{
 		"obj": catalog,
@@ -17,12 +18,12 @@ func GetCatalog(context *gin.Context) {
 }
 
 func GetAllCatalogs(context *gin.Context) {
-	var catalogs []Catalog
-	Db.Find(&catalogs)
+	var catalogs []models.Catalog
+	models.Db.Find(&catalogs)
 	var response []map[string]interface{}
 	var count int64 = 0
 	for _, catalog := range catalogs {
-		Db.Model(&Product{}).Where("catalog_id = ?", catalog.ID).Count(&count)
+		models.Db.Model(&models.Product{}).Where("catalog_id = ?", catalog.ID).Count(&count)
 		response = append(response, map[string]interface{}{
 			"ID":    catalog.ID,
 			"Title": catalog.Title,
@@ -46,7 +47,7 @@ func searchInMapsArray(arr []map[string]interface{}, key string, value interface
 func GetAttributes(context *gin.Context) {
 	catalogId := context.Request.URL.Query().Get("catalogId")
 	var rawAttributes []string
-	Db.Model(&Product{}).Where("catalog_id = ?", catalogId).Pluck("attributes", &rawAttributes)
+	models.Db.Model(&models.Product{}).Where("catalog_id = ?", catalogId).Pluck("attributes", &rawAttributes)
 	var attributesArray []map[string]interface{}
 	json.Unmarshal([]byte("["+strings.Join(rawAttributes[:], ",")+"]"), &attributesArray)
 	response := []map[string]interface{}{}
