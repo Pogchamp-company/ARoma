@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import TopProducts from "./TopProducts";
 import {Link} from "react-router-dom";
 import NoUiSlider from "./NoUiSlider";
+import Select from 'react-select'
 
 class ProductsContainer extends Component {
     render() {
@@ -61,12 +62,8 @@ class RangeAttributeFilter extends Component {
         return (
             <div className="common-filter">
                 <div className="head">{this.props.attribute.Title}</div>
-                <div className="filter-list">
-                    <NoUiSlider title={this.props.attribute.Title} min={this.props.attribute.MinValue} max={this.props.attribute.MaxValue}/>
-
-                    {/*<input type="range" id="volume" name="volume"*/}
-                    {/*       min={this.props.attribute.MinValue} max={this.props.attribute.MaxValue}/>*/}
-                </div>
+                <NoUiSlider title={this.props.attribute.Title} min={this.props.attribute.MinValue}
+                            max={this.props.attribute.MaxValue}/>
             </div>
         )
     }
@@ -87,9 +84,7 @@ class AttributesContainer extends Component {
                 })}
                 <div className="common-filter">
                     <div className="head">Price</div>
-                    <div className="price-range-area">
-                        <NoUiSlider title="Price" min={1} max={500000}/>
-                    </div>
+                    <NoUiSlider title="Price" min={1} max={500000} symbol="$"/>
                 </div>
             </div>
         )
@@ -137,7 +132,7 @@ export default class SearchProductsPage extends Component {
                 this.state.products = catalog_json["products"]
                 this.forceUpdate()
             })
-            .catch((e) => console.log('some error', e));
+            .catch((e) => console.log('fetchProducts some error', e));
     }
 
     updateAllCategories() {
@@ -194,6 +189,12 @@ export default class SearchProductsPage extends Component {
     }
 
     render() {
+        const options = [
+            {value: '1', label: 'Show 5'},
+            {value: '2', label: 'Show 25'},
+            {value: '3', label: 'Show 100'}
+        ]
+
         return (
             <div>
                 <section className="section-margin--small mb-5">
@@ -205,19 +206,11 @@ export default class SearchProductsPage extends Component {
                             </div>
                             <div className="col-xl-9 col-lg-8 col-md-7">
                                 <div className="filter-bar d-flex flex-wrap align-items-center">
-                                    <div className="sorting">
-                                        <select>
-                                            <option value="1">Default sorting</option>
-                                            <option value="1">Default sorting</option>
-                                            <option value="1">Default sorting</option>
-                                        </select>
+                                    <div className="sorting" style={{width: '150px'}}>
+                                        <Select defaultValue={options[0]} options={options}/>
                                     </div>
-                                    <div className="sorting mr-auto">
-                                        <select>
-                                            <option value="1">Show 12</option>
-                                            <option value="1">Show 12</option>
-                                            <option value="1">Show 12</option>
-                                        </select>
+                                    <div className="sorting mr-auto" style={{width: '150px'}}>
+                                        <Select defaultValue={options[0]} options={options}/>
                                     </div>
                                     <div>
                                         <div className="input-group filter-bar-search">

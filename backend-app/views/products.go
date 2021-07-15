@@ -28,3 +28,11 @@ func SearchProducts(context *gin.Context) {
 		"products": products,
 	})
 }
+
+func TopProducts(context *gin.Context) {
+	var products []models.Product
+	models.Db.Preload("Catalog").Limit(12).Find(&products)
+	context.JSON(200, gin.H{
+		"products": products,
+	})
+}

@@ -3,6 +3,61 @@ import React, {Component} from "react";
 export default class TopProducts extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            products: []
+        }
+        this.updateProducts()
+    }
+
+    updateProducts() {
+        fetch("http://0.0.0.0:8080/product/top")
+            .then(response => response.json())
+            .then(catalog_json => {
+                this.state.products = catalog_json["products"]
+                this.forceUpdate()
+                console.log(this.state)
+            })
+            .catch((e) => console.log('TopProducts some error', e));
+    }
+
+    renderProducts() {
+        if (!this.state.products) return ''
+        const items = []
+
+        for (let i = 0; i < 4; i++) {
+            const item = []
+            for (let j = 0; j < 3; j++) {
+                item.push(this.renderProductCard(i * 3 + j))
+            }
+            items.push(
+                <div className="col-sm-6 col-xl-3 mb-4 mb-xl-0">
+                    <div className="single-search-product-wrapper">
+                        {item}
+                    </div>
+                </div>
+            )
+        }
+
+        return (
+            <div className="row mt-30">
+                {items}
+            </div>
+        )
+    }
+
+    renderProductCard(index) {
+        console.log(index)
+        const product = this.state.products[parseInt(index)]
+        if (!product) return ''
+        return (
+            <div className="single-search-product d-flex">
+                <a href="#"><img src="/img/product/product-sm-1.png" alt=""/></a>
+                <div className="desc">
+                    <a href="#" className="title">{product.Title}</a>
+                    <div className="price">${product.Price}</div>
+                </div>
+            </div>
+        )
     }
 
     render() {
@@ -12,111 +67,7 @@ export default class TopProducts extends Component {
                     <p>Popular Item in the market</p>
                     <h2>Top <span className="section-intro__style">Products</span></h2>
                 </div>
-                <div className="row mt-30">
-                    <div className="col-sm-6 col-xl-3 mb-4 mb-xl-0">
-                        <div className="single-search-product-wrapper">
-                            <div className="single-search-product d-flex">
-                                <a href="#"><img src="/img/product/product-sm-1.png" alt=""/></a>
-                                <div className="desc">
-                                    <a href="#" className="title">Gray Coffee Cup</a>
-                                    <div className="price">$170.00</div>
-                                </div>
-                            </div>
-                            <div className="single-search-product d-flex">
-                                <a href="#"><img src="/img/product/product-sm-2.png" alt=""/></a>
-                                <div className="desc">
-                                    <a href="#" className="title">Gray Coffee Cup</a>
-                                    <div className="price">$170.00</div>
-                                </div>
-                            </div>
-                            <div className="single-search-product d-flex">
-                                <a href="#"><img src="/img/product/product-sm-3.png" alt=""/></a>
-                                <div className="desc">
-                                    <a href="#" className="title">Gray Coffee Cup</a>
-                                    <div className="price">$170.00</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="col-sm-6 col-xl-3 mb-4 mb-xl-0">
-                        <div className="single-search-product-wrapper">
-                            <div className="single-search-product d-flex">
-                                <a href="#"><img src="/img/product/product-sm-4.png" alt=""/></a>
-                                <div className="desc">
-                                    <a href="#" className="title">Gray Coffee Cup</a>
-                                    <div className="price">$170.00</div>
-                                </div>
-                            </div>
-                            <div className="single-search-product d-flex">
-                                <a href="#"><img src="/img/product/product-sm-5.png" alt=""/></a>
-                                <div className="desc">
-                                    <a href="#" className="title">Gray Coffee Cup</a>
-                                    <div className="price">$170.00</div>
-                                </div>
-                            </div>
-                            <div className="single-search-product d-flex">
-                                <a href="#"><img src="/img/product/product-sm-6.png" alt=""/></a>
-                                <div className="desc">
-                                    <a href="#" className="title">Gray Coffee Cup</a>
-                                    <div className="price">$170.00</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="col-sm-6 col-xl-3 mb-4 mb-xl-0">
-                        <div className="single-search-product-wrapper">
-                            <div className="single-search-product d-flex">
-                                <a href="#"><img src="/img/product/product-sm-7.png" alt=""/></a>
-                                <div className="desc">
-                                    <a href="#" className="title">Gray Coffee Cup</a>
-                                    <div className="price">$170.00</div>
-                                </div>
-                            </div>
-                            <div className="single-search-product d-flex">
-                                <a href="#"><img src="/img/product/product-sm-8.png" alt=""/></a>
-                                <div className="desc">
-                                    <a href="#" className="title">Gray Coffee Cup</a>
-                                    <div className="price">$170.00</div>
-                                </div>
-                            </div>
-                            <div className="single-search-product d-flex">
-                                <a href="#"><img src="/img/product/product-sm-9.png" alt=""/></a>
-                                <div className="desc">
-                                    <a href="#" className="title">Gray Coffee Cup</a>
-                                    <div className="price">$170.00</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="col-sm-6 col-xl-3 mb-4 mb-xl-0">
-                        <div className="single-search-product-wrapper">
-                            <div className="single-search-product d-flex">
-                                <a href="#"><img src="/img/product/product-sm-1.png" alt=""/></a>
-                                <div className="desc">
-                                    <a href="#" className="title">Gray Coffee Cup</a>
-                                    <div className="price">$170.00</div>
-                                </div>
-                            </div>
-                            <div className="single-search-product d-flex">
-                                <a href="#"><img src="/img/product/product-sm-2.png" alt=""/></a>
-                                <div className="desc">
-                                    <a href="#" className="title">Gray Coffee Cup</a>
-                                    <div className="price">$170.00</div>
-                                </div>
-                            </div>
-                            <div className="single-search-product d-flex">
-                                <a href="#"><img src="/img/product/product-sm-3.png" alt=""/></a>
-                                <div className="desc">
-                                    <a href="#" className="title">Gray Coffee Cup</a>
-                                    <div className="price">$170.00</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                {this.renderProducts()}
             </div>
         )
     }

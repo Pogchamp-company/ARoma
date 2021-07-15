@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import {Link} from "react-router-dom";
 
 export default class MainPage extends Component {
     constructor(props) {
@@ -23,7 +24,7 @@ export default class MainPage extends Component {
                                     <p>Us which over of signs divide dominion deep fill bring they're meat beho upon own
                                         earth without morning over third. Their male dry. They are great appear whose
                                         land fly grass.</p>
-                                    <a className="button button-hero" href="#">Browse Now</a>
+                                    <Link className="button button-hero" to="/search_products">Browse Now</Link>
                                 </div>
                             </div>
                         </div>

@@ -1,7 +1,7 @@
 import "./scss/style.scss"
 import "jquery"
-import 'bootstrap'
-import 'owl.carousel/dist/owl.carousel.min'
+import "bootstrap"
+import "owl.carousel/dist/owl.carousel.min"
 
 import App from "./components/App";
 import React from "react";
