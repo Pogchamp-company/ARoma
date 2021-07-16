@@ -1,9 +1,9 @@
 package routes
 
-import "aroma/views"
+import "aroma/handlers"
 
 func initProductsRoutes() {
-	App.GET("/product/:product_id", views.GetProduct)
-	App.GET("/product/search", views.SearchProducts)
-	App.GET("/product/top", views.TopProducts)
+	App.GET("/product/:product_id", handlers.GetProduct)
+	App.GET("/product/search", handlers.SearchProducts)
+	App.GET("/product/top", handlers.TopProducts)
 }

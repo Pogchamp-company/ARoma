@@ -1,4 +1,4 @@
-package views
+package handlers
 
 import (
 	"aroma/models"
@@ -103,7 +103,16 @@ func GetAttributes(context *gin.Context) {
 
 		}
 	}
+
+	var minPrice, maxPrice float32
+	models.Db.Model(&models.Product{}).Pluck("MIN(price)", &minPrice)
+	models.Db.Model(&models.Product{}).Pluck("MAX(price)", &maxPrice)
+
 	context.JSON(200, gin.H{
 		"attributes": response,
+		"price": map[string]float32{
+			"Min": minPrice,
+			"Max": maxPrice,
+		},
 	})
 }

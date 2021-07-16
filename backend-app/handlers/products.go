@@ -1,4 +1,4 @@
-package views
+package handlers
 
 import (
 	"aroma/models"
@@ -18,7 +18,7 @@ func GetProduct(context *gin.Context) {
 func SearchProducts(context *gin.Context) {
 	productQuery := context.Request.URL.Query().Get("productQuery")
 	var products []models.Product
-	query := models.Db.Debug().Where("title ILIKE ?", "%"+productQuery+"%")
+	query := models.Db.Where("title ILIKE ?", "%"+productQuery+"%")
 	catalogId := context.Request.URL.Query().Get("catalogId")
 	if catalogId != "" {
 		query = query.Where("catalog_id = ?", catalogId)

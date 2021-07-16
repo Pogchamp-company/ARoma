@@ -1,11 +1,11 @@
 package routes
 
 import (
-	"aroma/views"
+	"aroma/handlers"
 )
 
 func initCatalogsRoutes() {
-	App.GET("/catalog/:catalog_id", views.GetCatalog)
-	App.GET("/catalog", views.GetAllCatalogs)
-	App.GET("/catalog/get_attributes", views.GetAttributes)
+	App.GET("/catalog/:catalog_id", handlers.GetCatalog)
+	App.GET("/catalog", handlers.GetAllCatalogs)
+	App.GET("/catalog/get_attributes", handlers.GetAttributes)
 }
