@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import {Link} from "react-router-dom";
 
 export default class TopProducts extends Component {
     constructor(props) {
@@ -46,14 +47,13 @@ export default class TopProducts extends Component {
     }
 
     renderProductCard(index) {
-        console.log(index)
         const product = this.state.products[parseInt(index)]
         if (!product) return ''
         return (
             <div className="single-search-product d-flex">
-                <a href="#"><img src="/img/product/product-sm-1.png" alt=""/></a>
+                <a onClick={() => {window.location.href=`/product/${product.ID}`}}><img src="/img/product/product-sm-1.png" alt=""/></a>
                 <div className="desc">
-                    <a href="#" className="title">{product.Title}</a>
+                    <a onClick={() => {window.location.href=`/product/${product.ID}`}} className="title">{product.Title}</a>
                     <div className="price">${product.Price}</div>
                 </div>
             </div>

@@ -9,8 +9,8 @@ export default class NoUiSlider extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            min: 0,
-            max: 1,
+            min: this.props.min,
+            max: this.props.max,
         }
     }
 
