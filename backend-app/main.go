@@ -28,16 +28,17 @@ func help() {
 	fmt.Println("\n\tgo run . <command> [arguments]")
 	fmt.Println("\nThe commands are:")
 	fmt.Println("\n\trunserver\t\t\trun rest-api server")
-	fmt.Println("\tdb migrate [optional: -n]\tcreate new migration for database")
+	fmt.Println("\tdb migrate [optional: migrationName]\tcreate new migration for database")
 	fmt.Println("\tdb upgrade\t\t\texecute up migrations")
 	fmt.Println("\tdb downgrade\t\t\texecute down migrations")
-	fmt.Println("\tdb seed\texecute all seeders")
+	fmt.Println("\tdb seed [optional: seedName]\texecute all seeders")
 }
 
 func runServer() {
-	routes.App.Use(middlewares.HeadersMiddleware())
+	var App = routes.App
+	App.Use(middlewares.HeadersMiddleware())
 	routes.InitRoutes()
-	routes.App.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+	App.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
 
 func dbCommands() {
@@ -55,14 +56,17 @@ func dbCommands() {
 }
 
 func runSeeds() {
-	var seedName string
-	flag.StringVar(&seedName, "n", "", "Seeder name")
+	seedName := flag.Arg(2)
 	seedsByNames := map[string]func(){
 		"catalogs": seeds.CatalogsSeeder,
 		"products": seeds.ProductsSeeder,
 	}
 	if seedName != "" {
-		seedsByNames[seedName]()
+		if seed, ok := seedsByNames[seedName]; ok {
+			seed()
+		} else {
+			fmt.Printf("Seed %s does not exist", seedName)
+		}
 	} else {
 		for _, seederFunc := range seedsByNames {
 			seederFunc()
@@ -80,8 +84,7 @@ func downgradeDb() {
 }
 
 func migrateDb() {
-	var migrationName string
-	flag.StringVar(&migrationName, "n", "", "Migration name")
+	migrationName := flag.Arg(2)
 	args := []string{"create", "-ext", "sql", "-dir", "migrations"}
 	if migrationName != "" {
 		args = append(args, "-seq")

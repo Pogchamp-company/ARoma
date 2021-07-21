@@ -29,8 +29,8 @@ node nodeapp/app.js
 
 ## Authors
 
-* **Roman Alexandrov** - *Backend, Frontend* - [Github](https://github.com/AlexandrovRoman)
-* **Artem Golovin** - *Backend, Frontend* - [Github](https://github.com/RustyGuard)
+* **Roman Alexandrov** - *Backend (ffffff)* - [Github](https://github.com/AlexandrovRoman)
+* **Artem Golovin** - *Frontend* - [Github](https://github.com/RustyGuard)
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/Pogchamp-company/ARoma/blob/master/LICENSE) file for details
