@@ -1,4 +1,4 @@
-import React, {Component} from "react";
+import React, {Component, createRef} from "react";
 import TopProducts from "./TopProducts";
 import {Link} from "react-router-dom";
 import NoUiSlider from "./NoUiSlider";
@@ -41,6 +41,14 @@ class ProductsContainer extends Component {
 }
 
 class EnumAttributeFilter extends Component {
+    toDict() {
+        return {
+            Title: this.props.attribute.Title,
+            Type: "string",
+            Value: this.value,
+        }
+    }
+
     render() {
         return (
             <div className="common-filter">
@@ -48,8 +56,12 @@ class EnumAttributeFilter extends Component {
                 <ul>
                     {this.props.attribute.Values.map((variant, index) => (
                         <li className="filter-list"><input className="pixel-radio" type="radio"
-                                                           id="apple" name="brand"/><label
-                            htmlFor="apple">{variant.Title}<span>({variant.Count})</span></label></li>
+                                                           id={variant.Title + index} name={this.props.attribute.Title}
+                                                           value={variant.Title}
+                                                           onClick={(event) => {
+                                                               this.value = event.target.value
+                                                           }}/><label
+                            htmlFor={variant.Title + index}>{variant.Title}<span>({variant.Count})</span></label></li>
                     ))}
                 </ul>
             </div>
@@ -58,11 +70,30 @@ class EnumAttributeFilter extends Component {
 }
 
 class RangeAttributeFilter extends Component {
+    constructor(props) {
+        super(props);
+        this.sliderRef = createRef()
+    }
+
+    toDict() {
+        return {
+            Title: this.props.attribute.Title,
+            Type: "number",
+            Value: {
+                Min: this.sliderRef.current.state.min,
+                Max: this.sliderRef.current.state.max,
+            }
+        }
+
+    }
+
     render() {
         return (
             <div className="common-filter">
                 <div className="head">{this.props.attribute.Title}</div>
-                <NoUiSlider title={this.props.attribute.Title} min={this.props.attribute.MinValue}
+                <NoUiSlider ref={this.sliderRef}
+                            title={this.props.attribute.Title}
+                            min={this.props.attribute.MinValue}
                             max={this.props.attribute.MaxValue}/>
             </div>
         )
@@ -71,20 +102,44 @@ class RangeAttributeFilter extends Component {
 
 
 class AttributesContainer extends Component {
+    constructor(props) {
+        super(props);
+        this.productsPriceElement = React.createRef();
+    }
+
+    generateFiltersDict() {
+        const res = {}
+        console.log(this.productsPriceElement)
+        res['price'] = {
+            min: this.productsPriceElement.current.state.min,
+            max: this.productsPriceElement.current.state.max,
+        }
+        console.log(this.refsCollection)
+        res['attributes'] = this.refsCollection.map((value, index) => value.current.toDict())
+        return res
+    }
+
     render() {
+        this.refsCollection = []
+        for (let i = 0; i < this.props.attributes.length; i++) {
+            this.refsCollection[i] = React.createRef();
+        }
         return (
             <div className="sidebar-filter">
                 <div className="top-filter-head">Product Filters</div>
                 {this.props.attributes.map((attribute, index) => {
                     if (attribute.Type === "string") {
-                        return <EnumAttributeFilter attribute={attribute}/>
+                        return <EnumAttributeFilter attribute={attribute} ref={this.refsCollection[index]}/>
                     } else if (attribute.Type === "number") {
-                        return <RangeAttributeFilter attribute={attribute}/>
+                        return <RangeAttributeFilter attribute={attribute} ref={this.refsCollection[index]}/>
                     }
                 })}
                 <div className="common-filter">
                     <div className="head">Price</div>
-                    <NoUiSlider title="Price" min={1} max={500000} symbol="$"/>
+                    <NoUiSlider ref={this.productsPriceElement} title="Price" min={1} max={500000} symbol="$"/>
+                </div>
+                <div className="common-filter">
+                    <button onClick={() => this.applyFilters()} className={"button apply-button"}>Apply</button>
                 </div>
             </div>
         )
@@ -105,6 +160,7 @@ export default class SearchProductsPage extends Component {
         this.updateAllCategories()
         this.fetchProducts()
         this.productsContainerElement = React.createRef();
+        this.filtersContainerElement = React.createRef();
     }
 
     handleSearchChange(event) {
@@ -135,6 +191,7 @@ export default class SearchProductsPage extends Component {
             .catch((e) => console.log('fetchProducts some error', e));
     }
 
+
     updateAllCategories() {
         fetch('http://0.0.0.0:8080/catalog')
             .then(response => response.json())
@@ -158,6 +215,10 @@ export default class SearchProductsPage extends Component {
             })
             .catch((e) => console.log('some error', e));
 
+    }
+
+    applyFilters() {
+        console.log(this.filtersContainerElement.current.generateFiltersDict())
     }
 
     renderCategories() {
@@ -202,7 +263,8 @@ export default class SearchProductsPage extends Component {
                         <div className="row">
                             <div className="col-xl-3 col-lg-4 col-md-5">
                                 {this.renderCategories()}
-                                <AttributesContainer attributes={this.state.attributes}/>
+                                <AttributesContainer attributes={this.state.attributes}
+                                                     ref={this.filtersContainerElement}/>
                             </div>
                             <div className="col-xl-9 col-lg-8 col-md-7">
                                 <div className="filter-bar d-flex flex-wrap align-items-center">

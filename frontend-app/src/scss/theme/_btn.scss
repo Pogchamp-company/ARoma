@@ -129,3 +129,12 @@
     }
   }
 }
+
+.apply-button {
+  margin-top: 10px;
+  -ms-transform: translateX(-50%);
+  transform: translateX(-50%);
+  //margin-bottom: 25px;
+  //padding-bottom: 25px;
+  margin-left: 50%;
+}
