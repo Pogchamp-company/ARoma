@@ -62,7 +62,8 @@ class EnumAttributeFilter extends Component {
                                                            onClick={(event) => {
                                                                this.value = event.target.value
                                                            }}/><label
-                            htmlFor={variant.Title + index}>{variant.Title}&nbsp;<span>({variant.Count})</span></label></li>
+                            htmlFor={variant.Title + index}>{variant.Title}&nbsp;<span>({variant.Count})</span></label>
+                        </li>
                     ))}
                 </ul>
             </div>
@@ -125,6 +126,12 @@ class AttributesContainer extends Component {
         for (let i = 0; i < this.props.attributes.length; i++) {
             this.refsCollection[i] = React.createRef();
         }
+        if (this.productsPriceElement.current) {
+            this.productsPriceElement.current.setState({
+                min: this.props.price.Min,
+                max: this.props.price.Max
+            })
+        }
         return (
             <div className="sidebar-filter">
                 <div className="top-filter-head">Product Filters</div>
@@ -132,12 +139,14 @@ class AttributesContainer extends Component {
                     if (attribute.Type === "string") {
                         return <EnumAttributeFilter attribute={attribute} ref={this.refsCollection[index]}/>
                     } else if (attribute.Type === "number") {
-                        return <RangeAttributeFilter attribute={attribute} ref={this.refsCollection[index]}/>
+                        if (attribute.MinValue != attribute.MaxValue)
+                            return <RangeAttributeFilter attribute={attribute} ref={this.refsCollection[index]}/>
                     }
                 })}
                 <div className="common-filter">
                     <div className="head">Price</div>
-                    <NoUiSlider ref={this.productsPriceElement} title="Price" min={1} max={500000} symbol="$"/>
+                    <NoUiSlider ref={this.productsPriceElement} title="Price" min={this.props.price.Min}
+                                max={this.props.price.Max} symbol="$"/>
                 </div>
                 <div className="common-filter">
                     <button onClick={this.props.applyFilters} className={"button apply-button"}>Apply</button>
@@ -154,6 +163,10 @@ export default class SearchProductsPage extends Component {
         this.state = {
             products: [],
             catalogs: [],
+            price: {
+                Min: 0,
+                Max: 100,
+            },
             attributes: [],
             currentCatalog: ''
         }
@@ -186,7 +199,6 @@ export default class SearchProductsPage extends Component {
         if (params) {
             url += `?${Object.entries(params).map(([n, v]) => `${n}=${v}`).join('&')}`
         }
-        console.log(url)
         fetch(url)
             .then(response => response.json())
             .then(catalog_json => {
@@ -213,8 +225,10 @@ export default class SearchProductsPage extends Component {
         fetch(`http://0.0.0.0:8080/catalog/get_attributes?catalogId=${this.state.currentCatalog}`)
             .then(response => response.json())
             .then(catalog_json => {
-                if (catalog_json.attributes) this.state.attributes = catalog_json.attributes
-                else this.state.attributes = []
+                if (catalog_json.attributes) {
+                    this.state.attributes = catalog_json.attributes
+                    this.state.price = catalog_json.price
+                } else this.state.attributes = []
                 this.forceUpdate()
             })
             .catch((e) => console.log('some error', e));
@@ -268,6 +282,7 @@ export default class SearchProductsPage extends Component {
                             <div className="col-xl-3 col-lg-4 col-md-5">
                                 {this.renderCategories()}
                                 <AttributesContainer attributes={this.state.attributes}
+                                                     price={this.state.price}
                                                      ref={this.filtersContainerElement}
                                                      applyFilters={() => this.applyFilters()}/>
                             </div>

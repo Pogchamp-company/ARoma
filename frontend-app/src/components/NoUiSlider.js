@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import Nouislider from "nouislider-react";
 // import "nouislider/distribute/nouislider.css";
 
+
 export default class NoUiSlider extends Component {
 
     state = {value: 0};
