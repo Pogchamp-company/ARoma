@@ -6,6 +6,7 @@ import (
 	"aroma/seeds"
 	"flag"
 	"fmt"
+	"os"
 	"os/exec"
 )
 
@@ -76,31 +77,31 @@ func runSeeds() {
 }
 
 func upgradeDb() {
-	executeDbCommand("-database", "\"${POSTGRESQL_URI}\"", "-path", "migrations", "up")
+	executeDbCommand("-database", os.Getenv("POSTGRESQL_URI"), "-path", "migrations", "up")
 }
 
 func downgradeDb() {
-	executeDbCommand("-database", "\"${POSTGRESQL_URI}\"", "-path", "migrations", "down")
+	executeDbCommand("-database", os.Getenv("POSTGRESQL_URI"), "-path", "migrations", "down", "1")
 }
 
 func migrateDb() {
 	migrationName := flag.Arg(2)
 	args := []string{"create", "-ext", "sql", "-dir", "migrations"}
-	if migrationName != "" {
-		args = append(args, "-seq")
-		args = append(args, migrationName)
-	}
+	args = append(args, "-seq")
+	args = append(args, migrationName)
 	executeDbCommand(args...)
 }
 
 func executeDbCommand(arg ...string) {
-	command := exec.Command("migrate", arg...)
-	stdout, err := command.Output()
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
+	// construct `go version` command
+	cmd := exec.Command("migrate", arg...)
 
-	// Print the output
-	fmt.Println(string(stdout))
+	// configure `Stdout` and `Stderr`
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stdout
+
+	// run command
+	if err := cmd.Run(); err != nil {
+		fmt.Println("Error:", err)
+	}
 }
