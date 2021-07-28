@@ -42,6 +42,7 @@ class ProductsContainer extends Component {
 
 class EnumAttributeFilter extends Component {
     toDict() {
+        if (!this.value) return
         return {
             Title: this.props.attribute.Title,
             Type: "string",
@@ -61,7 +62,7 @@ class EnumAttributeFilter extends Component {
                                                            onClick={(event) => {
                                                                this.value = event.target.value
                                                            }}/><label
-                            htmlFor={variant.Title + index}>{variant.Title}<span>({variant.Count})</span></label></li>
+                            htmlFor={variant.Title + index}>{variant.Title}&nbsp;<span>({variant.Count})</span></label></li>
                     ))}
                 </ul>
             </div>
@@ -109,13 +110,13 @@ class AttributesContainer extends Component {
 
     generateFiltersDict() {
         const res = {}
-        console.log(this.productsPriceElement)
         res['price'] = {
             min: this.productsPriceElement.current.state.min,
             max: this.productsPriceElement.current.state.max,
         }
-        console.log(this.refsCollection)
-        res['attributes'] = this.refsCollection.map((value, index) => value.current.toDict())
+        res['attributes'] = this.refsCollection
+            .map((value, index) => value.current.toDict())
+            .filter((elem) => elem != null)
         return res
     }
 
@@ -139,7 +140,7 @@ class AttributesContainer extends Component {
                     <NoUiSlider ref={this.productsPriceElement} title="Price" min={1} max={500000} symbol="$"/>
                 </div>
                 <div className="common-filter">
-                    <button onClick={() => this.applyFilters()} className={"button apply-button"}>Apply</button>
+                    <button onClick={this.props.applyFilters} className={"button apply-button"}>Apply</button>
                 </div>
             </div>
         )
@@ -164,7 +165,9 @@ export default class SearchProductsPage extends Component {
     }
 
     handleSearchChange(event) {
-        this.fetchProducts(event.target.value, this.state.currentCatalog)
+        const filters_dict = this.filtersContainerElement.current.generateFiltersDict()
+
+        this.fetchProducts(event.target.value, this.state.currentCatalog, filters_dict)
     }
 
     setCurrentCatalog(catalog) {
@@ -174,14 +177,16 @@ export default class SearchProductsPage extends Component {
         document.getElementsByClassName("search-input")[0].value = ""
     }
 
-    fetchProducts(productsQuery = '', catalogId = '') {
+    fetchProducts(productsQuery = '', catalogId = '', filters = {}) {
         let url = 'http://0.0.0.0:8080/product/search'
         const params = {}
         if (productsQuery !== '') params['productQuery'] = productsQuery
         if (catalogId !== '') params['catalogId'] = catalogId
+        if (filters !== {}) params['filters'] = JSON.stringify(filters);
         if (params) {
             url += `?${Object.entries(params).map(([n, v]) => `${n}=${v}`).join('&')}`
         }
+        console.log(url)
         fetch(url)
             .then(response => response.json())
             .then(catalog_json => {
@@ -210,15 +215,14 @@ export default class SearchProductsPage extends Component {
             .then(catalog_json => {
                 if (catalog_json.attributes) this.state.attributes = catalog_json.attributes
                 else this.state.attributes = []
-                console.log("attrs", catalog_json.attributes)
                 this.forceUpdate()
             })
             .catch((e) => console.log('some error', e));
-
     }
 
     applyFilters() {
-        console.log(this.filtersContainerElement.current.generateFiltersDict())
+        const filters_dict = this.filtersContainerElement.current.generateFiltersDict()
+        this.fetchProducts('', this.state.currentCatalog, filters_dict)
     }
 
     renderCategories() {
@@ -264,7 +268,8 @@ export default class SearchProductsPage extends Component {
                             <div className="col-xl-3 col-lg-4 col-md-5">
                                 {this.renderCategories()}
                                 <AttributesContainer attributes={this.state.attributes}
-                                                     ref={this.filtersContainerElement}/>
+                                                     ref={this.filtersContainerElement}
+                                                     applyFilters={() => this.applyFilters()}/>
                             </div>
                             <div className="col-xl-9 col-lg-8 col-md-7">
                                 <div className="filter-bar d-flex flex-wrap align-items-center">
@@ -299,5 +304,3 @@ export default class SearchProductsPage extends Component {
         );
     }
 }
-
-

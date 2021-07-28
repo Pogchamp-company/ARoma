@@ -154,6 +154,14 @@
     .filter-list {
       position: relative;
       padding-left: 28px;
+      display: flex;
+      align-items: start;
+
+      input {
+        min-width: 15px;
+        max-width: 15px;
+        transform: translateY(7px);
+      }
     }
   }
 
