@@ -4,6 +4,7 @@ import (
 	"aroma/models"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
+	"github.com/mitchellh/mapstructure"
 	"gorm.io/gorm"
 	"strconv"
 )
@@ -17,23 +18,57 @@ func GetProduct(context *gin.Context) {
 	})
 }
 
-func filterProductsByAttributes(query *gorm.DB, filters map[string]interface{}) {
-	if price, ok := filters["price"]; ok {
-		query.Where("price >= ?", price.(map[string]interface{})["Min"])
-		query.Where("price <= ?", price.(map[string]interface{})["Max"])
+type NumberRange struct {
+	Min float32
+	Max float32
+}
+type Attribute struct {
+	Title string
+	Type  string
+	Value interface{}
+}
+
+func filterProductsByPrice(query *gorm.DB, rawPrice interface{}) {
+	var price NumberRange
+	err := mapstructure.Decode(rawPrice, &price)
+	if err == nil {
+		query.Where("price BETWEEN ? AND ?", price.Min, price.Max)
 	}
-	if attributes, ok := filters["attributes"]; ok {
-		attributes := attributes.([]interface{})
-		for _, attribute := range attributes {
-			attribute := attribute.(map[string]interface{})
-			switch attribute["Type"] {
-			case "string":
-				query.Where("attributes->>? = ?", attribute["Title"], attribute["Value"])
-			case "number":
-				query.Where("attributes->>? >= ?", attribute["Title"], attribute["Value"].(map[string]interface{})["Min"])
-				query.Where("attributes->>? <= ?", attribute["Title"], attribute["Value"].(map[string]interface{})["Max"])
-			}
+}
+
+func filterProductsByNumberAttribute(query *gorm.DB, attribute Attribute) {
+	var Value NumberRange
+	err := mapstructure.Decode(attribute.Value, &Value)
+	if err == nil {
+		query.Where("cast(attributes->>? as float) BETWEEN ? and ?", attribute.Title, Value.Min, Value.Max)
+	}
+}
+
+func filterProductsByExtraAttribute(query *gorm.DB, attribute Attribute) {
+	switch attribute.Type {
+	case "string":
+		query.Where("attributes->>? = ?", attribute.Title, attribute.Value)
+	case "number":
+		filterProductsByNumberAttribute(query, attribute)
+	}
+}
+
+func filterProductsByAttributes(query *gorm.DB, filters map[string]interface{}) {
+	if rawPrice, ok := filters["price"]; ok {
+		filterProductsByPrice(query, rawPrice)
+	}
+	var attributes interface{}
+	var ok bool
+	if attributes, ok = filters["attributes"]; !ok {
+		return
+	}
+	for _, rawAttribute := range attributes.([]interface{}) {
+		var attribute Attribute
+		err := mapstructure.Decode(rawAttribute, &attribute)
+		if err != nil {
+			continue
 		}
+		filterProductsByExtraAttribute(query, attribute)
 	}
 }
 

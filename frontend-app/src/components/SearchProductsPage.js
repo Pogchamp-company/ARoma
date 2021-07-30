@@ -98,8 +98,8 @@ class RangeAttributeFilter extends Component {
             Title: this.props.attribute.Title,
             Type: "number",
             Value: {
-                Min: this.sliderRef.current.state.min,
-                Max: this.sliderRef.current.state.max,
+                Min: parseFloat(this.sliderRef.current.state.min),
+                Max: parseFloat(this.sliderRef.current.state.max),
             }
         }
 
@@ -128,8 +128,8 @@ class AttributesContainer extends Component {
     generateFiltersDict() {
         const res = {}
         res['price'] = {
-            Min: this.productsPriceElement.current.state.min,
-            Max: this.productsPriceElement.current.state.max,
+            Min: parseFloat(this.productsPriceElement.current.state.min),
+            Max: parseFloat(this.productsPriceElement.current.state.max),
         }
         res['attributes'] = this.refsCollection
             .map((value, index) => value.current.toDict())
