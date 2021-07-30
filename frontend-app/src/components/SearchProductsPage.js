@@ -41,12 +41,18 @@ class ProductsContainer extends Component {
 }
 
 class EnumAttributeFilter extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            value: undefined
+        }
+    }
     toDict() {
-        if (!this.value) return
+        if (this.state.value === undefined) return
         return {
             Title: this.props.attribute.Title,
             Type: "string",
-            Value: this.value,
+            Value: this.state.value,
         }
     }
 
@@ -55,12 +61,22 @@ class EnumAttributeFilter extends Component {
             <div className="common-filter">
                 <div className="head">{this.props.attribute.Title}</div>
                 <ul>
+                    <li className="filter-list"><input className="pixel-radio" type="radio"
+                                                       id={"no" + this.props.attribute.Title} name={this.props.attribute.Title}
+                                                       value={undefined}
+                                                       checked={this.state.value === undefined}
+                                                       onClick={(event) => {
+                                                           this.setState({value: undefined})
+                                                       }}/><label
+                        htmlFor={"no" + this.props.attribute.Title}>No filter</label>
+                    </li>
                     {this.props.attribute.Values.map((variant, index) => (
                         <li className="filter-list"><input className="pixel-radio" type="radio"
                                                            id={variant.Title + index} name={this.props.attribute.Title}
                                                            value={variant.Title}
+                                                           checked={this.state.value === variant.Title}
                                                            onClick={(event) => {
-                                                               this.value = event.target.value
+                                                               this.setState({value: event.target.value})
                                                            }}/><label
                             htmlFor={variant.Title + index}>{variant.Title}&nbsp;<span>({variant.Count})</span></label>
                         </li>
@@ -112,8 +128,8 @@ class AttributesContainer extends Component {
     generateFiltersDict() {
         const res = {}
         res['price'] = {
-            min: this.productsPriceElement.current.state.min,
-            max: this.productsPriceElement.current.state.max,
+            Min: this.productsPriceElement.current.state.min,
+            Max: this.productsPriceElement.current.state.max,
         }
         res['attributes'] = this.refsCollection
             .map((value, index) => value.current.toDict())
