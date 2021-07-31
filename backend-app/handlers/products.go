@@ -40,7 +40,7 @@ func filterProductsByNumberAttribute(query *gorm.DB, attribute Attribute) {
 	var Value NumberRange
 	err := mapstructure.Decode(attribute.Value, &Value)
 	if err == nil {
-		query.Where("cast(attributes->>? as float) BETWEEN ? and ?", attribute.Title, Value.Min, Value.Max)
+		query.Where("cast(attributes->>? as float) BETWEEN ? AND ?", attribute.Title, Value.Min, Value.Max)
 	}
 }
 

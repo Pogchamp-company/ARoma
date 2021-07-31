@@ -29,7 +29,7 @@ node nodeapp/app.js
 
 ## Authors
 
-* **Roman Alexandrov** - *Backend (ffffff)* - [Github](https://github.com/AlexandrovRoman)
+* **Roman Alexandrov** - *Backend (fffff)* - [Github](https://github.com/AlexandrovRoman)
 * **Artem Golovin** - *Frontend* - [Github](https://github.com/RustyGuard)
 
 ## License
