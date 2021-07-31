@@ -19,6 +19,8 @@ function reactHandler(req, res) {
 }
 
 app.get('/', reactHandler)
+app.get('/registration', reactHandler)
+app.get('/login', reactHandler)
 app.get('/search_products', reactHandler)
 app.get('/product/:id', reactHandler)
 
