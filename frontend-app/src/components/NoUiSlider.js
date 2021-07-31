@@ -1,11 +1,9 @@
-import React, {Component} from "react";
+import React, {Component, createRef} from "react";
 import Nouislider from "nouislider-react";
 // import "nouislider/distribute/nouislider.css";
 
 
 export default class NoUiSlider extends Component {
-
-    state = {value: 0};
 
     constructor(props) {
         super(props);
@@ -13,6 +11,7 @@ export default class NoUiSlider extends Component {
             min: this.props.min,
             max: this.props.max,
         }
+        this.sliderRef = React.createRef()
     }
 
     render() {
@@ -23,6 +22,7 @@ export default class NoUiSlider extends Component {
                     range={{min: this.props.min, max: this.props.max}}
                     start={[this.props.min, this.props.max]}
                     connect
+                    ref={this.sliderRef}
                     onSlide={(data) => {
                         this.setState({
                             min: data[0],

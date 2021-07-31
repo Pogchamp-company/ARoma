@@ -137,16 +137,19 @@ class AttributesContainer extends Component {
         return res
     }
 
+    setPriceRange(min, max) {
+        if (this.productsPriceElement.current) {
+            this.productsPriceElement.current.setState({
+                min: min,
+                max: max
+            })
+        }
+    }
+
     render() {
         this.refsCollection = []
         for (let i = 0; i < this.props.attributes.length; i++) {
             this.refsCollection[i] = React.createRef();
-        }
-        if (this.productsPriceElement.current) {
-            this.productsPriceElement.current.setState({
-                min: this.props.price.Min,
-                max: this.props.price.Max
-            })
         }
         return (
             <div className="sidebar-filter">
@@ -218,8 +221,9 @@ export default class SearchProductsPage extends Component {
         fetch(url)
             .then(response => response.json())
             .then(catalog_json => {
-                this.state.products = catalog_json["products"]
-                this.forceUpdate()
+                this.setState({
+                    products: catalog_json["products"]
+                })
             })
             .catch((e) => console.log('fetchProducts some error', e));
     }
@@ -229,8 +233,9 @@ export default class SearchProductsPage extends Component {
         fetch('http://0.0.0.0:8080/catalog')
             .then(response => response.json())
             .then(catalog_json => {
-                this.state.catalogs = catalog_json.catalogs
-                this.forceUpdate()
+                this.setState({
+                    catalogs: catalog_json.catalogs
+                })
             })
             .catch((e) => console.log('some error', e));
     }
@@ -242,10 +247,12 @@ export default class SearchProductsPage extends Component {
             .then(response => response.json())
             .then(catalog_json => {
                 if (catalog_json.attributes) {
-                    this.state.attributes = catalog_json.attributes
-                    this.state.price = catalog_json.price
-                } else this.state.attributes = []
-                this.forceUpdate()
+                    this.setState({
+                        attributes: catalog_json.attributes,
+                        price: catalog_json.price,
+                    })
+                    this.filtersContainerElement.current.setPriceRange(catalog_json.price.Min, catalog_json.price.Max)
+                } else this.setState({attributes: []})
             })
             .catch((e) => console.log('some error', e));
     }
