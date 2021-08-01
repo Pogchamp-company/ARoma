@@ -25,3 +25,25 @@ func AuthorizeJWT() gin.HandlerFunc {
 
 	}
 }
+
+func LoginRequired(handler func(*gin.Context)) func(*gin.Context) {
+	return func(context *gin.Context) {
+		const BearerSchema = "Bearer"
+		authHeader := context.GetHeader("Authorization")
+		if len(authHeader) <= len(BearerSchema) {
+			context.AbortWithStatus(http.StatusBadRequest)
+			return
+		}
+		tokenString := authHeader[len(BearerSchema):]
+		token, err := service.JWTAuthService().ValidateToken(tokenString)
+		if token.Valid {
+			claims := token.Claims.(jwt.MapClaims)
+			fmt.Println(claims)
+		} else {
+			fmt.Println(err)
+			context.AbortWithStatus(http.StatusUnauthorized)
+		}
+
+		handler(context)
+	}
+}

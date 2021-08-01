@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/mitchellh/mapstructure"
 	"gorm.io/gorm"
+	"net/http"
 	"strconv"
 )
 
@@ -97,5 +98,11 @@ func TopProducts(context *gin.Context) {
 	models.Db.Preload("Catalog").Limit(12).Find(&products)
 	context.JSON(200, gin.H{
 		"products": products,
+	})
+}
+
+func TestLoginRequired(context *gin.Context) {
+	context.JSON(http.StatusOK, gin.H{
+		"ok": true,
 	})
 }

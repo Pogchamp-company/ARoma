@@ -7,13 +7,13 @@ import (
 )
 
 type Product struct {
-	ID              int     `sql:"AUTO_INCREMENT" gorm:"primary_key"`
-	Title           string  `sql:"size:255" gorm:"not null"`
-	CatalogID       int     `gorm:"column:catalog_id;not null"`
+	ID              int
+	Title           string
+	CatalogID       int     `gorm:"column:catalog_id"`
 	Catalog         Catalog `gorm:"ForeignKey:CatalogID"`
-	Price           float64 `gorm:"not null"`
-	Description     string  `sql:"size:1024" gorm:"not null"`
-	LongDescription string  `gorm:"not null"`
+	Price           float64
+	Description     string
+	LongDescription string
 	Attributes      pgtype.JSON
 }
 
