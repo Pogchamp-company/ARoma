@@ -11,9 +11,7 @@ import (
 
 func AuthorizeJWT() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		const BearerSchema = "Bearer"
-		authHeader := c.GetHeader("Authorization")
-		tokenString := authHeader[len(BearerSchema):]
+		tokenString := c.GetHeader("Authorization")
 		token, err := service.JWTAuthService().ValidateToken(tokenString)
 		if token.Valid {
 			claims := token.Claims.(jwt.MapClaims)
@@ -28,13 +26,11 @@ func AuthorizeJWT() gin.HandlerFunc {
 
 func LoginRequired(handler func(*gin.Context)) func(*gin.Context) {
 	return func(context *gin.Context) {
-		const BearerSchema = "Bearer"
-		authHeader := context.GetHeader("Authorization")
-		if len(authHeader) <= len(BearerSchema) {
+		tokenString := context.GetHeader("Authorization")
+		if len(tokenString) == 0 {
 			context.AbortWithStatus(http.StatusBadRequest)
 			return
 		}
-		tokenString := authHeader[len(BearerSchema):]
 		token, err := service.JWTAuthService().ValidateToken(tokenString)
 		if token.Valid {
 			claims := token.Claims.(jwt.MapClaims)
@@ -42,6 +38,7 @@ func LoginRequired(handler func(*gin.Context)) func(*gin.Context) {
 		} else {
 			fmt.Println(err)
 			context.AbortWithStatus(http.StatusUnauthorized)
+			return
 		}
 
 		handler(context)

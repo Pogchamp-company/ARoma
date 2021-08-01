@@ -21,14 +21,12 @@ type authCustomClaims struct {
 
 type jwtServices struct {
 	secretKey string
-	issure    string
 }
 
 // JWTAuthService auth-jwt
 func JWTAuthService() *jwtServices {
 	return &jwtServices{
 		secretKey: getSecretKey(),
-		issure:    "Bikash",
 	}
 }
 
@@ -46,7 +44,6 @@ func (service *jwtServices) GenerateToken(email string, isUser bool) string {
 		isUser,
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Hour * 48).Unix(),
-			Issuer:    service.issure,
 			IssuedAt:  time.Now().Unix(),
 		},
 	}
