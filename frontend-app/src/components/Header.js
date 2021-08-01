@@ -25,21 +25,23 @@ export default class Header extends Component {
                                 <ul className="nav navbar-nav menu_nav ml-auto mr-auto">
                                     <li className="nav-item active"><Link className="nav-link" to="/">Home</Link>
                                     </li>
-                                    <li className="nav-item submenu dropdown">
-                                        <a href="#" className="nav-link dropdown-toggle" data-toggle="dropdown"
-                                           role="button" aria-haspopup="true"
-                                           aria-expanded="false">Shop</a>
-                                        <ul className="dropdown-menu">
-                                            <li className="nav-item"><Link className="nav-link" to="/search_products">Shop
-                                                Category</Link></li>
-                                            <li className="nav-item"><a className="nav-link" href="checkout.html">Product
-                                                Checkout</a></li>
-                                            <li className="nav-item"><a className="nav-link"
-                                                                        href="confirmation.html">Confirmation</a></li>
-                                            <li className="nav-item"><a className="nav-link" href="cart.html">Shopping
-                                                Cart</a></li>
-                                        </ul>
+                                    <li className="nav-item active"><Link className="nav-link" to="/search_products">Shop</Link>
                                     </li>
+                                    {/*<li className="nav-item submenu dropdown">*/}
+                                    {/*    <a href="#" className="nav-link dropdown-toggle" data-toggle="dropdown"*/}
+                                    {/*       role="button" aria-haspopup="true"*/}
+                                    {/*       aria-expanded="false">Shop</a>*/}
+                                    {/*    <ul className="dropdown-menu">*/}
+                                    {/*        <li className="nav-item"><Link className="nav-link" to="/search_products">Shop*/}
+                                    {/*            Category</Link></li>*/}
+                                    {/*        <li className="nav-item"><a className="nav-link" href="checkout.html">Product*/}
+                                    {/*            Checkout</a></li>*/}
+                                    {/*        <li className="nav-item"><a className="nav-link"*/}
+                                    {/*                                    href="confirmation.html">Confirmation</a></li>*/}
+                                    {/*        <li className="nav-item"><a className="nav-link" href="cart.html">Shopping*/}
+                                    {/*            Cart</a></li>*/}
+                                    {/*    </ul>*/}
+                                    {/*</li>*/}
                                     <li className="nav-item submenu dropdown">
                                         <a href="#" className="nav-link dropdown-toggle" data-toggle="dropdown"
                                            role="button" aria-haspopup="true"
@@ -51,21 +53,8 @@ export default class Header extends Component {
                                                 Details</a></li>
                                         </ul>
                                     </li>
-                                    <li className="nav-item submenu dropdown">
-                                        <a href="#" className="nav-link dropdown-toggle" data-toggle="dropdown"
-                                           role="button" aria-haspopup="true"
-                                           aria-expanded="false">Pages</a>
-                                        <ul className="dropdown-menu">
-                                            <li className="nav-item"><a className="nav-link" href="login.html">Login</a>
-                                            </li>
-                                            <li className="nav-item"><a className="nav-link"
-                                                                        href="register.html">Register</a></li>
-                                            <li className="nav-item"><a className="nav-link"
-                                                                        href="tracking-order.html">Tracking</a></li>
-                                        </ul>
-                                    </li>
-                                    <li className="nav-item"><a className="nav-link" href="contact.html">Contact</a>
-                                    </li>
+                                    {/*<li className="nav-item"><a className="nav-link" href="contact.html">Contact</a>*/}
+                                    {/*</li>*/}
                                 </ul>
 
                                 <ul className="nav-shop">
@@ -76,7 +65,8 @@ export default class Header extends Component {
                                         <button><i className="ti-shopping-cart"></i><span
                                             className="nav-shop__circle">3</span></button>
                                     </li>
-                                    <li className="nav-item"><a className="button button-header" href="#">Buy Now</a>
+                                    {this.props.globalState}
+                                    <li className="nav-item"><Link className="button button-header" to="/login">Login</Link>
                                     </li>
                                 </ul>
                             </div>
