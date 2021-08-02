@@ -1,10 +1,10 @@
 package models
 
 import (
+	"aroma/utils"
 	"errors"
 	"fmt"
 	"golang.org/x/crypto/bcrypt"
-	"net/mail"
 )
 
 type User struct {
@@ -14,11 +14,6 @@ type User struct {
 	Nickname       string
 }
 
-func validateEmail(email string) bool {
-	_, err := mail.ParseAddress(email)
-	return err == nil
-}
-
 func checkUserExists(email string, nickname string) bool {
 	user := User{}
 	Db.Where("email = ? OR nickname = ?", email, nickname).First(&user)
@@ -26,7 +21,7 @@ func checkUserExists(email string, nickname string) bool {
 }
 
 func NewUser(email string, password string, nickname string) (User, error) {
-	if !validateEmail(email) {
+	if !utils.ValidateEmail(email) {
 		return User{}, errors.New("Not valid email")
 	}
 	if checkUserExists(email, nickname) {

@@ -7,11 +7,12 @@ import (
 )
 
 type Product struct {
-	ID              int
-	Title           string
-	CatalogID       int     `gorm:"column:catalog_id"`
-	Catalog         Catalog `gorm:"ForeignKey:CatalogID"`
-	Price           float64
+	ID        int
+	Title     string
+	CatalogID int
+	Catalog   Catalog
+	Price     float64
+	//QuantityInStock int
 	Description     string
 	LongDescription string
 	Attributes      pgtype.JSON

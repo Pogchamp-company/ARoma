@@ -2,7 +2,9 @@ package handlers
 
 import (
 	"aroma/dto"
+	"aroma/models"
 	"aroma/services"
+	"aroma/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -20,4 +22,47 @@ func RegisterUser(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{
 		"token": token,
 	})
+}
+
+func CheckUsername(context *gin.Context) {
+	username := context.Request.URL.Query().Get("username")
+	if username == "" {
+		context.AbortWithStatus(400)
+		return
+	}
+	var user models.User
+	models.Db.Where("nickname = ?", username).First(&user)
+	if user.Bool() {
+		context.JSON(http.StatusOK, gin.H{
+			"ok": false,
+		})
+	} else {
+		context.JSON(http.StatusOK, gin.H{
+			"ok": true,
+		})
+	}
+}
+
+func CheckEmail(context *gin.Context) {
+	email := context.Request.URL.Query().Get("email")
+	if email == "" {
+		context.AbortWithStatus(400)
+		return
+	}
+	if !utils.ValidateEmail(email) {
+		context.JSON(http.StatusOK, gin.H{
+			"ok": false,
+		})
+	}
+	var user models.User
+	models.Db.Where("email = ?", email).First(&user)
+	if user.Bool() {
+		context.JSON(http.StatusOK, gin.H{
+			"ok": false,
+		})
+	} else {
+		context.JSON(http.StatusOK, gin.H{
+			"ok": true,
+		})
+	}
 }
