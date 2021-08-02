@@ -5,6 +5,8 @@ import {Link} from "react-router-dom";
 export default class LoginPage extends Component {
     constructor(props) {
         super(props);
+        this.usernameRef = React.createRef();
+        this.passwordRef = React.createRef();
     }
 
     render() {
@@ -60,7 +62,7 @@ export default class LoginPage extends Component {
                                             </div>
                                         </div>
                                         <div className="col-md-12 form-group">
-                                            <button type="submit" value="submit"
+                                            <button type="submit" value="button"
                                                     className="button button-login w-100">Log In
                                             </button>
                                             <a href="#">Forgot Password?</a>

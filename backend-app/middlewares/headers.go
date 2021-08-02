@@ -9,7 +9,6 @@ func HeadersMiddleware() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		context.Header("Access-Control-Allow-Origin", os.Getenv("FRONTEND_HOST"))
 		context.Header("Access-Control-Allow-Headers", "Content-Type, X-Auth-Token, Authorization, Origin")
-		context.Header("Access-Control-Allow-Methods", "POST, PUT")
 		context.Next()
 	}
 }

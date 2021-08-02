@@ -120,10 +120,10 @@
     border-radius: 0;
     padding: 9px 15px;
     text-transform: uppercase;
-    background: #c5322d;
+    background: hsl(120, 100%, 40%);
 
     &:hover{
-      background: #c5322d;
+      background: hsl(120, 100%, 45%);
       opacity: .7;
       color: #fff;
     }

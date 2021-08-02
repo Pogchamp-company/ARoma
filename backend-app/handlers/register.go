@@ -53,6 +53,7 @@ func CheckEmail(context *gin.Context) {
 		context.JSON(http.StatusOK, gin.H{
 			"ok": false,
 		})
+		return
 	}
 	var user models.User
 	models.Db.Where("email = ?", email).First(&user)
