@@ -5,6 +5,11 @@ import NoUiSlider from "./NoUiSlider";
 import Select from 'react-select'
 
 class ProductsContainer extends Component {
+
+    handleAddToCart(e, productId) {
+        this.props.cart.addToCart(productId, 1)
+    }
+
     render() {
         return (
             <div className="row">
@@ -19,7 +24,7 @@ class ProductsContainer extends Component {
                                         <Link to={`/product/${product.ID}`}><i className="ti-search"></i></Link>
                                     </li>
                                     <li>
-                                        <button><i className="ti-shopping-cart"></i></button>
+                                        <button onClick={(e) => this.handleAddToCart(e, product)}><i className="ti-shopping-cart"></i></button>
                                     </li>
                                     <li>
                                         <button><i className="ti-heart"></i></button>
@@ -328,7 +333,8 @@ export default class SearchProductsPage extends Component {
                                     </div>
                                 </div>
                                 <section className="lattest-product-area pb-40 category-list">
-                                    <ProductsContainer products={this.state.products}
+                                    <ProductsContainer cart={this.props.cart}
+                                                       products={this.state.products}
                                                        ref={this.productsContainerElement}/>
                                 </section>
                             </div>

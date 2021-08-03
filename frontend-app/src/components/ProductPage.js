@@ -5,8 +5,9 @@ import TopProducts from "./TopProducts";
 export default class ProductPage extends Component {
     constructor(props) {
         super(props);
-        this.productId = this.props.match.params.productId;
+        this.productId = parseInt(this.props.match.params.productId);
         this.state = {
+            amount: this.props.cart.getAmount(this.productId),
             product: {
                 ID: 0,
                 Title: "-----",
@@ -32,10 +33,41 @@ export default class ProductPage extends Component {
             .catch((e) => console.log('some error', e));
     }
 
+    renderQuantity() {
+        if (this.state.amount === 0) {
+            return (
+                <div className="product_count">
+                    <a className="button primary-btn" onClick={e => this.addToCart(e)}>Add to Cart</a>
+                </div>
+            )
+        }
+        return (
+            <div className="product_count">
+                <label htmlFor="qty">Quantity:</label>
+                <input type="number" name="qty" id="sst" size="2" maxLength="12" value={this.state.amount}
+                       title="Quantity:" onChange={e => this.onAmountChange(e)}/>
+            </div>
+        )
+    }
+
+    addToCart(e) {
+        const amount = 1
+        this.setState({
+            amount: amount
+        })
+        this.props.cart.addToCart(this.productId, amount)
+    }
+
+    onAmountChange(e) {
+        const amount = parseInt(e.target.value)
+        this.setState({
+            amount: amount
+        })
+        this.props.cart.setAmount(this.productId, amount)
+    }
+
     renderAttributes() {
         const attributes = this.state.product.Attributes
-        console.log(attributes)
-        console.log(this.state)
         return Object.keys(attributes).map((key, index) => (
             <tr>
                 <td>
@@ -50,7 +82,6 @@ export default class ProductPage extends Component {
 
 
     render() {
-        console.log(this.productId)
         return (
             <div>
                 <div className="product_image_area">
@@ -74,20 +105,7 @@ export default class ProductPage extends Component {
                                         <li><a href="#"><span>Availibility</span> : In Stock</a></li>
                                     </ul>
                                     <p>{this.state.product.Description}</p>
-                                    <div className="product_count">
-                                        <label htmlFor="qty">Quantity:</label>
-                                        <button
-                                            onClick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
-                                            className="increase items-count" type="button"><i
-                                            className="ti-angle-left"></i></button>
-                                        <input type="text" name="qty" id="sst" size="2" maxLength="12" value="1"
-                                               title="Quantity:" className="input-text qty"/>
-                                        <button
-                                            onClick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
-                                            className="reduced items-count" type="button"><i
-                                            className="ti-angle-right"></i></button>
-                                        <a className="button primary-btn" href="#">Add to Cart</a>
-                                    </div>
+                                    {this.renderQuantity()}
                                     <div className="card_area d-flex align-items-center">
                                         <a className="icon_btn" href="#"><i className="lnr lnr lnr-diamond"></i></a>
                                         <a className="icon_btn" href="#"><i className="lnr lnr lnr-heart"></i></a>

@@ -64,8 +64,8 @@ export default class Header extends Component {
                                         <button><i className="ti-search"></i></button>
                                     </li>
                                     <li className="nav-item">
-                                        <button><i className="ti-shopping-cart"></i><span
-                                            className="nav-shop__circle">3</span></button>
+                                        <Link to="/cart"><i className="ti-shopping-cart"></i><span
+                                            className="nav-shop__circle">{this.props.cart.totalAmount()}</span></Link>
                                     </li>
                                     {this.props.token === undefined ?
                                         <li className="nav-item"><Link className="button button-header"
