@@ -87,7 +87,7 @@ export default class CartPage extends Component {
                                         <h5>Subtotal</h5>
                                     </td>
                                     <td>
-                                        <h5>$2160.00</h5>
+                                        <h5>${this.props.cart.totalPrice()}</h5>
                                     </td>
                                 </tr>
                                 <tr className="shipping_area">

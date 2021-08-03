@@ -55,7 +55,7 @@ export default class ProductPage extends Component {
         this.setState({
             amount: amount
         })
-        this.props.cart.addToCart(this.productId, amount)
+        this.props.cart.addToCart(this.state.product, amount)
     }
 
     onAmountChange(e) {

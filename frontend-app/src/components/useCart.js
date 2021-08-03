@@ -54,11 +54,18 @@ export default function useCart() {
         }, 0)
     }
 
+    const totalPrice = () => {
+        const cart = getCart()
+        return cart.reduce((previousValue, currentValue, index, array) => {
+            return previousValue + currentValue.product.Price * currentValue.amount
+        }, 0)
+    }
+
     const getAmount = (productId) => {
-        console.log(productId)
+        console.log(productId, cart)
         const item = cart.find((element) => element.product.ID === productId)
         console.log(item)
-        return item?.amount
+        return item?.amount || 0
     }
 
     return {
@@ -69,6 +76,7 @@ export default function useCart() {
         setAmount: setAmount,
         totalAmount: totalAmount,
         getAmount: getAmount,
-        removeProduct: removeProduct
+        removeProduct: removeProduct,
+        totalPrice: totalPrice,
     }
 }
