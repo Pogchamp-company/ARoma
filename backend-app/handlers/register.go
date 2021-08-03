@@ -13,11 +13,13 @@ func RegisterUser(context *gin.Context) {
 	var credential dto.RegisterCredentials
 	err := context.ShouldBind(&credential)
 	if err != nil {
-		context.JSON(http.StatusBadRequest, nil)
+		context.AbortWithStatus(http.StatusBadRequest)
+		return
 	}
 	token, ok := services.RegisterUser(credential)
 	if !ok {
-		context.JSON(http.StatusBadRequest, nil)
+		context.AbortWithStatus(http.StatusBadRequest)
+		return
 	}
 	context.JSON(http.StatusOK, gin.H{
 		"token": token,
@@ -27,7 +29,7 @@ func RegisterUser(context *gin.Context) {
 func CheckUsername(context *gin.Context) {
 	username := context.Request.URL.Query().Get("username")
 	if username == "" {
-		context.AbortWithStatus(400)
+		context.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
 	var user models.User
@@ -46,7 +48,7 @@ func CheckUsername(context *gin.Context) {
 func CheckEmail(context *gin.Context) {
 	email := context.Request.URL.Query().Get("email")
 	if email == "" {
-		context.AbortWithStatus(400)
+		context.AbortWithStatus(http.StatusBadRequest)
 		return
 	}
 	if !utils.ValidateEmail(email) {

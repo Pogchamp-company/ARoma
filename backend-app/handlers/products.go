@@ -14,7 +14,7 @@ func GetProduct(context *gin.Context) {
 	productId, _ := strconv.ParseInt(context.Param("product_id"), 10, 64)
 	var product models.Product
 	product.LoadByID(int(productId))
-	context.JSON(200, gin.H{
+	context.JSON(http.StatusOK, gin.H{
 		"obj": product,
 	})
 }
@@ -88,7 +88,7 @@ func SearchProducts(context *gin.Context) {
 		filterProductsByAttributes(query, filters)
 	}
 	query.Preload("Catalog").Find(&products)
-	context.JSON(200, gin.H{
+	context.JSON(http.StatusOK, gin.H{
 		"products": products,
 	})
 }
@@ -96,7 +96,7 @@ func SearchProducts(context *gin.Context) {
 func TopProducts(context *gin.Context) {
 	var products []models.Product
 	models.Db.Preload("Catalog").Limit(12).Find(&products)
-	context.JSON(200, gin.H{
+	context.JSON(http.StatusOK, gin.H{
 		"products": products,
 	})
 }

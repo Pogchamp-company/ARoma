@@ -4,6 +4,7 @@ import (
 	"aroma/models"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
+	"net/http"
 	"strconv"
 	"strings"
 )
@@ -12,7 +13,7 @@ func GetCatalog(context *gin.Context) {
 	catalogId, _ := strconv.ParseInt(context.Param("catalog_id"), 10, 64)
 	var catalog models.Catalog
 	catalog.LoadByID(int(catalogId))
-	context.JSON(200, gin.H{
+	context.JSON(http.StatusOK, gin.H{
 		"obj": catalog,
 	})
 }
@@ -30,7 +31,7 @@ func GetAllCatalogs(context *gin.Context) {
 			"Count": int(count),
 		})
 	}
-	context.JSON(200, gin.H{
+	context.JSON(http.StatusOK, gin.H{
 		"catalogs": response,
 	})
 }
@@ -108,7 +109,7 @@ func GetAttributes(context *gin.Context) {
 	models.Db.Model(&models.Product{}).Where("catalog_id = ?", catalogId).Pluck("MIN(price)", &minPrice)
 	models.Db.Model(&models.Product{}).Where("catalog_id = ?", catalogId).Pluck("MAX(price)", &maxPrice)
 
-	context.JSON(200, gin.H{
+	context.JSON(http.StatusOK, gin.H{
 		"attributes": response,
 		"price": map[string]float32{
 			"Min": minPrice,
