@@ -16,14 +16,6 @@ CREATE TABLE orders
 );
 
 
-CREATE TABLE orders
-(
-    id      serial not null constraint orders_pkey primary key,
-    order_status order_status,
-    customer_id int not null constraint order_user_id_fkey references users
-);
-
-
 CREATE TABLE product_order
 (
     order_id int not null constraint product_order_id_fkey references orders,
