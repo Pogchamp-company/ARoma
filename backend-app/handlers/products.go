@@ -23,7 +23,7 @@ type NumberRange struct {
 	Min float32
 	Max float32
 }
-type Attribute struct {
+type FilterAttribute struct {
 	Title string
 	Type  string
 	Value interface{}
@@ -37,7 +37,7 @@ func filterProductsByPrice(query *gorm.DB, rawPrice interface{}) {
 	}
 }
 
-func filterProductsByNumberAttribute(query *gorm.DB, attribute Attribute) {
+func filterProductsByNumberAttribute(query *gorm.DB, attribute FilterAttribute) {
 	var Value NumberRange
 	err := mapstructure.Decode(attribute.Value, &Value)
 	if err == nil {
@@ -45,7 +45,7 @@ func filterProductsByNumberAttribute(query *gorm.DB, attribute Attribute) {
 	}
 }
 
-func filterProductsByExtraAttribute(query *gorm.DB, attribute Attribute) {
+func filterProductsByExtraAttribute(query *gorm.DB, attribute FilterAttribute) {
 	switch attribute.Type {
 	case "string":
 		query.Where("attributes->>? = ?", attribute.Title, attribute.Value)
@@ -64,7 +64,7 @@ func filterProductsByAttributes(query *gorm.DB, filters map[string]interface{}) 
 		return
 	}
 	for _, rawAttribute := range attributes.([]interface{}) {
-		var attribute Attribute
+		var attribute FilterAttribute
 		err := mapstructure.Decode(rawAttribute, &attribute)
 		if err != nil {
 			continue

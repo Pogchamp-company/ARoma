@@ -13,7 +13,9 @@ func RegisterUser(context *gin.Context) {
 	var credential dto.RegisterCredentials
 	err := context.ShouldBind(&credential)
 	if err != nil {
-		context.AbortWithStatus(http.StatusBadRequest)
+		context.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"errors": err,
+		})
 		return
 	}
 	token, ok := services.RegisterUser(credential)
