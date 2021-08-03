@@ -70,7 +70,7 @@ class EnumAttributeFilter extends Component {
                                                        }}/><label
                         htmlFor={"no" + this.props.attribute.Title}>No filter</label>
                     </li>
-                    {this.props.attribute.Values.map((variant, index) => (
+                    {this.props.attribute.Value.map((variant, index) => (
                         <li className="filter-list"><input className="pixel-radio" type="radio"
                                                            id={variant.Title + index} name={this.props.attribute.Title}
                                                            value={variant.Title}
@@ -111,8 +111,8 @@ class RangeAttributeFilter extends Component {
                 <div className="head">{this.props.attribute.Title}</div>
                 <NoUiSlider ref={this.sliderRef}
                             title={this.props.attribute.Title}
-                            min={this.props.attribute.MinValue}
-                            max={this.props.attribute.MaxValue}/>
+                            min={this.props.attribute.Value.Min}
+                            max={this.props.attribute.Value.Max}/>
             </div>
         )
     }

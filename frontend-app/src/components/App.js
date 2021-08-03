@@ -20,11 +20,11 @@ export default function App() {
 
     return (
         <Router>
-            <Header token={token}/>
+            <Header token={token} setToken={setToken}/>
             <Switch>
                 <Route exact path="/"><MainPage token={token}/></Route>
                 <Route exact path="/registration"><RegistrationPage setToken={setToken}/></Route>
-                <Route exact path="/login" component={LoginPage}/>
+                <Route exact path="/login"><LoginPage setToken={setToken}/></Route>
                 <Route exact path="/cart" component={CartPage}/>
                 <Route exact path="/search_products" component={SearchProductsPage}/>
                 <Route path="/product/:productId" component={ProductPage}/>

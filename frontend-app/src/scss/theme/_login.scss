@@ -125,6 +125,10 @@
       }
     }
 
+    input:placeholder-shown {
+      border-bottom-color: silver;
+    }
+
     input.has-error {
       border-bottom-color: #c5322d;
     }

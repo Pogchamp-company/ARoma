@@ -22,10 +22,12 @@ export default class Header extends Component {
                                 <span className="icon-bar"/>
                             </button>
                             <div className="collapse navbar-collapse offset" id="navbarSupportedContent">
-                                <ul className="nav navbar-nav menu_nav ml-auto mr-auto">
+                                <ul className="nav navbar-nav menu_nav ml-auto mr-auto menu-bar">
+
                                     <li className="nav-item active"><Link className="nav-link" to="/">Home</Link>
                                     </li>
-                                    <li className="nav-item active"><Link className="nav-link" to="/search_products">Shop</Link>
+                                    <li className="nav-item active"><Link className="nav-link"
+                                                                          to="/search_products">Shop</Link>
                                     </li>
                                     {/*<li className="nav-item submenu dropdown">*/}
                                     {/*    <a href="#" className="nav-link dropdown-toggle" data-toggle="dropdown"*/}
@@ -65,7 +67,15 @@ export default class Header extends Component {
                                         <button><i className="ti-shopping-cart"></i><span
                                             className="nav-shop__circle">3</span></button>
                                     </li>
-                                    {this.props.token === undefined ? <li className="nav-item"><Link className="button button-header" to="/login">Login</Link></li> : ''}
+                                    {this.props.token === undefined ?
+                                        <li className="nav-item"><Link className="button button-header"
+                                                                       to="/login">Login</Link></li> :
+                                        <li className="nav-item"><a className="button button-header" onClick={(e) => {
+                                            console.log("dsdasdasdasd")
+                                            this.props.setToken(undefined)
+                                            document.getElementsByClassName('menu-bar')[0].classList.add('play')
+                                        }
+                                        }>Logout</a></li>}
                                 </ul>
                             </div>
                         </div>

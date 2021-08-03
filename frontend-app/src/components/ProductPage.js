@@ -32,9 +32,6 @@ export default class ProductPage extends Component {
             .catch((e) => console.log('some error', e));
     }
 
-    // updateProduct() {
-    // }
-
     renderAttributes() {
         const attributes = this.state.product.Attributes
         console.log(attributes)

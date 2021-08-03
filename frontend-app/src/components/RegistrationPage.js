@@ -35,7 +35,7 @@ export default class RegistrationPage extends Component {
             let url = 'http://0.0.0.0:8080/register'
             const data = new FormData();
 
-            data.set('username', this.usernameRef.current.value)
+            data.set('nickname', this.usernameRef.current.value)
             data.set('email', this.emailRef.current.value)
             data.set('password', this.passwordRef.current.value)
 
@@ -91,85 +91,66 @@ export default class RegistrationPage extends Component {
     render() {
         if (this.state.bringBack) return <Redirect to="/"/>
         return (
-            <div>
-                <section className="blog-banner-area" id="category">
-                    <div className="container h-100">
-                        <div className="blog-banner">
-                            <div className="text-center">
-                                <h1>Register</h1>
-                                <nav aria-label="breadcrumb" className="banner-breadcrumb">
-                                    <ol className="breadcrumb">
-                                        <li className="breadcrumb-item"><a href="#">Home</a></li>
-                                        <li className="breadcrumb-item active" aria-current="page">Register</li>
-                                    </ol>
-                                </nav>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <section className="login_box_area section-margin">
-                    <div className="container">
-                        <div className="row">
-                            <div className="col-lg-6">
-                                <div className="login_box_img">
-                                    <div className="hover">
-                                        <h4>Already have an account?</h4>
-                                        <p>There are advances being made in science and technology everyday, and a good
-                                            example of this is the</p>
-                                        <Link className="button button-account" to="/login">Login Now</Link>
-                                    </div>
+            <section className="login_box_area section-margin">
+                <div className="container">
+                    <div className="row">
+                        <div className="col-lg-6">
+                            <div className="login_box_img">
+                                <div className="hover">
+                                    <h4>Already have an account?</h4>
+                                    <p>There are advances being made in science and technology everyday, and a good
+                                        example of this is the</p>
+                                    <Link className="button button-account" to="/login">Login Now</Link>
                                 </div>
                             </div>
-                            <div className="col-lg-6">
-                                <div className="login_form_inner register_form_inner">
-                                    <h3>Create an account</h3>
-                                    <div className="row login_form" id="register_form">
-                                        <div className="col-md-12 form-group">
-                                            <input type="text" className="form-control clear" id="name" name="name"
-                                                   placeholder="Username" ref={this.usernameRef}
-                                                   onChange={(e) => this.onDuplicateAbleChange(e, 'http://0.0.0.0:8080/check_username?username=')}/>
-                                        </div>
-                                        <div className="col-md-12 form-group">
-                                            <input type="text" className="form-control clear" id="email" name="email"
-                                                   placeholder="Email Address" ref={this.emailRef}
-                                                   onChange={(e) => this.onDuplicateAbleChange(e, 'http://0.0.0.0:8080/check_email?email=')}/>
-                                        </div>
-                                        <div className="col-md-12 form-group">
-                                            <input type="text" className="form-control clear" id="password"
-                                                   name="password"
-                                                   placeholder="Password" ref={this.passwordRef}
-                                                   onChange={(e) => this.onConfirmPasswordChange(e)}/>
-                                        </div>
-                                        <div className="col-md-12 form-group">
-                                            <input type="text" className="form-control clear" id="confirmPassword"
-                                                   name="confirmPassword" placeholder="Confirm Password"
-                                                   ref={this.confirmPasswordRef}
-                                                   onChange={(e) => this.onConfirmPasswordChange(e)}/>
+                        </div>
+                        <div className="col-lg-6">
+                            <div className="login_form_inner register_form_inner">
+                                <h3>Create an account</h3>
+                                <div className="row login_form" id="register_form">
+                                    <div className="col-md-12 form-group">
+                                        <input type="text" className="form-control clear" id="name" name="name"
+                                               placeholder="Username" ref={this.usernameRef}
+                                               onChange={(e) => this.onDuplicateAbleChange(e, 'http://0.0.0.0:8080/check_username?username=')}/>
+                                    </div>
+                                    <div className="col-md-12 form-group">
+                                        <input type="text" className="form-control clear" id="email" name="email"
+                                               placeholder="Email Address" ref={this.emailRef}
+                                               onChange={(e) => this.onDuplicateAbleChange(e, 'http://0.0.0.0:8080/check_email?email=')}/>
+                                    </div>
+                                    <div className="col-md-12 form-group">
+                                        <input type="password" className="form-control clear" id="password"
+                                               name="password"
+                                               placeholder="Password" ref={this.passwordRef}
+                                               onChange={(e) => this.onConfirmPasswordChange(e)}/>
+                                    </div>
+                                    <div className="col-md-12 form-group">
+                                        <input type="password" className="form-control clear" id="confirmPassword"
+                                               name="confirmPassword" placeholder="Confirm Password"
+                                               ref={this.confirmPasswordRef}
+                                               onChange={(e) => this.onConfirmPasswordChange(e)}/>
 
+                                    </div>
+                                    <div className="col-md-12 form-group">
+                                        <div className="creat_account">
+                                            <input type="checkbox" id="f-option2" name="selector"
+                                                   ref={this.keepLoggedInRef}/>
+                                            <label htmlFor="f-option2">Keep me logged in</label>
                                         </div>
-                                        <div className="col-md-12 form-group">
-                                            <div className="creat_account">
-                                                <input type="checkbox" id="f-option2" name="selector"
-                                                       ref={this.keepLoggedInRef}/>
-                                                <label htmlFor="f-option2">Keep me logged in</label>
-                                            </div>
-                                        </div>
-                                        <div className="col-md-12 form-group">
-                                            <button type="submit" value="button"
-                                                    className="button button-register w-100" onClick={() => {
-                                                this.onRegister()
-                                            }}>Register
-                                            </button>
-                                        </div>
+                                    </div>
+                                    <div className="col-md-12 form-group">
+                                        <button type="submit" value="button"
+                                                className="button button-register w-100" onClick={() => {
+                                            this.onRegister()
+                                        }}>Register
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </section>
-
-            </div>
+                </div>
+            </section>
         );
     }
 }

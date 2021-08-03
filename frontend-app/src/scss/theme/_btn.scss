@@ -58,6 +58,20 @@
   &-login{
     font-size: 15px;
     padding: 7px 44px;
+
+    &:disabled {
+      background: #8a8a8a;
+      border-color: #8a8a8a;
+      color: #fff;
+      pointer-events: none;
+    }
+
+    &:disabled:hover {
+      background: #8a8a8a;
+      border-color: #8a8a8a;
+      color: #fff;
+      pointer-events: none;
+    }
   }
 
 

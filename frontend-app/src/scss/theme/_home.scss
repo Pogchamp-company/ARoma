@@ -451,3 +451,18 @@
   }
 }
 /*=================== subscribe section end  ====================*/
+
+.menu-bar.play li {
+  animation: 0.5s ease-out 0.05s 1 slideinAnim;
+}
+
+@keyframes slideinAnim {
+  from {
+    transform: scale(0.5, 0.5);
+    //transform: translateX(0%);
+  }
+
+  to {
+    transform: scale(1, 1);
+  }
+}
