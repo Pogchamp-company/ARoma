@@ -26,16 +26,14 @@ export default function App() {
         <BrowserRouter>
             <Header token={token} setToken={setToken} cart={cart}/>
             <Switch>
-                <Route exact path="/"><MainPage token={token}/></Route>
-                <Route exact path="/registration"><RegistrationPage setToken={setToken}/></Route>
-                <Route exact path="/login"><LoginPage setToken={setToken}/></Route>
-                <Route exact path="/cart"><CartPage cart={cart}/></Route>
-                <Route exact path="/search_products"><SearchProductsPage cart={cart}/></Route>
+                <Route exact path="/" render={routerProps => (<MainPage token={token} {...routerProps}/>)}/>
+                <Route exact path="/registration" render={routerProps => (<RegistrationPage setToken={setToken} {...routerProps}/>)}/>
+                <Route exact path="/login" render={routerProps => (<LoginPage setToken={setToken} {...routerProps}/>)}/>
+                <Route exact path="/cart" render={routerProps => (<CartPage cart={cart} {...routerProps}/>)}/>
+                <Route exact path="/search_products" render={routerProps => (<SearchProductsPage cart={cart} {...routerProps}/>)}/>
                 <Route path="/product/:productId" render={routeProps => (<ProductPage cart={cart} {...routeProps}/>)}/>
             </Switch>
             <Footer/>
         </BrowserRouter>
     );
 }
-
-

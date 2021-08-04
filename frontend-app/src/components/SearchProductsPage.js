@@ -4,41 +4,96 @@ import {Link} from "react-router-dom";
 import NoUiSlider from "./NoUiSlider";
 import Select from 'react-select'
 
-class ProductsContainer extends Component {
+
+class ProductCard extends Component {
+    constructor(props) {
+        super(props);
+    }
 
     handleAddToCart(e, productId) {
+        const spanElem = document.getElementById('cart-icon-number')
+        console.log(e.clientX, e.clientY)
+        console.log(window.innerWidth, window.innerHeight)
+
+        const btnRect = e.target.getBoundingClientRect()
+        const rect = spanElem.parentElement.getBoundingClientRect()
+        console.log(e.clientX, rect.left, e.clientX - rect.left)
+        spanElem.style.transform = `translateX(${btnRect.left - rect.left}px) translateY(${btnRect.top - rect.top}px)`;
+
+        spanElem.animate([
+            // keyframes
+            {
+                transform: `translateX(${btnRect.left - rect.left}px) translateY(${btnRect.top - rect.top}px) scale(0.5)`,
+            },
+            {
+                transform: 'translateX(0) translateY(0)  scale(1)',
+            },
+        ], {
+            // timing options
+            duration: 400,
+            iterations: 1,
+            easing: "ease-out",
+            fill: "forwards",
+        })
+        document.getElementById('cart-icon').animate([
+            // keyframes
+            {transform: 'scale(0.7)'},
+            {transform: 'scale(1)'},
+            {transform: 'scale(1.1)'},
+            {transform: 'scale(1)'},
+        ], {
+            // timing options
+            duration: 400,
+            iterations: 1,
+            easing: "ease-in",
+            delay: 450,
+        })
         this.props.cart.addToCart(productId, 1)
+    }
+
+
+    render() {
+        return (
+            <div className="col-md-6 col-lg-4">
+                <div className="card text-center card-product">
+                    <div className="card-product__img">
+                        <img className="card-img" src="/img/product/product1.png"
+                             alt=""/>
+                        <ul className="card-product__imgOverlay">
+                            <li>
+                                <Link to={`/product/${this.props.product.ID}`}><i className="ti-search"></i></Link>
+                            </li>
+                            <li>
+                                <button onClick={(e) => this.handleAddToCart(e, this.props.product)}><i
+                                    className="ti-shopping-cart"></i></button>
+                            </li>
+                            <li>
+                                <button><i className="ti-heart"></i></button>
+                            </li>
+                        </ul>
+                    </div>
+                    <div className="card-body">
+                        <p>Accessories</p>
+                        <h4 className="card-product__title"><Link
+                            to={`/product/${this.props.product.ID}`}>{this.props.product.Title}</Link></h4>
+                        <p className="card-product__price">${this.props.product.Price}</p>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+}
+
+class ProductsContainer extends Component {
+    constructor(props) {
+        super(props);
     }
 
     render() {
         return (
             <div className="row">
                 {this.props.products.map((product, index) => (
-                    <div className="col-md-6 col-lg-4">
-                        <div className="card text-center card-product">
-                            <div className="card-product__img">
-                                <img className="card-img" src="/img/product/product1.png"
-                                     alt=""/>
-                                <ul className="card-product__imgOverlay">
-                                    <li>
-                                        <Link to={`/product/${product.ID}`}><i className="ti-search"></i></Link>
-                                    </li>
-                                    <li>
-                                        <button onClick={(e) => this.handleAddToCart(e, product)}><i className="ti-shopping-cart"></i></button>
-                                    </li>
-                                    <li>
-                                        <button><i className="ti-heart"></i></button>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div className="card-body">
-                                <p>Accessories</p>
-                                <h4 className="card-product__title"><Link
-                                    to={`/product/${product.ID}`}>{product.Title}</Link></h4>
-                                <p className="card-product__price">${product.Price}</p>
-                            </div>
-                        </div>
-                    </div>
+                    <ProductCard product={product} cart={this.props.cart}/>
                 ))}
             </div>
         )
@@ -52,6 +107,7 @@ class EnumAttributeFilter extends Component {
             value: undefined
         }
     }
+
     toDict() {
         if (this.state.value === undefined) return
         return {
@@ -67,7 +123,8 @@ class EnumAttributeFilter extends Component {
                 <div className="head">{this.props.attribute.Title}</div>
                 <ul>
                     <li className="filter-list"><input className="pixel-radio" type="radio"
-                                                       id={"no" + this.props.attribute.Title} name={this.props.attribute.Title}
+                                                       id={"no" + this.props.attribute.Title}
+                                                       name={this.props.attribute.Title}
                                                        value={undefined}
                                                        checked={this.state.value === undefined}
                                                        onClick={(event) => {
@@ -142,20 +199,12 @@ class AttributesContainer extends Component {
         return res
     }
 
-    setPriceRange(min, max) {
-        if (this.productsPriceElement.current) {
-            this.productsPriceElement.current.setState({
-                min: min,
-                max: max
-            })
-        }
-    }
-
     render() {
         this.refsCollection = []
         for (let i = 0; i < this.props.attributes.length; i++) {
             this.refsCollection[i] = React.createRef();
         }
+        if ((this.props.price.Min === this.props.price.Max) && (this.props.attributes.length === 0)) return ''
         return (
             <div className="sidebar-filter">
                 <div className="top-filter-head">Product Filters</div>
@@ -163,15 +212,19 @@ class AttributesContainer extends Component {
                     if (attribute.Type === "string") {
                         return <EnumAttributeFilter attribute={attribute} ref={this.refsCollection[index]}/>
                     } else if (attribute.Type === "number") {
-                        if (attribute.MinValue != attribute.MaxValue)
+                        if (attribute.Value.Min !== attribute.Value.Max)
                             return <RangeAttributeFilter attribute={attribute} ref={this.refsCollection[index]}/>
                     }
                 })}
-                <div className="common-filter">
-                    <div className="head">Price</div>
-                    <NoUiSlider ref={this.productsPriceElement} title="Price" min={this.props.price.Min}
-                                max={this.props.price.Max} symbol="$"/>
-                </div>
+                {
+                    this.props.price.Min !== this.props.price.Max ? (
+                        <div className="common-filter">
+                            <div className="head">Price{this.props.price.Min !== this.props.price.Max}</div>
+                            <NoUiSlider ref={this.productsPriceElement} title="Price" min={this.props.price.Min}
+                                        max={this.props.price.Max} symbol="$"/>
+                        </div>
+                    ) : ''
+                }
                 <div className="common-filter">
                     <button onClick={this.props.applyFilters} className={"button apply-button"}>Apply</button>
                 </div>
@@ -197,6 +250,7 @@ export default class SearchProductsPage extends Component {
 
         this.updateAllCategories()
         this.fetchProducts()
+        this.updateFilters()
         this.productsContainerElement = React.createRef();
         this.filtersContainerElement = React.createRef();
     }
@@ -246,18 +300,20 @@ export default class SearchProductsPage extends Component {
     }
 
     updateFilters() {
-        if (this.state.currentCatalog === "") return
+        let url
+        if (this.state.currentCatalog === "") {
+            url = `http://0.0.0.0:8080/catalog/get_attributes`
+        } else {
+            url = `http://0.0.0.0:8080/catalog/get_attributes?catalogId=${this.state.currentCatalog}`
+        }
 
-        fetch(`http://0.0.0.0:8080/catalog/get_attributes?catalogId=${this.state.currentCatalog}`)
+        fetch(url)
             .then(response => response.json())
             .then(catalog_json => {
-                if (catalog_json.attributes) {
-                    this.setState({
-                        attributes: catalog_json.attributes,
-                        price: catalog_json.price,
-                    })
-                    this.filtersContainerElement.current.setPriceRange(catalog_json.price.Min, catalog_json.price.Max)
-                } else this.setState({attributes: []})
+                this.setState({
+                    attributes: catalog_json.attributes || [],
+                    price: catalog_json.price,
+                })
             })
             .catch((e) => console.log('some error', e));
     }

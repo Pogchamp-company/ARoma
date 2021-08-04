@@ -14,6 +14,13 @@ export default class NoUiSlider extends Component {
         this.sliderRef = React.createRef()
     }
 
+    componentWillReceiveProps(nextProps, nextContext) {
+        if (nextProps.min !== this.props.min || nextProps.max !== this.props.max) {
+            this.state.min = nextProps.min
+            this.state.max = nextProps.max
+        }
+    }
+
     render() {
         if (this.props.min === this.props.max) return ''
         return (
