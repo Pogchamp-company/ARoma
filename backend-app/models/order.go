@@ -1,6 +1,9 @@
 package models
 
-import "database/sql/driver"
+import (
+	"database/sql/driver"
+	"github.com/jackc/pgtype"
+)
 
 type OrderStatus string
 
@@ -23,15 +26,30 @@ func (p OrderStatus) Value() (driver.Value, error) {
 }
 
 type Order struct {
-	ID         int
-	Status     OrderStatus
-	CustomerID int
-	Customer   User
-	Products   []Product
+	ID               int
+	Status           OrderStatus
+	CustomerID       int
+	Customer         User
+	Products         []Product
+	ShippingMethodID int
+	ShippingMethod   ShippingMethod
 }
 
 type OrderProduct struct {
 	OrderID   int
 	ProductID int
 	Count     int
+}
+
+type ShippingMethod struct {
+	ID    int
+	Title string
+	Price float32
+}
+
+type CouponCode struct {
+	ID        int
+	Title     string
+	Sale      int
+	ExpiredAt pgtype.Date
 }

@@ -7,26 +7,36 @@ import (
 )
 
 type Product struct {
-	ID        int
-	Title     string
-	CatalogID int
-	Catalog   Catalog
-	Price     float64
-	//QuantityInStock int
+	ID              int
+	Title           string
+	CatalogID       int
+	Catalog         Catalog
+	Price           float32
+	QuantityInStock int
 	Description     string
 	LongDescription string
-	Attributes      pgtype.JSON
+	Attributes      pgtype.JSONB
 }
 
-func NewProduct(title string, catalog Catalog, attributes map[string]string) (Product, error) {
+func NewProduct(title string,
+	catalog Catalog,
+	price float32,
+	quantityInStock int,
+	description string,
+	longDescription string,
+	attributes map[string]string) (Product, error) {
 	marshalAttrs, err := json.Marshal(attributes)
 	if err != nil {
 		return Product{}, err
 	}
 	product := Product{
-		Title:   title,
-		Catalog: catalog,
-		Attributes: pgtype.JSON{
+		Title:           title,
+		Catalog:         catalog,
+		Price:           price,
+		QuantityInStock: quantityInStock,
+		Description:     description,
+		LongDescription: longDescription,
+		Attributes: pgtype.JSONB{
 			Status: pgtype.Present,
 			Bytes:  marshalAttrs,
 		},

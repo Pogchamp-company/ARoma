@@ -6,6 +6,7 @@ func InitRoutes() {
 	initProductsRoutes()
 	initCatalogsRoutes()
 	initUsersRoutes()
+	initOrdersRoutes()
 }
 
 var App = gin.Default()

@@ -58,10 +58,7 @@ func dbCommands() {
 
 func runSeeds() {
 	seedName := flag.Arg(2)
-	seedsByNames := map[string]func(){
-		"catalogs": seeds.CatalogsSeeder,
-		"products": seeds.ProductsSeeder,
-	}
+	seedsByNames := seeds.GetAllSeeds()
 	if seedName != "" {
 		if seed, ok := seedsByNames[seedName]; ok {
 			seed()
