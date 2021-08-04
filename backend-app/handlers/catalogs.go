@@ -123,8 +123,14 @@ func getAttributes(attributesArray []map[string]interface{}) []Attribute {
 
 func getPrice(catalogId string) NumberRange {
 	var minPrice, maxPrice float32
-	models.Db.Model(&models.Product{}).Where("catalog_id = ?", catalogId).Pluck("MIN(price)", &minPrice)
-	models.Db.Model(&models.Product{}).Where("catalog_id = ?", catalogId).Pluck("MAX(price)", &maxPrice)
+	minQuery := models.Db.Model(&models.Product{})
+	maxQuery := models.Db.Model(&models.Product{})
+	if catalogId != "" {
+		minQuery = minQuery.Where("catalog_id = ?", catalogId)
+		maxQuery = maxQuery.Where("catalog_id = ?", catalogId)
+	}
+	minQuery.Pluck("MIN(price)", &minPrice)
+	maxQuery.Pluck("MAX(price)", &maxPrice)
 	return NumberRange{
 		Min: minPrice,
 		Max: maxPrice,
@@ -133,15 +139,11 @@ func getPrice(catalogId string) NumberRange {
 
 func GetAttributes(context *gin.Context) {
 	catalogId := context.Request.URL.Query().Get("catalogId")
-	if catalogId == "" {
-		context.AbortWithStatus(http.StatusBadRequest)
-		return
-	}
 	var rawAttributes []string
 	models.Db.Model(&models.Product{}).Where("catalog_id = ?", catalogId).Pluck("attributes", &rawAttributes)
 	var attributesArray []map[string]interface{}
 	json.Unmarshal([]byte("["+strings.Join(rawAttributes[:], ",")+"]"), &attributesArray)
-	var attributes []Attribute
+	attributes := []Attribute{}
 	if len(attributesArray) > 0 {
 		attributes = getAttributes(attributesArray)
 	}
