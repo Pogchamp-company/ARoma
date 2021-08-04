@@ -16,6 +16,7 @@ type Product struct {
 	Description     string
 	LongDescription string
 	Attributes      pgtype.JSONB
+	ViewsCount      int
 }
 
 func NewProduct(title string,
@@ -59,4 +60,5 @@ func (obj Product) Bool() bool {
 
 func (obj *Product) LoadByID(id int) {
 	Db.Preload("Catalog").First(&obj, id)
+	Db.Model(&obj).Update("views_count", obj.ViewsCount+1)
 }

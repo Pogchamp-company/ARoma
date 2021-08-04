@@ -95,7 +95,7 @@ func SearchProducts(context *gin.Context) {
 
 func TopProducts(context *gin.Context) {
 	var products []models.Product
-	models.Db.Preload("Catalog").Limit(12).Find(&products)
+	models.Db.Preload("Catalog").Order("views_count desc").Limit(12).Find(&products)
 	context.JSON(http.StatusOK, gin.H{
 		"products": products,
 	})
