@@ -14,8 +14,7 @@ export default class TopProducts extends Component {
         fetch("http://0.0.0.0:8080/product/top")
             .then(response => response.json())
             .then(catalog_json => {
-                this.state.products = catalog_json["products"]
-                this.forceUpdate()
+                this.setState({products: catalog_json["products"]})
                 console.log(this.state)
             })
             .catch((e) => console.log('TopProducts some error', e));

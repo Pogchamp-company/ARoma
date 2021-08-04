@@ -42,7 +42,7 @@ func CheckCoupon(context *gin.Context) {
 	var coupon models.CouponCode
 	models.Db.Where("title = ?", couponTitle).First(&coupon)
 	if coupon.ID == 0 {
-		context.AbortWithStatus(404)
+		context.AbortWithStatus(http.StatusNotFound)
 		return
 	}
 	if time.Now().After(coupon.ExpiredAt.Time) {

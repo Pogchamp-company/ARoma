@@ -1,5 +1,6 @@
 /*=================== custo button rule start ====================*/
 .button{
+  white-space: nowrap;
   display: inline-block;
   border: 1px solid $primary-color;
   border-radius: 30px;

@@ -62,10 +62,12 @@ export default function useCart() {
     }
 
     const getAmount = (productId) => {
-        console.log(productId, cart)
         const item = cart.find((element) => element.product.ID === productId)
-        console.log(item)
         return item?.amount || 0
+    }
+
+    const clearCart = () => {
+        saveCart([])
     }
 
     return {
@@ -78,5 +80,6 @@ export default function useCart() {
         getAmount: getAmount,
         removeProduct: removeProduct,
         totalPrice: totalPrice,
+        clearCart: clearCart,
     }
 }

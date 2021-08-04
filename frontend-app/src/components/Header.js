@@ -6,7 +6,18 @@ export default class Header extends Component {
         super(props);
     }
 
+    changeThemeToDark = () => {
+        document.documentElement.setAttribute("data-theme", "dark") // set theme to dark
+        localStorage.setItem("data-theme", "dark") // save theme to local storage
+    }
+
+    changeThemeToLight = () => {
+        document.documentElement.setAttribute("data-theme", "light") // set theme light
+        localStorage.setItem("data-theme", 'light') // save theme to local storage
+    }
+
     render() {
+        const tolalCartAmount = this.props.cart.totalAmount();
         return (
             <header className="header_area">
                 <div className="main_menu">
@@ -32,11 +43,20 @@ export default class Header extends Component {
 
                                 <ul className="nav-shop">
                                     <li className="nav-item">
-                                        <button><i className="ti-search"></i></button>
+                                        <button onClick={() => {
+                                            document.documentElement.setAttribute("data-theme", "dark")//set theme to light
+                                            let theme = localStorage.getItem('data-theme'); // Retrieve saved them from local storage
+                                            if (theme ==='dark'){
+                                                this.changeThemeToLight()
+                                            }else{
+                                                this.changeThemeToDark()
+                                            }
+
+                                        }}><i className="ti-search"></i></button>
                                     </li>
                                     <li id="cart-icon" className="nav-item">
                                         <Link to="/cart"><i className="ti-shopping-cart"></i><span id={"cart-icon-number"}
-                                            className="nav-shop__circle">{this.props.cart.totalAmount()}</span></Link>
+                                            className="nav-shop__circle">{tolalCartAmount > 99 ? '99+' : tolalCartAmount}</span></Link>
                                     </li>
                                     {this.props.token === undefined ?
                                         <li className="nav-item"><Link className="button button-header"
