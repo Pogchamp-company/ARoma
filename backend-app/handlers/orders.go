@@ -22,9 +22,11 @@ func CreateOrder(context *gin.Context) {
 	var orderData OrderCredentials
 	err := json.Unmarshal([]byte(rawOrderQuery), &orderData)
 	if err != nil {
+		context.AbortWithStatus(400)
 		return
 	}
 	fmt.Println(orderData)
+	context.AbortWithStatus(200)
 }
 
 func GetAllShippingMethods(context *gin.Context) {
