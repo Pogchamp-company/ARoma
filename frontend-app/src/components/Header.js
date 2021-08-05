@@ -37,7 +37,8 @@ export default class Header extends Component {
 
                                     <li className={"nav-item"}><Link className="nav-link" to="/">Home</Link>
                                     </li>
-                                    <li className={"nav-item"}><Link className="nav-link" to="/search_products">Shop</Link>
+                                    <li className={"nav-item"}><Link className="nav-link"
+                                                                     to="/search_products">Shop</Link>
                                     </li>
                                 </ul>
 
@@ -46,17 +47,24 @@ export default class Header extends Component {
                                         <button onClick={() => {
                                             document.documentElement.setAttribute("data-theme", "dark")//set theme to light
                                             let theme = localStorage.getItem('data-theme'); // Retrieve saved them from local storage
-                                            if (theme ==='dark'){
+                                            if (theme === 'dark') {
                                                 this.changeThemeToLight()
-                                            }else{
+                                            } else {
                                                 this.changeThemeToDark()
                                             }
 
                                         }}><i className="ti-search"></i></button>
                                     </li>
                                     <li id="cart-icon" className="nav-item">
-                                        <Link to="/cart"><i className="ti-shopping-cart"></i><span id={"cart-icon-number"}
-                                            className="nav-shop__circle">{tolalCartAmount > 99 ? '99+' : tolalCartAmount}</span></Link>
+                                        {
+                                            tolalCartAmount <= 0
+                                                ? <a><i className="ti-shopping-cart"></i><span
+                                                    id={"cart-icon-number"}
+                                                    className="nav-shop__circle">{tolalCartAmount > 99 ? '99+' : tolalCartAmount}</span></a>
+                                                : <Link to="/cart"><i className="ti-shopping-cart"></i><span
+                                                    id={"cart-icon-number"}
+                                                    className="nav-shop__circle">{tolalCartAmount > 99 ? '99+' : tolalCartAmount}</span></Link>
+                                        }
                                     </li>
                                     {this.props.token === undefined ?
                                         <li className="nav-item"><Link className="button button-header"

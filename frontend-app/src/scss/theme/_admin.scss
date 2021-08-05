@@ -1,0 +1,36 @@
+@import "variables";
+
+.admin-table-button {
+  color: #002347;
+  border: none;
+  background: #bac7ff;
+  width: 33px;
+  height: 33px;
+}
+
+a.admin-table-button {
+  padding: 5px 8px;
+
+}
+
+.admin-table-button:hover {
+  background: #8d97c2;
+  color: #0056b3;
+}
+
+.admin-text-input {
+  padding-left: 30px;
+  outline: none;
+  box-shadow: none;
+}
+
+.admin-text-input.updated {
+  border: 2px solid #edb11a;
+}
+
+.admin-catalog-title {
+  font-size: 50px;
+  color: black;
+  font-weight: bold;
+  margin: 5px;
+}

@@ -90,7 +90,7 @@ export default class CartPage extends Component {
         const data = new FormData();
 
         data.set('Products', JSON.stringify(order.Products))
-        data.set('CouponCode', order.CouponCode)
+        if (order.CouponCode !== undefined) data.set('CouponCode', order.CouponCode)
         data.set('ShippingMethod', order.ShippingMethod)
 
         fetch(url, {
@@ -102,7 +102,8 @@ export default class CartPage extends Component {
         })
             .then(response => response.json())
             .then((response_json) => {
-                console.log(response_json)
+                console.log('response_json', response_json)
+                this.props.history.push(`/step2/${response_json.Order}`);
                 this.props.cart.clearCart()
             })
             .catch((e) => console.log('TopProducts some error', e));
@@ -126,7 +127,9 @@ export default class CartPage extends Component {
                                 <tbody>
                                 {this.props.cart.getCart().map((item, index) => (
                                     <tr>
-                                        <td>
+                                        <td style={{
+                                            width: '727px'
+                                        }}>
                                             <div className="media">
                                                 <div className="d-flex">
                                                     <img src="img/cart/cart1.png" alt=""/>

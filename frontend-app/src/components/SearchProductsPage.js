@@ -12,12 +12,9 @@ class ProductCard extends Component {
 
     handleAddToCart(e, productId) {
         const spanElem = document.getElementById('cart-icon-number')
-        console.log(e.clientX, e.clientY)
-        console.log(window.innerWidth, window.innerHeight)
 
         const btnRect = e.target.getBoundingClientRect()
         const rect = spanElem.parentElement.getBoundingClientRect()
-        console.log(e.clientX, rect.left, e.clientX - rect.left)
         spanElem.style.transform = `translateX(${btnRect.left - rect.left}px) translateY(${btnRect.top - rect.top}px)`;
 
         spanElem.animate([
