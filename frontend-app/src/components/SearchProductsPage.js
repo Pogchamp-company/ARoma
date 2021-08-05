@@ -52,9 +52,10 @@ class ProductCard extends Component {
     render() {
         return (
             <div className="col-md-6 col-lg-4">
-                <div className="card text-center card-product">
+                <div key={Math.random()} className="card text-center card-product"
+                     style={{'--index': this.props.index}}>
                     <div className="card-product__img">
-                        <img className="card-img" src="/img/product/product1.png"
+                        <img className="card-img" src={`https://picsum.photos/id/${this.props.product.ID}/263/280`}
                              alt=""/>
                         <ul className="card-product__imgOverlay">
                             <li>
@@ -90,7 +91,7 @@ class ProductsContainer extends Component {
         return (
             <div className="row">
                 {this.props.products.map((product, index) => (
-                    <ProductCard product={product} cart={this.props.cart}/>
+                    <ProductCard product={product} index={index} cart={this.props.cart}/>
                 ))}
             </div>
         )
@@ -116,7 +117,7 @@ class EnumAttributeFilter extends Component {
 
     render() {
         return (
-            <div className="common-filter">
+            <div className="common-filter" key={Math.random()} >
                 <div className="head">{this.props.attribute.Title}</div>
                 <ul>
                     <li className="filter-list"><input className="pixel-radio" type="radio"
@@ -166,7 +167,7 @@ class RangeAttributeFilter extends Component {
 
     render() {
         return (
-            <div className="common-filter">
+            <div className="common-filter" key={Math.random()} >
                 <div className="head">{this.props.attribute.Title}</div>
                 <NoUiSlider ref={this.sliderRef}
                             title={this.props.attribute.Title}
@@ -190,8 +191,12 @@ class AttributesContainer extends Component {
             Min: parseFloat(this.productsPriceElement.current.state.min),
             Max: parseFloat(this.productsPriceElement.current.state.max),
         }
-        res['attributes'] = this.refsCollection
-            .map((value, index) => value.current.toDict())
+        console.log(this.refsCollection)
+        if (this.refsCollection) res['attributes'] = this.refsCollection
+            .map((value, index) => {
+                if (value.current === null) return null
+                return value.current.toDict()
+            })
             .filter((elem) => elem != null)
         return res
     }
@@ -215,7 +220,7 @@ class AttributesContainer extends Component {
                 })}
                 {
                     this.props.price.Min !== this.props.price.Max ? (
-                        <div className="common-filter">
+                        <div className="common-filter" key={Math.random()}>
                             <div className="head">Price{this.props.price.Min !== this.props.price.Max}</div>
                             <NoUiSlider ref={this.productsPriceElement} title="Price" min={this.props.price.Min}
                                         max={this.props.price.Max} symbol="$"/>
