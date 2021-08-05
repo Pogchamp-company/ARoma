@@ -3,30 +3,49 @@ package handlers
 import (
 	"aroma/models"
 	"encoding/json"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 	"time"
 )
 
 func CreateOrder(context *gin.Context) {
 	type OrderCredentials struct {
-		Products []struct {
-			ID       int `json:"ID"`
-			Quantity int `json:"Quantity"`
-		} `json:"Products"`
-		CouponCode     string `json:"CouponCode"`
-		ShippingMethod int    `json:"ShippingMethod"`
+		Customer       models.User
+		Products       []models.ProductCredentials
+		CouponCode     models.CouponCode
+		ShippingMethod int
 	}
-	rawOrderQuery := context.Request.URL.Query().Get("orderData")
-	var orderData OrderCredentials
-	err := json.Unmarshal([]byte(rawOrderQuery), &orderData)
+	currentUser, _ := context.Get("currentUser")
+	var products []models.ProductCredentials
+	err := json.Unmarshal([]byte(context.PostForm("Products")), &products)
+	shippingMethodID, err := strconv.ParseInt(context.PostForm("ShippingMethod"), 10, 64)
 	if err != nil {
 		context.AbortWithStatus(400)
 		return
 	}
-	fmt.Println(orderData)
-	context.AbortWithStatus(200)
+	var couponCode models.CouponCode
+	couponCodeTitle := context.PostForm("CouponCode")
+	if couponCodeTitle != "" {
+		models.Db.Where("title = ?", couponCodeTitle).First(&couponCode)
+	}
+	orderData := OrderCredentials{
+		Customer:       currentUser.(models.User),
+		Products:       products,
+		CouponCode:     couponCode,
+		ShippingMethod: int(shippingMethodID),
+	}
+	var shippingMethod models.ShippingMethod
+	shippingMethod.LoadByID(orderData.ShippingMethod)
+	if !shippingMethod.ToBool() {
+		context.AbortWithStatus(400)
+		return
+	}
+	order, _ := models.NewOrder(orderData.Customer, shippingMethod, orderData.Products, orderData.CouponCode)
+
+	context.JSON(http.StatusOK, gin.H{
+		"Order": order.ID,
+	})
 }
 
 func GetAllShippingMethods(context *gin.Context) {

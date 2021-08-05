@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"aroma/models"
 	"aroma/services"
 	"fmt"
 	"net/http"
@@ -19,7 +20,9 @@ func LoginRequired(handler func(*gin.Context)) func(*gin.Context) {
 		token, err := services.JWTAuthService().ValidateToken(tokenString)
 		if token.Valid {
 			claims := token.Claims.(jwt.MapClaims)
-			context.Set("userClaims", claims)
+			var user models.User
+			models.Db.Where("email = ?", claims["name"]).First(&user)
+			context.Set("currentUser", user)
 		} else {
 			fmt.Println(err)
 			context.AbortWithStatus(http.StatusUnauthorized)

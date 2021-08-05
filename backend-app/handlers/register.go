@@ -36,7 +36,7 @@ func CheckUsername(context *gin.Context) {
 	}
 	var user models.User
 	models.Db.Where("nickname = ?", username).First(&user)
-	if user.Bool() {
+	if user.ToBool() {
 		context.JSON(http.StatusOK, gin.H{
 			"ok": false,
 		})
@@ -61,7 +61,7 @@ func CheckEmail(context *gin.Context) {
 	}
 	var user models.User
 	models.Db.Where("email = ?", email).First(&user)
-	if user.Bool() {
+	if user.ToBool() {
 		context.JSON(http.StatusOK, gin.H{
 			"ok": false,
 		})

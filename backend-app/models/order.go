@@ -26,29 +26,87 @@ func (p OrderStatus) Value() (driver.Value, error) {
 }
 
 type Order struct {
-	ID               int
+	BaseModel
 	Status           OrderStatus
 	CustomerID       int
 	Customer         User
-	Products         []Product
 	ShippingMethodID int
 	ShippingMethod   ShippingMethod
+	CouponCodeID     int
+	CouponCode       CouponCode
+}
+
+type ProductCredentials struct {
+	ID       int
+	Quantity int
+}
+
+func NewOrder(customer User,
+	shippingMethod ShippingMethod,
+	productsData []ProductCredentials,
+	couponCode CouponCode) (Order, error) {
+	order := Order{
+		Status:           draft,
+		CustomerID:       customer.ID,
+		Customer:         customer,
+		ShippingMethodID: shippingMethod.ID,
+		ShippingMethod:   shippingMethod,
+		CouponCode:       couponCode,
+	}
+	if couponCode.ToBool() {
+		Db.Create(&order)
+	} else {
+		Db.Select("CustomerID", "ShippingMethodID").Create(&order)
+	}
+
+	for _, productData := range productsData {
+		var product Product
+		Db.First(&product, productData.ID)
+		if !product.ToBool() {
+			continue
+		}
+		NewOrderProduct(order, product, productData.Quantity)
+	}
+	return order, nil
 }
 
 type OrderProduct struct {
 	OrderID   int
 	ProductID int
-	Count     int
+	Quantity  int
+}
+
+func NewOrderProduct(order Order,
+	product Product,
+	quantity int) (OrderProduct, error) {
+	if product.QuantityInStock < quantity {
+		quantity = product.QuantityInStock
+	}
+	orderProduct := OrderProduct{
+		OrderID:   order.ID,
+		ProductID: product.ID,
+		Quantity:  quantity,
+	}
+	Db.Create(&orderProduct)
+	return orderProduct, nil
+}
+
+func (obj OrderProduct) TableName() string {
+	return "product_order"
 }
 
 type ShippingMethod struct {
-	ID    int
+	BaseModel
 	Title string
 	Price float32
 }
 
+func (obj *ShippingMethod) LoadByID(id int) {
+	Db.First(&obj, id)
+}
+
 type CouponCode struct {
-	ID        int
+	BaseModel
 	Title     string
 	Sale      int
 	ExpiredAt pgtype.Date

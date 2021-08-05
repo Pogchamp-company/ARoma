@@ -8,7 +8,7 @@ import (
 )
 
 type User struct {
-	ID             int
+	BaseModel
 	Email          string
 	HashedPassword string
 	Nickname       string
@@ -17,7 +17,7 @@ type User struct {
 func checkUserExists(email string, nickname string) bool {
 	user := User{}
 	Db.Where("email = ? OR nickname = ?", email, nickname).First(&user)
-	return user.Bool()
+	return user.ToBool()
 }
 
 func NewUser(email string, password string, nickname string) (User, error) {
@@ -53,16 +53,12 @@ func (obj *User) SetPassword(password string) error {
 	return nil
 }
 
-func (obj User) Str() string {
+func (obj User) ToStr() string {
 	return obj.Nickname
 }
 
-func (obj User) Repr() string {
+func (obj User) ToRepr() string {
 	return fmt.Sprintf("<User (id=%s, nickname=%s)>", fmt.Sprint(obj.ID), obj.Nickname)
-}
-
-func (obj User) Bool() bool {
-	return obj.ID != 0
 }
 
 func (obj *User) LoadByID(id int) {

@@ -7,7 +7,7 @@ import (
 )
 
 type Product struct {
-	ID              int
+	BaseModel
 	Title           string
 	CatalogID       int
 	Catalog         Catalog
@@ -46,16 +46,12 @@ func NewProduct(title string,
 	return product, nil
 }
 
-func (obj Product) Str() string {
+func (obj Product) ToStr() string {
 	return obj.Title
 }
 
-func (obj Product) Repr() string {
+func (obj Product) ToRepr() string {
 	return fmt.Sprintf("<Product (id=%s, title=%s)>", fmt.Sprint(obj.ID), obj.Title)
-}
-
-func (obj Product) Bool() bool {
-	return obj.ID != 0
 }
 
 func (obj *Product) LoadByID(id int) {

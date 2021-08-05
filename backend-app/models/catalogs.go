@@ -5,7 +5,7 @@ import (
 )
 
 type Catalog struct {
-	ID       int
+	BaseModel
 	Title    string
 	Products []Product
 }
@@ -24,10 +24,6 @@ func (obj Catalog) Str() string {
 
 func (obj Catalog) Repr() string {
 	return fmt.Sprintf("<Catalog (id=%s, title=%s)>", fmt.Sprint(obj.ID), obj.Title)
-}
-
-func (obj Catalog) Bool() bool {
-	return obj.ID != 0
 }
 
 func (obj *Catalog) LoadByID(id int) {
