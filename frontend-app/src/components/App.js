@@ -25,7 +25,7 @@ export default function App() {
             <Header token={token} setToken={setToken} cart={cart}/>
             <ScrollToTop/>
             <Switch>
-                <Route exact path="/" render={routerProps => (<MainPage token={token} {...routerProps}/>)}/>
+                <Route exact path="/" render={routerProps => (<MainPage token={token} cart={cart} {...routerProps}/>)}/>
                 <Route exact path="/registration"
                        render={routerProps => (<RegistrationPage setToken={setToken} {...routerProps}/>)}/>
                 <Route exact path="/login" render={routerProps => (<LoginPage setToken={setToken} {...routerProps}/>)}/>

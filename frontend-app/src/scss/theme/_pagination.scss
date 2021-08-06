@@ -15,6 +15,20 @@
 .pagination button.active {
   background-color: #384aeb;
   color: white;
+  animation-name: paginationBlob;
+  animation-duration: 500ms;
+}
+
+@keyframes paginationBlob {
+  25% {
+    transform: scale(0.75);
+  }
+  50%, 100% {
+    transform: scale(1);
+  }
+  75% {
+    transform: scale(1.1);
+  }
 }
 
 .pagination button:hover:not(.active) {

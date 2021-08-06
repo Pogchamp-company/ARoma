@@ -132,7 +132,7 @@ export default class CartPage extends Component {
                                         }}>
                                             <div className="media">
                                                 <div className="d-flex">
-                                                    <img src="img/cart/cart1.png" alt=""/>
+                                                    <img src={`https://picsum.photos/id/${item.product.ID}/263/280`} style={{"--index": index}} className={"cart-image"} alt=""/>
                                                 </div>
                                                 <div className="media-body">
                                                     <p>{item.product.Title}</p>

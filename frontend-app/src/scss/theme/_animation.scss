@@ -79,6 +79,80 @@
 }
 
 .card-back-img {
+  filter: blur(2px);
+
   position: absolute;
   left: 0;
+}
+
+.hero-banner::before {
+  transform: translateX(-500%);
+
+  animation-name: containerShowUp;
+  animation-duration: 1000ms;
+  animation-fill-mode: forwards;
+}
+
+.hero-banner__img{
+  //transform: translateX(-500%);
+  opacity: 0;
+
+  animation-name: opacityShowUp;
+  animation-duration: 750ms;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-out;
+}
+
+.hero-banner__content {
+  //transform: translateX(-500%);
+  opacity: 0;
+
+  animation-name: opacityShowUp;
+  animation-duration: 750ms;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-out;
+  animation-delay: 500ms;
+}
+
+@keyframes opacityShowUp {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+
+}
+
+@keyframes containerShowUp {
+  50% {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.header_area {
+  position: sticky;
+  top: 0;
+  //z-index: 100000000;
+  background: white;
+  margin-bottom: 10px;
+}
+
+#app {
+  margin-top: 10px;
+}
+
+.cart-image {
+  opacity: 0;
+  animation-delay: calc(var(--index) * 300ms);
+  width: 150px;
+  height: 150px;
+  animation-name: opacityShowUp;
+  animation-duration: 500ms;
+  animation-fill-mode: forwards;
 }
