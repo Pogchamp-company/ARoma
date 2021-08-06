@@ -48,6 +48,18 @@ func CreateOrder(context *gin.Context) {
 	})
 }
 
+func GetOrder(context *gin.Context) {
+	orderID, _ := strconv.ParseInt(context.Request.URL.Query().Get("orderID"), 10, 64)
+	var order models.Order
+	models.Db.Joins("ShippingMethod").Joins("Products").First(&order, orderID)
+	if order.CouponCode.ExpiredAt.Status == 0 {
+		order.CouponCode.ExpiredAt.Status = 1
+	}
+	context.JSON(http.StatusOK, gin.H{
+		"order": order,
+	})
+}
+
 func GetAllShippingMethods(context *gin.Context) {
 	var shippingMethods []models.ShippingMethod
 	models.Db.Find(&shippingMethods)

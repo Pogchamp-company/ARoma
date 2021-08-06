@@ -11,5 +11,5 @@ func RegisterUser(credentials dto.RegisterCredentials) (string, bool) {
 	if err != nil {
 		return "", false
 	}
-	return JWTAuthService().GenerateToken(user.Email, true), true
+	return JWTAuthService().GenerateToken(user.Email), true
 }

@@ -15,5 +15,5 @@ func LoginUser(credentials dto.LoginCredentials) (string, bool) {
 	if !user.CheckPassword(credentials.Password) {
 		return "", false
 	}
-	return JWTAuthService().GenerateToken(user.Email, true), true
+	return JWTAuthService().GenerateToken(user.Email), true
 }

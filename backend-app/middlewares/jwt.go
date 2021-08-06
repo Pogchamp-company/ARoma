@@ -21,7 +21,7 @@ func LoginRequired(handler func(*gin.Context)) func(*gin.Context) {
 		if token.Valid {
 			claims := token.Claims.(jwt.MapClaims)
 			var user models.User
-			models.Db.Where("email = ?", claims["name"]).First(&user)
+			models.Db.Where("email = ?", claims["email"]).First(&user)
 			context.Set("currentUser", user)
 		} else {
 			fmt.Println(err)

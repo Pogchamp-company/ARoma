@@ -7,6 +7,7 @@ import (
 	"github.com/mitchellh/mapstructure"
 	"gorm.io/gorm"
 	"net/http"
+	"os"
 	"strconv"
 )
 
@@ -73,10 +74,24 @@ func filterProductsByAttributes(query *gorm.DB, filters map[string]interface{}) 
 	}
 }
 
+func getEnv(key, fallback string) string {
+	value := os.Getenv(key)
+	if len(value) == 0 {
+		return fallback
+	}
+	return value
+}
+
 func SearchProducts(context *gin.Context) {
+	ProductsCount, _ := strconv.ParseInt(getEnv("ProductsCount", "12"), 10, 64)
+	page := context.Request.URL.Query().Get("page")
+	if page == "" {
+		page = "1"
+	}
+	thisPage, _ := strconv.ParseInt(page, 10, 64)
 	productQuery := context.Request.URL.Query().Get("productQuery")
 	var products []models.Product
-	query := models.Db.Where("title ILIKE ?", "%"+productQuery+"%")
+	query := models.Db.Model(&models.Product{}).Where("title ILIKE ?", "%"+productQuery+"%")
 	catalogId := context.Request.URL.Query().Get("catalogId")
 	if catalogId != "" {
 		query = query.Where("catalog_id = ?", catalogId)
@@ -87,9 +102,16 @@ func SearchProducts(context *gin.Context) {
 	if err == nil {
 		filterProductsByAttributes(query, filters)
 	}
-	query.Preload("Catalog").Find(&products)
+	var count int64
+	query.Count(&count)
+	pagesCount := count / ProductsCount
+	if count%ProductsCount != 0 {
+		pagesCount += 1
+	}
+	query.Preload("Catalog").Offset(int(ProductsCount * (thisPage - 1))).Limit(int(ProductsCount)).Find(&products)
 	context.JSON(http.StatusOK, gin.H{
-		"products": products,
+		"products":   products,
+		"pagesCount": pagesCount,
 	})
 }
 

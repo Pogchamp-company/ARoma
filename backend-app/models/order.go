@@ -17,7 +17,7 @@ const (
 )
 
 func (p *OrderStatus) Scan(value interface{}) error {
-	*p = OrderStatus(value.([]byte))
+	*p = OrderStatus(value.(string))
 	return nil
 }
 
@@ -34,6 +34,7 @@ type Order struct {
 	ShippingMethod   ShippingMethod
 	CouponCodeID     int
 	CouponCode       CouponCode
+	Products         []Product `gorm:"many2many:product_order"`
 }
 
 type ProductCredentials struct {
