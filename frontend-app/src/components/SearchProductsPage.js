@@ -2,7 +2,7 @@ import React, {Component, createRef} from "react";
 import TopProducts from "./TopProducts";
 import {Link} from "react-router-dom";
 import NoUiSlider from "./NoUiSlider";
-import Select from 'react-select'
+import Paginator from "./Paginator";
 
 
 class ProductCard extends Component {
@@ -52,23 +52,42 @@ class ProductCard extends Component {
     render() {
         return (
             <div className="col-md-6 col-lg-4">
-                <div key={Math.random()} className="card text-center card-product"
+                <div key={this.props.product.ID.toString() + this.props.catalog}
+                     className="card text-center card-product"
                      style={{'--index': this.props.index}}>
                     <div className="card-product__img">
-                        <img className="card-img" src={`https://picsum.photos/id/${this.props.product.ID}/263/280`}
-                             alt=""/>
-                        <ul className="card-product__imgOverlay">
-                            <li>
-                                <Link to={`/product/${this.props.product.ID}`}><i className="ti-search"></i></Link>
-                            </li>
-                            <li>
-                                <button onClick={(e) => this.handleAddToCart(e, this.props.product)}><i
-                                    className="ti-shopping-cart"></i></button>
-                            </li>
-                            <li>
-                                <button><i className="ti-heart"></i></button>
-                            </li>
-                        </ul>
+                        <div className="flip-card">
+                            <div className="flip-card-inner">
+                                <div className="flip-card-front">
+                                    <img src={`https://picsum.photos/id/${this.props.product.ID}/263/280`}
+                                         alt="Avatar"/>
+                                </div>
+                                <div className="flip-card-back">
+                                    <img className={"card-back-img"}
+                                         src={`https://picsum.photos/id/${this.props.product.ID}/263/280?blur=2`}
+                                         alt="Avatar"/>
+                                    <ul className="card-product__imgOverlay">
+                                        <li>
+                                            <Link to={`/product/${this.props.product.ID}`}><i className="ti-search"></i></Link>
+                                        </li>
+                                        <li>
+                                            <button onClick={(e) => this.handleAddToCart(e, this.props.product)}><i
+                                                className="ti-shopping-cart"></i></button>
+                                        </li>
+                                        <li>
+                                            <button><i className="ti-heart"></i></button>
+                                        </li>
+                                    </ul>
+                                    {/*<h1>John Doe</h1>*/}
+                                    {/*<p>Architect & Engineer</p>*/}
+                                    {/*<p>We love that guy</p>*/}
+                                </div>
+                            </div>
+                        </div>
+
+
+                        {/*<img className="card-img" src={`https://picsum.photos/id/${this.props.product.ID}/263/280`}*/}
+                        {/*     alt=""/>*/}
                     </div>
                     <div className="card-body">
                         <p>Accessories</p>
@@ -91,7 +110,7 @@ class ProductsContainer extends Component {
         return (
             <div className="row">
                 {this.props.products.map((product, index) => (
-                    <ProductCard product={product} index={index} cart={this.props.cart}/>
+                    <ProductCard catalog={this.props.catalog} product={product} index={index} cart={this.props.cart}/>
                 ))}
             </div>
         )
@@ -117,7 +136,7 @@ class EnumAttributeFilter extends Component {
 
     render() {
         return (
-            <div className="common-filter" key={Math.random()} >
+            <div className="common-filter" key={this.props.attribute.Title}>
                 <div className="head">{this.props.attribute.Title}</div>
                 <ul>
                     <li className="filter-list"><input className="pixel-radio" type="radio"
@@ -167,7 +186,7 @@ class RangeAttributeFilter extends Component {
 
     render() {
         return (
-            <div className="common-filter" key={Math.random()} >
+            <div className="common-filter" key={this.props.attribute.Title}>
                 <div className="head">{this.props.attribute.Title}</div>
                 <NoUiSlider ref={this.sliderRef}
                             title={this.props.attribute.Title}
@@ -220,7 +239,8 @@ class AttributesContainer extends Component {
                 })}
                 {
                     this.props.price.Min !== this.props.price.Max ? (
-                        <div className="common-filter" key={Math.random()}>
+                        <div className="common-filter"
+                             key={this.props.price.Min.toString() + this.props.price.Max.toString()}>
                             <div className="head">Price{this.props.price.Min !== this.props.price.Max}</div>
                             <NoUiSlider ref={this.productsPriceElement} title="Price" min={this.props.price.Min}
                                         max={this.props.price.Max} symbol="$"/>
@@ -247,7 +267,10 @@ export default class SearchProductsPage extends Component {
                 Max: 100,
             },
             attributes: [],
-            currentCatalog: ''
+            currentCatalog: '',
+            currentPage: 1,
+            pagesCount: 1,
+            currentSearchQuery: '',
         }
 
         this.updateAllCategories()
@@ -259,12 +282,14 @@ export default class SearchProductsPage extends Component {
 
     handleSearchChange(event) {
         const filters_dict = this.filtersContainerElement.current.generateFiltersDict()
+        this.state.currentPage = 1
 
         this.fetchProducts(event.target.value, this.state.currentCatalog, filters_dict)
     }
 
     setCurrentCatalog(catalog) {
         this.state.currentCatalog = catalog
+        this.state.currentPage = 1
         this.updateFilters()
         this.fetchProducts('', this.state.currentCatalog)
         document.getElementsByClassName("search-input")[0].value = ""
@@ -274,8 +299,10 @@ export default class SearchProductsPage extends Component {
         let url = 'http://0.0.0.0:8080/product/search'
         const params = {}
         if (productsQuery !== '') params['productQuery'] = productsQuery
+        this.setState({currentSearchQuery: productsQuery})
         if (catalogId !== '') params['catalogId'] = catalogId
         if (filters !== {}) params['filters'] = JSON.stringify(filters);
+        params['page'] = this.state.currentPage;
         if (params) {
             url += `?${Object.entries(params).map(([n, v]) => `${n}=${v}`).join('&')}`
         }
@@ -283,7 +310,8 @@ export default class SearchProductsPage extends Component {
             .then(response => response.json())
             .then(catalog_json => {
                 this.setState({
-                    products: catalog_json["products"]
+                    products: catalog_json["products"],
+                    pagesCount: catalog_json['pagesCount']
                 })
             })
             .catch((e) => console.log('fetchProducts some error', e));
@@ -322,6 +350,7 @@ export default class SearchProductsPage extends Component {
 
     applyFilters() {
         const filters_dict = this.filtersContainerElement.current.generateFiltersDict()
+        this.state.currentPage = 1
         this.fetchProducts('', this.state.currentCatalog, filters_dict)
     }
 
@@ -353,13 +382,13 @@ export default class SearchProductsPage extends Component {
         </div>
     }
 
-    render() {
-        const options = [
-            {value: '1', label: 'Show 5'},
-            {value: '2', label: 'Show 25'},
-            {value: '3', label: 'Show 100'}
-        ]
+    setPage(page) {
+        this.state.currentPage = page
+        const filters_dict = this.filtersContainerElement.current.generateFiltersDict()
+        this.fetchProducts(this.state.currentSearchQuery, this.state.currentCatalog, filters_dict)
+    }
 
+    render() {
         return (
             <div>
                 <section className="section-margin--small mb-5">
@@ -374,18 +403,16 @@ export default class SearchProductsPage extends Component {
                             </div>
                             <div className="col-xl-9 col-lg-8 col-md-7">
                                 <div className="filter-bar d-flex flex-wrap align-items-center">
-                                    <div className="sorting" style={{width: '150px'}}>
-                                        <Select defaultValue={options[0]} options={options}/>
-                                    </div>
-                                    <div className="sorting mr-auto" style={{width: '150px'}}>
-                                        <Select defaultValue={options[0]} options={options}/>
-                                    </div>
+                                    {this.state.pagesCount > 1 ? <Paginator setPage={page => this.setPage(page)} page={this.state.currentPage}
+                                                pagesCount={this.state.pagesCount}/> : ''}
+                                    <div className="sorting mr-auto"/>
                                     <div>
                                         <div className="input-group filter-bar-search">
                                             <input type="text" placeholder="Search" className="search-input"
+                                                   value={this.state.currentSearchQuery}
                                                    onChange={(event) => this.handleSearchChange(event)}/>
                                             <div className="input-group-append">
-                                                <button type="button"><i className="ti-search"></i></button>
+                                                <button type="button"><i className="ti-search"/></button>
                                             </div>
                                         </div>
                                     </div>
@@ -393,6 +420,7 @@ export default class SearchProductsPage extends Component {
                                 <section className="lattest-product-area pb-40 category-list">
                                     <ProductsContainer cart={this.props.cart}
                                                        products={this.state.products}
+                                                       catalog={this.state.currentCatalog}
                                                        ref={this.productsContainerElement}/>
                                 </section>
                             </div>
