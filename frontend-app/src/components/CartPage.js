@@ -115,7 +115,7 @@ export default class CartPage extends Component {
                 <div className="container">
                     <div className="cart_inner">
                         <div className="table-responsive">
-                            <table className="table">
+                            <table className="table cart-table">
                                 <thead>
                                 <tr>
                                     <th scope="col">Product</th>
@@ -126,7 +126,7 @@ export default class CartPage extends Component {
                                 </thead>
                                 <tbody>
                                 {this.props.cart.getCart().map((item, index) => (
-                                    <tr>
+                                    <tr style={{'--index': index}}>
                                         <td style={{
                                             width: '727px'
                                         }}>

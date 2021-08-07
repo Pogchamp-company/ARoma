@@ -149,10 +149,33 @@
 
 .cart-image {
   opacity: 0;
-  animation-delay: calc(var(--index) * 300ms);
+  animation-delay: calc(var(--index) * 300ms + 500ms);
   width: 150px;
   height: 150px;
   animation-name: opacityShowUp;
   animation-duration: 500ms;
   animation-fill-mode: forwards;
 }
+
+.cart-table tr {
+  opacity: 0;
+  transform: scaleY(0);
+  animation-name: trShowUp;
+  animation-fill-mode: forwards;
+  animation-duration: 500ms;
+  animation-delay: calc(var(--index) * 200ms);
+}
+
+@keyframes trShowUp {
+  50% {
+    opacity: 0;
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  100% {
+    opacity: 1;
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+}
+
