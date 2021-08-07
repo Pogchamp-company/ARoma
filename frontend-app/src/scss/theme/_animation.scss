@@ -182,3 +182,13 @@
   }
 }
 
+.filter-bar {
+  position: sticky;
+  top: 89px;
+  z-index: 1000000000;
+  margin-right: -9px;
+}
+
+.justify-center {
+  justify-content: center;
+}

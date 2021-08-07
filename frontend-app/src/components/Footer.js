@@ -10,7 +10,7 @@ export default class Footer extends Component {
             <footer className="footer">
                 <div className="footer-area">
                     <div className="container">
-                        <div className="row section_gap">
+                        <div className="row section_gap justify-center">
                             <div className="col-lg-3 col-md-6 col-sm-6">
                                 <div className="single-footer-widget tp_widgets">
                                     <h4 className="footer_title large_title">Our Mission</h4>
@@ -22,32 +22,6 @@ export default class Footer extends Component {
                                         So seed seed green that winged cattle in. Gathering thing made fly you're no
                                         divided deep moved
                                     </p>
-                                </div>
-                            </div>
-                            <div className="offset-lg-1 col-lg-2 col-md-6 col-sm-6">
-                                <div className="single-footer-widget tp_widgets">
-                                    <h4 className="footer_title">Quick Links</h4>
-                                    <ul className="list">
-                                        <li><a href="#">Home</a></li>
-                                        <li><a href="#">Shop</a></li>
-                                        <li><a href="#">Blog</a></li>
-                                        <li><a href="#">Product</a></li>
-                                        <li><a href="#">Brand</a></li>
-                                        <li><a href="#">Contact</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div className="col-lg-2 col-md-6 col-sm-6">
-                                <div className="single-footer-widget instafeed">
-                                    <h4 className="footer_title">Gallery</h4>
-                                    <ul className="list instafeed d-flex flex-wrap">
-                                        <li><img src="/img/gallery/r1.jpg" alt=""/></li>
-                                        <li><img src="/img/gallery/r2.jpg" alt=""/></li>
-                                        <li><img src="/img/gallery/r3.jpg" alt=""/></li>
-                                        <li><img src="/img/gallery/r5.jpg" alt=""/></li>
-                                        <li><img src="/img/gallery/r7.jpg" alt=""/></li>
-                                        <li><img src="/img/gallery/r8.jpg" alt=""/></li>
-                                    </ul>
                                 </div>
                             </div>
                             <div className="offset-lg-1 col-lg-3 col-md-6 col-sm-6">

@@ -86,7 +86,7 @@ export default class CartPage extends Component {
         }
         console.log(order)
 
-        let url = 'http://0.0.0.0:8080/order/step1'
+        let url = `${serverUrl}/order/step1`
         const data = new FormData();
 
         data.set('Products', JSON.stringify(order.Products))
