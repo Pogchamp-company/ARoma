@@ -25,7 +25,7 @@ export default class ProductPage extends Component {
                 }
             }
         }
-        fetch('http://0.0.0.0:8080/product/' + this.productId)
+        fetch(`${serverUrl}/product/${this.productId}`)
             .then(response => response.json())
             .then(product_json => this.setState({
                 product: product_json.obj

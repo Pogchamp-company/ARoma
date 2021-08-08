@@ -185,7 +185,7 @@ export default class SearchProductsPage extends Component {
     }
 
     fetchProducts(productsQuery = '', catalogId = '', filters = {}) {
-        let url = 'http://0.0.0.0:8080/product/search'
+        let url = `${serverUrl}/product/search`
         const params = {}
         if (productsQuery !== '') params['productQuery'] = productsQuery
         this.setState({currentSearchQuery: productsQuery})
@@ -208,7 +208,7 @@ export default class SearchProductsPage extends Component {
 
 
     updateAllCategories() {
-        fetch('http://0.0.0.0:8080/catalog')
+        fetch(`${serverUrl}/catalog`)
             .then(response => response.json())
             .then(catalog_json => {
                 this.setState({
@@ -221,9 +221,9 @@ export default class SearchProductsPage extends Component {
     updateFilters() {
         let url
         if (this.state.currentCatalog === "") {
-            url = `http://0.0.0.0:8080/catalog/get_attributes`
+            url = `${serverUrl}/catalog/get_attributes`
         } else {
-            url = `http://0.0.0.0:8080/catalog/get_attributes?catalogId=${this.state.currentCatalog}`
+            url = `${serverUrl}/catalog/get_attributes?catalogId=${this.state.currentCatalog}`
         }
 
         fetch(url)

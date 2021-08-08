@@ -12,7 +12,7 @@ export default class MainPage extends Component {
     }
 
     updateProducts() {
-        fetch("http://0.0.0.0:8080/product/top")
+        fetch(`${serverUrl}/product/top`)
             .then(response => response.json())
             .then(catalog_json => {
                 this.setState({trendingProducts: catalog_json["products"]})

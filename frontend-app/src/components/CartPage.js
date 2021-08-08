@@ -16,7 +16,7 @@ export default class CartPage extends Component {
     }
 
     updateShippingMethods() {
-        fetch("http://0.0.0.0:8080/order/shipping_methods")
+        fetch(`${serverUrl}/order/shipping_methods`)
             .then(response => response.json())
             .then(catalog_json => {
                 this.setState({
@@ -30,7 +30,7 @@ export default class CartPage extends Component {
     }
 
     applyCoupon(event) {
-        fetch(`http://0.0.0.0:8080/order/check_coupon?couponTitle=${this.state.couponStr}`, {cache: "no-cache"})
+        fetch(`${serverUrl}/order/check_coupon?couponTitle=${this.state.couponStr}`, {cache: "no-cache"})
             .then((response) => {
                 console.log(response)
                 if (response.ok) {

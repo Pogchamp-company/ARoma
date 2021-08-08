@@ -23,7 +23,7 @@ export default class LoginPage extends Component {
 
         if (this.validateInputs()) {
             console.log("Valid")
-            let url = 'http://0.0.0.0:8080/login'
+            let url = `${serverUrl}/login`
             const data = new FormData();
 
             data.set('login', this.usernameRef.current.value)

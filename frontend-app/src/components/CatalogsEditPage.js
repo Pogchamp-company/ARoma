@@ -11,7 +11,7 @@ export default class CatalogsEditPage extends Component {
     }
 
     updateAllCategories() {
-        fetch('http://0.0.0.0:8080/catalog')
+        fetch(`${serverUrl}/catalog`)
             .then(response => response.json())
             .then(catalog_json => {
                 this.setState({

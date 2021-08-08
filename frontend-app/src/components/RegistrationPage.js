@@ -32,7 +32,7 @@ export default class RegistrationPage extends Component {
 
         if (this.validateInputs()) {
             console.log("Valid")
-            let url = 'http://0.0.0.0:8080/register'
+            let url = `${serverUrl}/register`
             const data = new FormData();
 
             data.set('nickname', this.usernameRef.current.value)
@@ -111,12 +111,12 @@ export default class RegistrationPage extends Component {
                                     <div className="col-md-12 form-group">
                                         <input type="text" className="form-control clear" id="name" name="name"
                                                placeholder="Username" ref={this.usernameRef}
-                                               onChange={(e) => this.onDuplicateAbleChange(e, 'http://0.0.0.0:8080/check_username?username=')}/>
+                                               onChange={(e) => this.onDuplicateAbleChange(e, `${serverUrl}/check_username?username=`)}/>
                                     </div>
                                     <div className="col-md-12 form-group">
                                         <input type="text" className="form-control clear" id="email" name="email"
                                                placeholder="Email Address" ref={this.emailRef}
-                                               onChange={(e) => this.onDuplicateAbleChange(e, 'http://0.0.0.0:8080/check_email?email=')}/>
+                                               onChange={(e) => this.onDuplicateAbleChange(e, `${serverUrl}/check_email?email=`)}/>
                                     </div>
                                     <div className="col-md-12 form-group">
                                         <input type="password" className="form-control clear" id="password"

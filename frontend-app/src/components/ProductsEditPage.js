@@ -15,7 +15,7 @@ export default class ProductsEditPage extends Component {
     }
 
     updateAllProduct() {
-        fetch(`http://0.0.0.0:8080/catalog/${this.props.match.params.catalogId}`)
+        fetch(`${serverUrl}/catalog/${this.props.match.params.catalogId}`)
             .then(response => response.json())
             .then(catalog_json => {
                 console.log(catalog_json)
