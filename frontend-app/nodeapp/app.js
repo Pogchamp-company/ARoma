@@ -25,8 +25,9 @@ app.get('/cart', reactHandler)
 app.get('/search_products', reactHandler)
 app.get('/product/:id', reactHandler)
 app.get('/edit_catalogs', reactHandler)
-app.get('/step2', reactHandler)
+app.get('/step2/:id', reactHandler)
 app.get('/edit_catalog_products/:id', reactHandler)
+app.get('/orders', reactHandler)
 
 app.use(express.static('static'));
 

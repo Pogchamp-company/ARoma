@@ -2,7 +2,29 @@ import React, {Component} from "react";
 import {serverUrl} from "./ServerUrl"
 
 export default class OrderStep2Page extends Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            order: undefined
+        }
+        this.updateOrder()
+    }
+
+    updateOrder() {
+        let url = `${serverUrl}/order?orderID=${this.props.match.params.orderId}`
+        fetch(url)
+            .then(response => response.json())
+            .then(catalog_json => {
+                this.setState({
+                    order: catalog_json["order"],
+                })
+            })
+            .catch((e) => console.log('fetchProducts some error', e));
+    }
+
     render() {
+        if (this.state.order === undefined) return ''
+        console.log(this.state)
         return (
             <section className="checkout_area section-margin--small">
                 <div className="container">

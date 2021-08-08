@@ -43,18 +43,6 @@ export default class Header extends Component {
                                 </ul>
 
                                 <ul className="nav-shop">
-                                    <li className="nav-item">
-                                        <button onClick={() => {
-                                            document.documentElement.setAttribute("data-theme", "dark")//set theme to light
-                                            let theme = localStorage.getItem('data-theme'); // Retrieve saved them from local storage
-                                            if (theme === 'dark') {
-                                                this.changeThemeToLight()
-                                            } else {
-                                                this.changeThemeToDark()
-                                            }
-
-                                        }}><i className="ti-search"></i></button>
-                                    </li>
                                     <li id="cart-icon" className="nav-item">
                                         {
                                             tolalCartAmount <= 0
@@ -65,6 +53,9 @@ export default class Header extends Component {
                                                     id={"cart-icon-number"}
                                                     className="nav-shop__circle">{tolalCartAmount > 99 ? '99+' : tolalCartAmount}</span></Link>
                                         }
+                                    </li>
+                                    <li className="nav-item">
+                                        <Link to={"/orders"}><i className="ti-shopping-cart-full"></i></Link>
                                     </li>
                                     {this.props.token === undefined ?
                                         <li className="nav-item"><Link className="button button-header"
