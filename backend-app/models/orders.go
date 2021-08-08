@@ -74,6 +74,7 @@ func NewOrder(customer User,
 type OrderProduct struct {
 	OrderID   int
 	ProductID int
+	Product   Product
 	Quantity  int
 }
 

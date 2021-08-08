@@ -17,6 +17,7 @@ type Product struct {
 	LongDescription string
 	Attributes      pgtype.JSONB
 	ViewsCount      int
+	Photos          []Attachment `gorm:"many2many:product_attachment"`
 }
 
 func NewProduct(title string,

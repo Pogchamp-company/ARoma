@@ -7,7 +7,7 @@ CREATE TABLE catalogs
 CREATE TABLE products
 (
     id          SERIAL       NOT NULL CONSTRAINT products_pkey PRIMARY KEY,
-    title       varchar(255) NOT NULL,
-    catalog_id  int          NOT NULL CONSTRAINT product_catalog_id_fkey REFERENCES catalogs,
+    title       VARCHAR(255) NOT NULL,
+    catalog_id  INT          NOT NULL CONSTRAINT product_catalog_id_fkey REFERENCES catalogs,
     attributes  JSON
 );

@@ -3,8 +3,10 @@ package handlers
 import (
 	"aroma/models"
 	"encoding/json"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"reflect"
 	"strconv"
 	"time"
 )
@@ -56,14 +58,45 @@ func CreateOrder(context *gin.Context) {
 }
 
 func GetOrder(context *gin.Context) {
+	type OrderProductStep2 struct {
+		Title    string
+		Quantity int
+		Price    float32
+	}
+	type OrderStep2 struct {
+		ShippingMethod models.ShippingMethod
+		Sale           int
+		Products       []OrderProductStep2
+	}
 	orderID, _ := strconv.ParseInt(context.Request.URL.Query().Get("orderID"), 10, 64)
 	var order models.Order
-	models.Db.Joins("ShippingMethod").Joins("Products").First(&order, orderID)
-	if order.CouponCode.ExpiredAt.Status == 0 {
-		order.CouponCode.ExpiredAt.Status = 1
+	models.Db.Preload("ShippingMethod").Preload("CouponCode").First(&order, orderID)
+	user, _ := context.Get("currentUser")
+	if order.CustomerID != user.(models.User).ID {
+		fmt.Println(order.CustomerID, user.(models.User).ID)
+		context.AbortWithStatus(http.StatusForbidden)
+		return
+	}
+	var rows []map[string]interface{}
+	models.Db.
+		Raw("SELECT p.title, po.quantity, p.price "+
+			"FROM product_order as po JOIN products p on p.id = po.product_id WHERE po.order_id = ?", orderID).
+		Find(&rows)
+	var orderProducts []OrderProductStep2
+	for _, row := range rows {
+		fmt.Println(row, reflect.TypeOf(row))
+		orderProducts = append(orderProducts, OrderProductStep2{
+			Title:    row["title"].(string),
+			Quantity: int(row["quantity"].(int32)),
+			Price:    float32(row["price"].(float64)),
+		})
 	}
 	context.JSON(http.StatusOK, gin.H{
-		"order": order,
+		"order": OrderStep2{
+			ShippingMethod: order.ShippingMethod,
+			Sale:           order.CouponCode.Sale,
+			Products:       orderProducts,
+		},
 	})
 }
 
