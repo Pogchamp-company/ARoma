@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import {serverUrl} from "./ServerUrl"
 
 export default class OrderStep2Page extends Component{
     render() {

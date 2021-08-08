@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import {Link, Redirect} from "react-router-dom";
+import {serverUrl} from "./ServerUrl"
 
 
 export default class LoginPage extends Component {

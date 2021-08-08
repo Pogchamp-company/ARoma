@@ -3,8 +3,8 @@ import TopProducts from "./TopProducts";
 import {Link} from "react-router-dom";
 import NoUiSlider from "./NoUiSlider";
 import Paginator from "./Paginator";
-import ProductCard from "./ProductCard";
 import ProductsContainer from "./ProductCard";
+import {serverUrl} from "./ServerUrl"
 
 
 class EnumAttributeFilter extends Component {

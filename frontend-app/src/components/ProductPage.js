@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import TopProducts from "./TopProducts";
+import {serverUrl} from "./ServerUrl"
 
 
 export default class ProductPage extends Component {

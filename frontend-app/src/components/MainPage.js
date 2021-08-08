@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import {Link} from "react-router-dom";
 import ProductsContainer from "./ProductCard";
+import {serverUrl} from "./ServerUrl"
 
 export default class MainPage extends Component {
     constructor(props) {

@@ -15,7 +15,6 @@ import CatalogsEditPage from "./CatalogsEditPage";
 import OrderStep2Page from "./OrderStep2Page";
 import ProductsEditPage from "./ProductsEditPage";
 
-
 export default function App() {
     const {token, setToken} = useToken()
     const cart = useCart();
