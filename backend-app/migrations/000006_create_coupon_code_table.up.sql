@@ -1,11 +1,10 @@
 CREATE TABLE coupon_codes
 (
-    id    serial       not null
-        constraint coupon_codes_pkey primary key,
-    title varchar(20) NOT NULL UNIQUE,
-    sale int NOT NULL,
-    expired_at date NOT NULL
+    id         SERIAL       NOT NULL CONSTRAINT coupon_codes_pkey PRIMARY KEY ,
+    title      VARCHAR(20)  NOT NULL UNIQUE,
+    sale       INT          NOT NULL,
+    expired_at DATE         NOT NULL
 );
 
 ALTER TABLE orders
-ADD COLUMN coupon_code_id int constraint order_coupon_code_id_fkey references coupon_codes;
+    ADD COLUMN coupon_code_id INT CONSTRAINT order_coupon_code_id_fkey REFERENCES coupon_codes;

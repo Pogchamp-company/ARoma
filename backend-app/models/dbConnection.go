@@ -1,11 +1,11 @@
 package models
 
 import (
+	"aroma/config"
 	"fmt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"net/url"
-	"os"
 )
 
 func getDSN(uri string) string {
@@ -20,8 +20,16 @@ func getDSN(uri string) string {
 	)
 }
 
-func GetConnection(uri string) gorm.Dialector {
+func openDialectorConnection(uri string) gorm.Dialector {
 	return postgres.Open(getDSN(uri))
 }
 
-var Db, _ = gorm.Open(GetConnection(os.Getenv("POSTGRESQL_URI")), &gorm.Config{})
+func openGormConnection(dialector gorm.Dialector) *gorm.DB {
+	conn, err := gorm.Open(dialector, &gorm.Config{})
+	if err != nil {
+		panic(err)
+	}
+	return conn
+}
+
+var Db = openGormConnection(openDialectorConnection(config.Config.PostgresqlUri))

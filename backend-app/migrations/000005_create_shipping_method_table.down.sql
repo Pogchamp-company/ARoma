@@ -1,6 +1,6 @@
 ALTER TABLE products
     DROP COLUMN quantity_in_stock,
-    ALTER COLUMN attributes TYPE json;
+    ALTER COLUMN attributes TYPE JSON;
 
 
 ALTER TABLE orders

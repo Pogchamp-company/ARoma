@@ -15,10 +15,6 @@ type BaseModel struct {
 	ID int
 }
 
-//func (obj BaseModel) TableName() string {
-//	return reflect.TypeOf(obj).String()
-//}
-
 func (obj BaseModel) ToStr() string {
 	return string(rune(obj.ID))
 }

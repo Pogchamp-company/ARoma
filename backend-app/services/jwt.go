@@ -1,20 +1,20 @@
 package services
 
 import (
+	"aroma/config"
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
 )
 
-// JWTService jwt service
 type JWTService interface {
-	GenerateToken(email string, isUser bool) string
+	GenerateToken(email string) string
 	ValidateToken(token string) (*jwt.Token, error)
 }
-type authCustomClaims struct {
-	Email string `json:"name"`
+
+type authClaims struct {
+	Email string
 	jwt.StandardClaims
 }
 
@@ -22,23 +22,14 @@ type jwtService struct {
 	secretKey string
 }
 
-// JWTAuthService auth-jwt
 func JWTAuthService() *jwtService {
 	return &jwtService{
-		secretKey: getSecretKey(),
+		secretKey: config.Config.JWTSecretKey,
 	}
-}
-
-func getSecretKey() string {
-	secret := os.Getenv("SECRET")
-	if secret == "" {
-		secret = "secret"
-	}
-	return secret
 }
 
 func (service *jwtService) GenerateToken(email string) string {
-	claims := &authCustomClaims{
+	claims := &authClaims{
 		email,
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Hour * 48).Unix(),
@@ -57,11 +48,11 @@ func (service *jwtService) GenerateToken(email string) string {
 
 func (service *jwtService) ValidateToken(encodedToken string) (*jwt.Token, error) {
 	return jwt.Parse(encodedToken, func(token *jwt.Token) (interface{}, error) {
-		if _, isvalid := token.Method.(*jwt.SigningMethodHMAC); !isvalid {
-			return nil, fmt.Errorf("Invalid token", token.Header["alg"])
+		if _, isValid := token.Method.(*jwt.SigningMethodHMAC); isValid {
+			return []byte(service.secretKey), nil
 
 		}
-		return []byte(service.secretKey), nil
+		return nil, fmt.Errorf("Invalid token", token.Header["alg"])
 	})
 
 }

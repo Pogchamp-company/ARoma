@@ -1,9 +1,11 @@
 package main
 
 import (
+	"aroma/config"
 	"aroma/middlewares"
 	"aroma/routes"
 	"aroma/seeds"
+	"aroma/services/attachments"
 	"flag"
 	"fmt"
 	"os"
@@ -18,6 +20,8 @@ func main() {
 		runServer()
 	case "db":
 		dbCommands()
+	case "init_buckets":
+		attachments.InitBuckets()
 	default:
 		help()
 	}
@@ -28,11 +32,12 @@ func help() {
 	fmt.Println("\nUsage:")
 	fmt.Println("\n\tgo run . <command> [arguments]")
 	fmt.Println("\nThe commands are:")
-	fmt.Println("\n\trunserver\t\t\trun rest-api server")
+	fmt.Println("\n\trunserver\t\t\t\trun rest-api server")
 	fmt.Println("\tdb migrate [optional: migrationName]\tcreate new migration for database")
-	fmt.Println("\tdb upgrade\t\t\texecute up migrations")
-	fmt.Println("\tdb downgrade\t\t\texecute down migrations")
-	fmt.Println("\tdb seed [optional: seedName]\texecute all seeders")
+	fmt.Println("\tdb upgrade\t\t\t\texecute up migrations")
+	fmt.Println("\tdb downgrade\t\t\t\texecute down migrations")
+	fmt.Println("\tdb seed [optional: seedName]\t\texecute all seeders")
+	fmt.Println("\tinit_buckets\t\t\t\tInitialize minio buckets")
 }
 
 func runServer() {
@@ -74,11 +79,11 @@ func runSeeds() {
 }
 
 func upgradeDb() {
-	executeDbCommand("-database", os.Getenv("POSTGRESQL_URI"), "-path", "migrations", "up")
+	executeDbCommand("-database", config.Config.PostgresqlUri, "-path", "migrations", "up")
 }
 
 func downgradeDb() {
-	executeDbCommand("-database", os.Getenv("POSTGRESQL_URI"), "-path", "migrations", "down", "1")
+	executeDbCommand("-database", config.Config.PostgresqlUri, "-path", "migrations", "down", "1")
 }
 
 func migrateDb() {

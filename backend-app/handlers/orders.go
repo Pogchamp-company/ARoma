@@ -41,7 +41,14 @@ func CreateOrder(context *gin.Context) {
 		context.AbortWithStatus(400)
 		return
 	}
-	order, _ := models.NewOrder(orderData.Customer, shippingMethod, orderData.Products, orderData.CouponCode)
+	order, err := models.NewOrder(orderData.Customer, shippingMethod, orderData.Products, orderData.CouponCode)
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{
+			"Order":        nil,
+			"ErrorMessage": err,
+		})
+		return
+	}
 
 	context.JSON(http.StatusOK, gin.H{
 		"Order": order.ID,

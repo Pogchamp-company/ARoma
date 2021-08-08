@@ -1,2 +1,2 @@
 ALTER TABLE products
-    DROP COLUMN views_count
+    DROP COLUMN views_count;

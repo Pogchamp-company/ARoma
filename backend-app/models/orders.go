@@ -88,8 +88,8 @@ func NewOrderProduct(order Order,
 		ProductID: product.ID,
 		Quantity:  quantity,
 	}
-	Db.Create(&orderProduct)
-	return orderProduct, nil
+	query := Db.Create(&orderProduct)
+	return orderProduct, query.Error
 }
 
 func (obj OrderProduct) TableName() string {

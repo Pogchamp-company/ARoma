@@ -10,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func LoginRequired(handler func(*gin.Context)) func(*gin.Context) {
+func LoginRequired(handler gin.HandlerFunc) gin.HandlerFunc {
 	return func(context *gin.Context) {
 		tokenString := context.GetHeader("Authorization")
 		if len(tokenString) == 0 {

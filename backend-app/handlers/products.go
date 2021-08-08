@@ -1,13 +1,14 @@
 package handlers
 
 import (
+	"aroma/config"
 	"aroma/models"
+	"aroma/services/attachments"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"github.com/mitchellh/mapstructure"
 	"gorm.io/gorm"
 	"net/http"
-	"os"
 	"strconv"
 )
 
@@ -74,16 +75,7 @@ func filterProductsByAttributes(query *gorm.DB, filters map[string]interface{}) 
 	}
 }
 
-func getEnv(key, fallback string) string {
-	value := os.Getenv(key)
-	if len(value) == 0 {
-		return fallback
-	}
-	return value
-}
-
 func SearchProducts(context *gin.Context) {
-	ProductsCount, _ := strconv.ParseInt(getEnv("ProductsCount", "12"), 10, 64)
 	page := context.Request.URL.Query().Get("page")
 	if page == "" {
 		page = "1"
@@ -102,13 +94,14 @@ func SearchProducts(context *gin.Context) {
 	if err == nil {
 		filterProductsByAttributes(query, filters)
 	}
+	ProductsPageLimit := int64(config.Config.ProductsPageLimit)
 	var count int64
 	query.Count(&count)
-	pagesCount := count / ProductsCount
-	if count%ProductsCount != 0 {
+	pagesCount := count / ProductsPageLimit
+	if count%ProductsPageLimit != 0 {
 		pagesCount += 1
 	}
-	query.Preload("Catalog").Offset(int(ProductsCount * (thisPage - 1))).Limit(int(ProductsCount)).Find(&products)
+	query.Preload("Catalog").Offset(int(ProductsPageLimit * (thisPage - 1))).Limit(int(ProductsPageLimit)).Find(&products)
 	context.JSON(http.StatusOK, gin.H{
 		"products":   products,
 		"pagesCount": pagesCount,
@@ -126,5 +119,30 @@ func TopProducts(context *gin.Context) {
 func TestLoginRequired(context *gin.Context) {
 	context.JSON(http.StatusOK, gin.H{
 		"ok": true,
+	})
+}
+
+func UploadProductPhoto(context *gin.Context) {
+	file, err := context.FormFile("photo")
+	if err != nil {
+		context.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+	minioManager := attachments.InitAttachmentManager("product-photos")
+	attachment, err := minioManager.Upload(file)
+	context.JSON(http.StatusOK, gin.H{
+		"attachment_url": attachment.GetUrl(),
+	})
+}
+
+func GetAttachmentUrl(context *gin.Context) {
+	attachmentID := context.Request.URL.Query().Get("attachmentID")
+	var attachment models.Attachment
+	query := models.Db.First(&attachment, attachmentID)
+	if query.Error != nil {
+		panic(query.Error)
+	}
+	context.JSON(http.StatusOK, gin.H{
+		"attachment_url": attachment.GetUrl(),
 	})
 }

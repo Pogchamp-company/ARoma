@@ -35,8 +35,8 @@ func NewUser(email string, password string, nickname string) (User, error) {
 	if err != nil {
 		return User{}, err
 	}
-	Db.Create(&user)
-	return user, nil
+	query := Db.Create(&user)
+	return user, query.Error
 }
 
 func (obj User) CheckPassword(password string) bool {

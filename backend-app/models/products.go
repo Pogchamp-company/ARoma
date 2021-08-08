@@ -42,8 +42,8 @@ func NewProduct(title string,
 			Bytes:  marshalAttrs,
 		},
 	}
-	Db.Create(&product)
-	return product, nil
+	query := Db.Create(&product)
+	return product, query.Error
 }
 
 func (obj Product) ToStr() string {

@@ -14,8 +14,8 @@ func NewCatalog(title string) (Catalog, error) {
 	catalog := Catalog{
 		Title: title,
 	}
-	Db.Create(&catalog)
-	return catalog, nil
+	query := Db.Create(&catalog)
+	return catalog, query.Error
 }
 
 func (obj Catalog) Str() string {
