@@ -12,6 +12,7 @@ type User struct {
 	Email          string
 	HashedPassword string
 	Nickname       string
+	IsAdmin        bool
 }
 
 func checkUserExists(email string, nickname string) bool {

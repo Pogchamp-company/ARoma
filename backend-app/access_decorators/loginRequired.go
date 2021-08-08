@@ -1,4 +1,4 @@
-package middlewares
+package access_decorators
 
 import (
 	"aroma/models"
