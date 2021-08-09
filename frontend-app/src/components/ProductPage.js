@@ -54,17 +54,16 @@ export default class ProductPage extends Component {
     addToCart(e) {
         const amount = 1
         this.setState({
-            amount: amount
+            amount: this.props.cart.addToCart(this.state.product, amount)
         })
-        this.props.cart.addToCart(this.state.product, amount)
+        // this.props.cart.addToCart(this.state.product, amount)
     }
 
     onAmountChange(e) {
         const amount = parseInt(e.target.value)
         this.setState({
-            amount: amount
+            amount: this.props.cart.setAmount(this.state.product, amount)
         })
-        this.props.cart.setAmount(this.productId, amount)
     }
 
     renderAttributes() {
@@ -103,7 +102,7 @@ export default class ProductPage extends Component {
                                         <li><a className="active"
                                                href="#"><span>Category</span> : {this.state.product.Catalog.Title}</a>
                                         </li>
-                                        <li><a href="#"><span>Availibility</span> : In Stock</a></li>
+                                        <li><a href="#"><span>Availibility</span> : {this.state.product.QuantityInStock}</a></li>
                                     </ul>
                                     <p>{this.state.product.Description}</p>
                                     {this.renderQuantity()}

@@ -8,7 +8,9 @@ class ProductCard extends Component {
         super(props);
     }
 
-    handleAddToCart(e, productId) {
+    handleAddToCart(e, product) {
+        if (this.props.cart.getAmount(product.ID) === this.props.product.QuantityInStock) return
+
         const spanElem = document.getElementById('cart-icon-number')
 
         const btnRect = e.target.getBoundingClientRect()
@@ -43,7 +45,6 @@ class ProductCard extends Component {
             easing: "ease-in",
             delay: 450,
         })
-        this.props.cart.addToCart(productId, 1)
     }
 
 

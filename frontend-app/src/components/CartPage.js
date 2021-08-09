@@ -156,8 +156,7 @@ export default class CartPage extends Component {
                                                                return
                                                            }
                                                            let value = parseInt(e.target.value)
-                                                           if (value > item.product.QuantityInStock) value = item.product.QuantityInStock
-                                                           this.props.cart.setAmount(item.product.ID, value)
+                                                           this.props.cart.setAmount(item.product, value)
                                                        }}/>
                                             </div>
                                         </td>

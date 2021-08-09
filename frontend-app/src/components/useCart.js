@@ -16,29 +16,36 @@ export default function useCart() {
     };
 
     const addToCart = (product, amount) => {
+        if (product.QuantityInStock === 0) return
         const productId = product.ID
         const cart = getCart()
-        const item = cart.find((element) => element.product.ID === productId)
+        let item = cart.find((element) => element.product.ID === productId)
+        console.log(product)
         if (item === undefined) {
-            cart.push({
+            item = {
                 product: product,
                 amount: amount,
-            })
+            }
+            cart.push(item)
         } else {
             item.amount += amount
         }
+        if (item.amount > product.QuantityInStock) item.amount = product.QuantityInStock
         saveCart(cart)
+        return item.amount
     }
 
-    const setAmount = (productId, amount) => {
+    const setAmount = (product, amount) => {
+        if (product.QuantityInStock === 0) return
         const cart = getCart()
-        const item = cart.find((element) => element.product.ID === productId)
+        const item = cart.find((element) => element.product.ID === product.ID)
         if (item === undefined) return
-        console.log(amount)
 
         item.amount = amount
+        if (item.amount > product.QuantityInStock) item.amount = product.QuantityInStock
 
         saveCart(cart)
+        return item.amount
     }
     
     const removeProduct = (productId) => {
