@@ -16,8 +16,18 @@ func GetProduct(context *gin.Context) {
 	productId, _ := strconv.ParseInt(context.Param("product_id"), 10, 64)
 	var product models.Product
 	product.LoadByID(int(productId))
+	var apiProduct map[string]interface{}
+	res, _ := json.Marshal(product)
+	json.Unmarshal(res, &apiProduct)
+	apiProduct["Photos"] = []map[string]interface{}{}
+	for _, photo := range product.Photos {
+		apiProduct["Photos"] = append(apiProduct["Photos"].([]map[string]interface{}), map[string]interface{}{
+			"ID":  photo.ID,
+			"Url": photo.GetUrl(),
+		})
+	}
 	context.JSON(http.StatusOK, gin.H{
-		"obj": product,
+		"obj": apiProduct,
 	})
 }
 
@@ -123,6 +133,13 @@ func TestLoginRequired(context *gin.Context) {
 }
 
 func UploadProductPhoto(context *gin.Context) {
+	productID := context.Request.URL.Query().Get("productID")
+	var product models.Product
+	models.Db.First(&product, productID)
+	if !product.ToBool() {
+		context.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
 	file, err := context.FormFile("photo")
 	if err != nil {
 		context.AbortWithStatus(http.StatusBadRequest)
@@ -130,8 +147,32 @@ func UploadProductPhoto(context *gin.Context) {
 	}
 	minioManager := attachments.InitAttachmentManager("product-photos")
 	attachment, err := minioManager.Upload(file)
+	err = models.Db.Exec("INSERT INTO product_attachment VALUES (?, ?)", productID, attachment.ID).Error
+	if err != nil {
+		context.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
 	context.JSON(http.StatusOK, gin.H{
-		"attachment_url": attachment.GetUrl(),
+		"attachmentID":  attachment.ID,
+		"attachmentURL": attachment.GetUrl(),
+	})
+}
+
+func DeleteProductPhoto(context *gin.Context) {
+	productID := context.Request.URL.Query().Get("productID")
+	attachmentID := context.Request.URL.Query().Get("attachmentID")
+	if productID == "" || attachmentID == "" {
+		context.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+	err := models.Db.Exec("DELETE FROM product_attachment WHERE product_id = ? AND attachment_id = ?", productID, attachmentID).Error
+	if err != nil {
+		context.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+	models.Db.Delete(&models.Attachment{}, attachmentID)
+	context.JSON(http.StatusOK, gin.H{
+		"status": "ok",
 	})
 }
 

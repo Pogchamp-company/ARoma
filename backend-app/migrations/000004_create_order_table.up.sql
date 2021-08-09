@@ -20,5 +20,6 @@ CREATE TABLE product_order
 (
     order_id   INT NOT NULL CONSTRAINT product_order_id_fkey REFERENCES orders,
     product_id INT NOT NULL CONSTRAINT order_product_id_fkey REFERENCES products,
-    quantity   INT NOT NULL
+    quantity   INT NOT NULL,
+    CONSTRAINT pk_product_order PRIMARY KEY (order_id, product_id)
 );

@@ -56,6 +56,6 @@ func (obj Product) ToRepr() string {
 }
 
 func (obj *Product) LoadByID(id int) {
-	Db.Preload("Catalog").First(&obj, id)
+	Db.Preload("Catalog").Preload("Photos").First(&obj, id)
 	Db.Model(&obj).Update("views_count", obj.ViewsCount+1)
 }
