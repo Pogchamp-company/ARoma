@@ -71,6 +71,24 @@ func NewOrder(customer User,
 	return order, nil
 }
 
+func (obj Order) Total() float32 {
+	if !obj.ToBool() {
+		return 0
+	}
+	shippingPrice := obj.ShippingMethod.Price
+	sale := float32(obj.CouponCode.Sale)
+	var total float32
+	var products []OrderProduct
+	err := Db.Preload("Product").Where("order_id = ?", obj.ID).Find(&products).Error
+	if err != nil {
+		return 0
+	}
+	for _, product := range products {
+		total += product.Product.Price * float32(product.Quantity)
+	}
+	return (total * (100 - sale) / 100) + shippingPrice
+}
+
 type OrderProduct struct {
 	OrderID   int
 	ProductID int

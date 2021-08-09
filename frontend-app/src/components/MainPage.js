@@ -37,9 +37,11 @@ export default class MainPage extends Component {
                                 <div className="hero-banner__content">
                                     <h4>Shop is fun</h4>
                                     <h1>Browse Our Premium Product</h1>
-                                    <p>Us which over of signs divide dominion deep fill bring they're meat beho upon own
-                                        earth without morning over third. Their male dry. They are great appear whose
-                                        land fly grass.</p>
+                                    <p>The highest form of self-realization of the fly agaric as a mushroom
+                                        is an atomic explosion – something like a luminous immaterial body,
+                                        which some advanced mystics acquire.
+                                        And people are just an auxiliary form of life that the fly agaric uses to achieve its highest goal,
+                                        just as people use mold to make cheese.</p>
                                     <Link className="button button-hero" to="/search_products">Browse Now</Link>
                                 </div>
                             </div>

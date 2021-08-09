@@ -10,4 +10,5 @@ func initOrdersRoutes() {
 	App.GET("/order/check_coupon", handlers.CheckCoupon)
 	App.POST("/order/step1", access_decorators.LoginRequired(handlers.CreateOrder))
 	App.GET("/order", access_decorators.LoginRequired(handlers.GetOrder))
+	App.GET("/order/all", access_decorators.LoginRequired(handlers.GetOrdersList))
 }

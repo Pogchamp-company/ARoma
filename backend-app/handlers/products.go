@@ -126,12 +126,6 @@ func TopProducts(context *gin.Context) {
 	})
 }
 
-func TestLoginRequired(context *gin.Context) {
-	context.JSON(http.StatusOK, gin.H{
-		"ok": true,
-	})
-}
-
 func UploadProductPhoto(context *gin.Context) {
 	productID := context.Request.URL.Query().Get("productID")
 	var product models.Product

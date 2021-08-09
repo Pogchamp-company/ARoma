@@ -98,6 +98,33 @@ func GetOrder(context *gin.Context) {
 	})
 }
 
+func GetOrdersList(context *gin.Context) {
+	type OrderPreview struct {
+		ID     int
+		Status models.OrderStatus
+		Total  float32
+	}
+	currentUser, _ := context.Get("currentUser")
+	var orders []models.Order
+	err := models.Db.Preload("ShippingMethod").Preload("CouponCode").
+		Where("customer_id = ?", currentUser.(models.User).ID).Find(&orders).Error
+	if err != nil {
+		panic(err)
+		return
+	}
+	var result []OrderPreview
+	for _, order := range orders {
+		result = append(result, OrderPreview{
+			ID:     order.ID,
+			Status: order.Status,
+			Total:  order.Total(),
+		})
+	}
+	context.JSON(http.StatusOK, gin.H{
+		"orders": result,
+	})
+}
+
 func GetAllShippingMethods(context *gin.Context) {
 	var shippingMethods []models.ShippingMethod
 	models.Db.Find(&shippingMethods)
