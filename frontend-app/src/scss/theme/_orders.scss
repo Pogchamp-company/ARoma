@@ -91,29 +91,17 @@
   border-radius: 5px;
 }
 
-.orders-dropdown-status[data-status="DRAFT"] {
-  background: #bdbdbd;
-}
-.orders-dropdown-status[data-status="NOT_PAID"] {
-  background: #d62020;
-}
-.orders-dropdown-status[data-status="PAID"] {
-  background: #00b2c2;
-}
-.orders-dropdown-status[data-status="SHIPMENT"] {
-  background: #d12e2e;
-}
-.orders-dropdown-status[data-status="AWAITING_RECEIPT"] {
-  background: #e67e17;
-}
-.orders-dropdown-status[data-status="COMPLETED"] {
-  background: #33c928;
-}
+$status_colors: (
+        DRAFT: #bdbdbd,
+        NOT_PAID: #d62020,
+        PAID: #00b2c2,
+        SHIPMENT: #d12e2e,
+        AWAITING_RECEIPT: #e67e17,
+        COMPLETED: #33c928,
+);
 
-.button-header {
-  border: solid;
-  border-color: #cccccc;
-  padding: 3px 20px;
-  cursor: pointer;
-  user-select: none;
+@each $status_name, $status_color in $status_colors {
+  .orders-dropdown-status[data-status=#{$status_name}] {
+    background-color: $status_color;
+  }
 }
