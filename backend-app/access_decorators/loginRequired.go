@@ -14,11 +14,11 @@ func LoginRequired(handler gin.HandlerFunc) gin.HandlerFunc {
 	return func(context *gin.Context) {
 		tokenString := context.GetHeader("Authorization")
 		if len(tokenString) == 0 {
-			context.AbortWithStatus(http.StatusBadRequest)
+			context.AbortWithStatus(http.StatusUnauthorized)
 			return
 		}
 		token, err := services.JWTAuthService().ValidateToken(tokenString)
-		if token.Valid {
+		if err == nil {
 			claims := token.Claims.(jwt.MapClaims)
 			var user models.User
 			models.Db.Where("email = ?", claims["Email"]).First(&user)
