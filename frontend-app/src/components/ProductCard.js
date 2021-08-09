@@ -10,6 +10,7 @@ class ProductCard extends Component {
 
     handleAddToCart(e, product) {
         if (this.props.cart.getAmount(product.ID) === this.props.product.QuantityInStock) return
+        this.props.cart.addToCart(product.ID, 1)
 
         const spanElem = document.getElementById('cart-icon-number')
 
