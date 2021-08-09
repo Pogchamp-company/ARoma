@@ -34,3 +34,63 @@ a.admin-table-button {
   font-weight: bold;
   margin: 5px;
 }
+
+.admin-product-input {
+  margin: 5px auto;
+
+  //position: relative;
+  //left: 0;
+  //right: 0;
+  //margin-right: auto;
+  //margin-left: auto;
+}
+
+.admin-product-inner {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.admin-product-save {
+  margin: 5px auto;
+}
+
+.admin-product-image-container {
+  display: flex;
+  justify-content: center;
+}
+
+.admin-product-image-item {
+  margin: 5px;
+  position: relative;
+  img {
+    width: 50px;
+    height: 50px;
+  }
+  i {
+    position: absolute;
+    background-color: red;
+    border-radius: 10px;
+    color: black;
+    right: 0;
+    border: black 1px;
+  }
+}
+
+.custom-file-upload {
+  margin: 5px;
+  background: #00a900;
+  color: black;
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 32px;
+  input {
+    //display: none;
+    width: 50px;
+    height: 50px;
+    opacity: 0;
+    position: absolute;
+  }
+}

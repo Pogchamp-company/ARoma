@@ -10,7 +10,7 @@ export default class ProductsEditPage extends Component {
                 Title: '-',
                 Products: [],
                 ID: 0
-            }
+            },
         }
         this.updateAllProduct()
     }
@@ -51,7 +51,6 @@ export default class ProductsEditPage extends Component {
                                 </thead>
                                 <tbody>
                                 {this.state.catalog.Products.map((product, index) => {
-                                    // product.inputRef = React.createRef()
                                     return (
                                         <tr>
                                             <td>{product.ID !== undefined ? product.ID : '-'}</td>
@@ -59,7 +58,7 @@ export default class ProductsEditPage extends Component {
                                             <td>{product.Price}$</td>
                                             <td>{product.QuantityInStock}</td>
                                             <td>{product.ViewsCount}</td>
-                                            <td><button className={'admin-table-button'}><i className="ti-pencil"/></button></td>
+                                            <td><Link className={'admin-table-button'} to={`/edit_product/${product.ID}`}><i className="ti-pencil"/></Link></td>
                                             <td><button className={'admin-table-button'}><i className="ti-trash"/></button></td>
                                         </tr>
                                     )

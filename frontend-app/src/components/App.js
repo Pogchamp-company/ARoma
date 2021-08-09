@@ -15,6 +15,7 @@ import CatalogsEditPage from "./CatalogsEditPage";
 import OrderStep2Page from "./OrderStep2Page";
 import ProductsEditPage from "./ProductsEditPage";
 import OrdersPage from "./OrdersPage";
+import ProductEditPage from "./ProductEditPage";
 
 export default function App() {
     const {token, setToken} = useToken()
@@ -35,7 +36,8 @@ export default function App() {
                 <Route path="/product/:productId" render={routeProps => (<ProductPage cart={cart} {...routeProps}/>)}/>
                 <Route path="/edit_catalogs" render={routeProps => (<CatalogsEditPage {...routeProps}/>)}/>
                 <Route path="/edit_catalog_products/:catalogId" render={routeProps => (<ProductsEditPage {...routeProps}/>)}/>
-                <Route path="/step2/:orderId" render={routeProps => (<OrderStep2Page {...routeProps}/>)}/>
+                <Route path="/edit_product/:productId" render={routeProps => (<ProductEditPage {...routeProps}/>)}/>
+                <Route path="/step2/:orderId" render={routeProps => (<OrderStep2Page token={token} {...routeProps}/>)}/>
                 <Route path="/orders" render={routeProps => (<OrdersPage {...routeProps}/>)}/>
             </Switch>
             <Footer/>
