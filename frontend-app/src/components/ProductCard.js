@@ -48,8 +48,14 @@ class ProductCard extends Component {
         })
     }
 
+    productPreviewPhoto() {
+        if (this.props.product.Photos.length === 0) return `https://picsum.photos/id/${this.props.product.ID}/263/280`
+        return this.props.product.Photos[0].Url
+    }
 
     render() {
+        console.log(this.props.product)
+        console.log(this.props.product.Photos)
         return (
             <div className={this.props.classList !== undefined ? this.props.classList : "col-md-6 col-lg-4"}>
                 <div key={this.props.product.ID.toString() + this.props.catalog}
@@ -59,12 +65,13 @@ class ProductCard extends Component {
                         <div className="flip-card">
                             <div className="flip-card-inner">
                                 <div className="flip-card-front">
-                                    <img src={`https://picsum.photos/id/${this.props.product.ID}/263/280`}
+                                    <img className={"card-front-img"}
+                                         src={this.productPreviewPhoto()}
                                          alt="Avatar"/>
                                 </div>
                                 <div className="flip-card-back">
                                     <img className={"card-back-img"}
-                                         src={`https://picsum.photos/id/${this.props.product.ID}/263/280`}
+                                         src={this.productPreviewPhoto()}
                                          alt="Avatar"/>
                                     <ul className="card-product__imgOverlay">
                                         <li>
@@ -75,7 +82,7 @@ class ProductCard extends Component {
                                                 <i className="ti-shopping-cart"/></button>
                                         </li>
                                         <li>
-                                            <button><i className="ti-heart"/></button>
+                                            <Link to={`/edit_product/${this.props.product.ID}`}><i className="ti-pencil"></i></Link>
                                         </li>
                                     </ul>
                                 </div>

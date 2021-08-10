@@ -23,7 +23,8 @@ export default class ProductPage extends Component {
                     "sus": "amogus",
                     "sus1": "amogus2",
                     "sus2": "amogus3"
-                }
+                },
+                Photos: [],
             }
         }
         fetch(`${serverUrl}/product/${this.productId}`)
@@ -81,17 +82,26 @@ export default class ProductPage extends Component {
     }
 
 
+    productPreviewPhoto() {
+        if (this.state.product.Photos.length === 0) return `https://picsum.photos/id/${this.state.product.ID}/263/280`
+        return this.state.product.Photos[0].Url
+    }
+
     render() {
+        console.log(this.state.product)
         return (
             <div>
                 <div className="product_image_area">
                     <div className="container">
                         <div className="row s_product_inner">
                             <div className="col-lg-6">
+
                                 <div className="owl-carousel owl-theme s_Product_carousel">
-                                    <div className="single-prd-item">
-                                        <img className="img-fluid" src="/img/category/s-p1.jpg" alt=""/>
-                                    </div>
+                                    {
+                                        this.state.product.Photos.map((photo) => {
+                                            return <img src={photo.Url} style={{width: '500px', height: '500px', margin: '5px'}}/>
+                                        })
+                                    }
                                 </div>
                             </div>
                             <div className="col-lg-5 offset-lg-1">
@@ -106,10 +116,6 @@ export default class ProductPage extends Component {
                                     </ul>
                                     <p>{this.state.product.Description}</p>
                                     {this.renderQuantity()}
-                                    <div className="card_area d-flex align-items-center">
-                                        <a className="icon_btn" href="#"><i className="lnr lnr lnr-diamond"></i></a>
-                                        <a className="icon_btn" href="#"><i className="lnr lnr lnr-heart"></i></a>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -158,7 +164,7 @@ export default class ProductPage extends Component {
                                             <div className="review_item">
                                                 <div className="media">
                                                     <div className="d-flex">
-                                                        <img src="/img/product/review-1.png" alt=""/>
+                                                        {/*<img src= alt=""/>*/}
                                                     </div>
                                                     <div className="media-body">
                                                         <h4>Blake Ruiz</h4>
@@ -398,6 +404,18 @@ export default class ProductPage extends Component {
                 </section>
             </div>
         );
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        $(".s_Product_carousel").owlCarousel({
+            items:1,
+            autoplay:true,
+            autoplayTimeout: 5000,
+            loop:false,
+            nav:false,
+            dots:true,
+            autoHeight:true,
+        });
     }
 }
 

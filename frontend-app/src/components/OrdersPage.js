@@ -30,7 +30,10 @@ export default class OrdersPage extends Component {
     }
 
     setCurrentOrder(order) {
-        console.log(order)
+        if (order.ID === this.state.currentIndex) {
+            this.setState({currentIndex: -1})
+            return
+        }
         let url = `${serverUrl}/order?orderID=${order.ID}`
         if (order.order === undefined) {
             fetch(url, {

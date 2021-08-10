@@ -56,12 +56,16 @@ a.admin-table-button {
 }
 
 .admin-product-image-container {
-  display: flex;
+  //display: flex;
+  //justify-content: center;
+  display: grid;
   justify-content: center;
+  grid-template-columns: repeat(3, 1fr);
+  margin: 0 auto;
+  grid-gap: 10px;
 }
 
 .admin-product-image-item {
-  margin: 5px;
   position: relative;
   img {
     width: 50px;

@@ -82,10 +82,18 @@
 }
 
 .card-back-img {
+  width: 263px;
+  height: 280px;
   filter: blur(2px);
 
   position: absolute;
   left: 0;
+}
+
+.card-front-img {
+  width: 263px;
+  height: 280px;
+
 }
 
 .hero-banner::before {
