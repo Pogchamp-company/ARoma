@@ -5,6 +5,7 @@ import (
 	"aroma/models"
 	"aroma/services/attachments"
 	"encoding/json"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/mitchellh/mapstructure"
 	"gorm.io/gorm"
@@ -16,18 +17,8 @@ func GetProduct(context *gin.Context) {
 	productId, _ := strconv.ParseInt(context.Param("product_id"), 10, 64)
 	var product models.Product
 	product.LoadByID(int(productId))
-	var apiProduct map[string]interface{}
-	res, _ := json.Marshal(product)
-	json.Unmarshal(res, &apiProduct)
-	apiProduct["Photos"] = []map[string]interface{}{}
-	for _, photo := range product.Photos {
-		apiProduct["Photos"] = append(apiProduct["Photos"].([]map[string]interface{}), map[string]interface{}{
-			"ID":  photo.ID,
-			"Url": photo.GetUrl(),
-		})
-	}
 	context.JSON(http.StatusOK, gin.H{
-		"obj": apiProduct,
+		"obj": product.FormattedPhotos(),
 	})
 }
 
@@ -111,18 +102,29 @@ func SearchProducts(context *gin.Context) {
 	if count%ProductsPageLimit != 0 {
 		pagesCount += 1
 	}
-	query.Preload("Catalog").Offset(int(ProductsPageLimit * (thisPage - 1))).Limit(int(ProductsPageLimit)).Find(&products)
+	query.Preload("Catalog").Preload("Photos").
+		Offset(int(ProductsPageLimit * (thisPage - 1))).Limit(int(ProductsPageLimit)).
+		Find(&products)
+	apiProducts := []map[string]interface{}{}
+	for _, product := range products {
+		apiProducts = append(apiProducts, product.FormattedPhotos())
+	}
 	context.JSON(http.StatusOK, gin.H{
-		"products":   products,
+		"products":   apiProducts,
 		"pagesCount": pagesCount,
 	})
 }
 
 func TopProducts(context *gin.Context) {
 	var products []models.Product
-	models.Db.Preload("Catalog").Order("views_count desc").Limit(12).Find(&products)
+	models.Db.Preload("Catalog").Preload("Photos").
+		Order("views_count desc").Limit(12).Find(&products)
+	var apiProducts []map[string]interface{}
+	for _, product := range products {
+		apiProducts = append(apiProducts, product.FormattedPhotos())
+	}
 	context.JSON(http.StatusOK, gin.H{
-		"products": products,
+		"products": apiProducts,
 	})
 }
 
@@ -141,11 +143,13 @@ func UploadProductPhoto(context *gin.Context) {
 	}
 	minioManager := attachments.InitAttachmentManager("product-photos")
 	attachment, err := minioManager.Upload(file)
-	err = models.Db.Exec("INSERT INTO product_attachment VALUES (?, ?)", productID, attachment.ID).Error
 	if err != nil {
+		fmt.Println(err)
 		context.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
+	err = models.Db.Exec("INSERT INTO product_attachment VALUES (?, ?)", productID, attachment.ID).Error
+
 	context.JSON(http.StatusOK, gin.H{
 		"attachmentID":  attachment.ID,
 		"attachmentURL": attachment.GetUrl(),

@@ -55,6 +55,20 @@ func (obj Product) ToRepr() string {
 	return fmt.Sprintf("<Product (id=%s, title=%s)>", fmt.Sprint(obj.ID), obj.Title)
 }
 
+func (obj *Product) FormattedPhotos() map[string]interface{} {
+	var apiProduct map[string]interface{}
+	res, _ := json.Marshal(obj)
+	json.Unmarshal(res, &apiProduct)
+	apiProduct["Photos"] = []map[string]interface{}{}
+	for _, photo := range obj.Photos {
+		apiProduct["Photos"] = append(apiProduct["Photos"].([]map[string]interface{}), map[string]interface{}{
+			"ID":  photo.ID,
+			"Url": photo.GetUrl(),
+		})
+	}
+	return apiProduct
+}
+
 func (obj *Product) LoadByID(id int) {
 	Db.Preload("Catalog").Preload("Photos").First(&obj, id)
 	Db.Model(&obj).Update("views_count", obj.ViewsCount+1)
