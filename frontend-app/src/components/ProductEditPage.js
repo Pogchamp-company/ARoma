@@ -61,7 +61,28 @@ export default class ProductEditPage extends Component {
                                     for (let i = 0; i < fileList.length; i++) {
                                         const file = fileList[i]
                                         console.log(file)
-                                        this.state.product.Photos.push({url: 'https://picsum.photos/id/1/263/280'})
+
+                                        const data = new FormData();
+
+                                        data.set('photo', file)
+
+                                        fetch(`${serverUrl}/product/photo?productID=${this.state.product.ID}`, { // Your POST endpoint
+                                            method: 'POST',
+                                            headers: {
+                                                'Authorization': this.props.token
+                                            },
+                                            body: data,
+                                        }).then(
+                                            response => response.json() // if the response is a JSON object
+                                        ).then(
+                                            success => {
+                                                console.log(success)
+                                                this.state.product.Photos.push({url: 'https://picsum.photos/id/1/263/280'})
+                                            }
+                                        ).catch(
+                                            error => console.log('error', error) // Handle the error response object
+                                        );
+
                                     }
                                     this.forceUpdate()
                                 }}/>
