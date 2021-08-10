@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import {serverUrl} from "./ServerUrl"
+import OrderTotalBox from "./OrderTotalBox";
 
 export default class OrderStep2Page extends Component {
     constructor(props) {
@@ -111,40 +112,17 @@ export default class OrderStep2Page extends Component {
                                 </form>
                             </div>
                             <div className="col-lg-4">
-                                <div className="order_box">
-                                    <h2>Your Order</h2>
-                                    <ul className="list">
-                                        <li><a><h4>Product <span>Total</span></h4></a></li>
-                                        {this.state.order.Products.map((product, index) => {
-                                            return (<li><a>{product.Title} <span
-                                                className="middle">x {product.Quantity}</span> <span
-                                                className="last">${product.Price * product.Quantity}</span></a></li>)
-
-                                        })}
-                                    </ul>
-                                    <ul className="list list_2">
-                                        <li><a>Subtotal <span>${this.subtotal()}</span></a></li>
-                                        <li>
-                                            <a>Shipping <span>{this.state.order.ShippingMethod.Title}: ${this.state.order.ShippingMethod.Price}</span></a>
-                                        </li>
-
-                                        {this.state.order.Sale ?
-                                            <li>
-                                                <a>Discount <span style={{color: 'green'}}>-{this.state.order.Sale}%</span></a>
-                                            </li> : ''
-                                        }
-                                        <li><a>Total <span>$Рома, сделай total</span></a></li>
-                                    </ul>
+                                <OrderTotalBox order={this.state.order} Total={0}>
                                     <div className="payment_item">
-                                        <div className="radion_btn">
-                                            <input type="radio" id="f-option5" name="selector"/>
-                                            <label htmlFor="f-option5">Check payments</label>
-                                            <div className="check"></div>
-                                        </div>
-                                        <p>Please send a check to Store Name, Store Street, Store Town, Store State /
-                                            County,
-                                            Store Postcode.</p>
+                                    <div className="radion_btn">
+                                        <input type="radio" id="f-option5" name="selector"/>
+                                        <label htmlFor="f-option5">Check payments</label>
+                                        <div className="check"></div>
                                     </div>
+                                    <p>Please send a check to Store Name, Store Street, Store Town, Store State /
+                                        County,
+                                        Store Postcode.</p>
+                                </div>
                                     <div className="payment_item active">
                                         <div className="radion_btn">
                                             <input type="radio" id="f-option6" name="selector"/>
@@ -163,7 +141,7 @@ export default class OrderStep2Page extends Component {
                                     <div className="text-center">
                                         <a className="button button-paypal" href="#">Proceed to Paypal</a>
                                     </div>
-                                </div>
+                                </OrderTotalBox>
                             </div>
                         </div>
                     </div>

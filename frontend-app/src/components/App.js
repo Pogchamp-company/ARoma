@@ -38,7 +38,7 @@ export default function App() {
                 <Route path="/edit_catalog_products/:catalogId" render={routeProps => (<ProductsEditPage {...routeProps}/>)}/>
                 <Route path="/edit_product/:productId" render={routeProps => (<ProductEditPage token={token} {...routeProps}/>)}/>
                 <Route path="/step2/:orderId" render={routeProps => (<OrderStep2Page token={token} {...routeProps}/>)}/>
-                <Route path="/orders" render={routeProps => (<OrdersPage {...routeProps}/>)}/>
+                <Route path="/orders" render={routeProps => (<OrdersPage token={token} {...routeProps}/>)}/>
             </Switch>
             <Footer/>
         </BrowserRouter>
