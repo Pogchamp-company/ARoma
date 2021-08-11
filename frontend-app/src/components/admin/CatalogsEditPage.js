@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import {Link} from "react-router-dom";
+import {serverUrl} from "../ServerUrl";
 
 export default class CatalogsEditPage extends Component {
     constructor(props) {
@@ -15,10 +16,72 @@ export default class CatalogsEditPage extends Component {
             .then(response => response.json())
             .then(catalog_json => {
                 this.setState({
-                    catalogs: catalog_json.catalogs
+                    catalogs: catalog_json.catalogs.map((catalog) => {
+                        return {
+                            ...catalog,
+                            saved: true
+                        }
+                    })
                 })
             })
             .catch((e) => console.log('some error', e));
+    }
+
+    saveCategory(catalog) {
+        console.log(catalog)
+        const data = new FormData();
+
+        data.set('Title', catalog.Title)
+
+        fetch(catalog.ID !== undefined ? `${serverUrl}/admin/catalog?catalogID=${catalog.ID}` : `${serverUrl}/admin/catalog`, {
+            method: "POST",
+            headers: {
+                'Authorization': this.props.token
+            },
+            body: data
+        })
+            .then(raw => {
+                if (raw.ok) {
+                    return raw.json()
+                } else {
+                    throw new Error('Something went wrong');
+                }
+            })
+            .then((json) => {
+                console.log(json)
+                if (catalog.ID === undefined) catalog.ID = json.ID
+                catalog.saved = true
+                this.forceUpdate()
+            }).catch(e => console.log(e))
+
+    }
+
+    deleteCatalog(catalog) {
+        if (catalog.ID === undefined) {
+            this.setState({
+                catalogs: this.state.catalogs.filter((value) => value !== catalog)
+            })
+            return
+        }
+        fetch(`${serverUrl}/admin/catalog?catalogID=${catalog.ID}`, {
+            method: "DELETE",
+            headers: {
+                'Authorization': this.props.token
+            },
+        })
+            .then(raw => {
+                if (raw.ok) {
+                    return raw.json()
+                } else {
+                    throw new Error('Something went wrong');
+                }
+            })
+            .then((json) => {
+                console.log(json)
+                this.setState({
+                    catalogs: this.state.catalogs.filter((value) => value !== catalog)
+                })
+            }).catch(e => console.log(e))
     }
 
     render() {
@@ -39,50 +102,42 @@ export default class CatalogsEditPage extends Component {
                                 </thead>
                                 <tbody>
                                 {this.state.catalogs.map((catalog, index) => {
-                                    catalog.inputRef = React.createRef()
                                     return (
                                         <tr>
                                             <td>{catalog.ID !== undefined ? catalog.ID : '-'}</td>
                                             <td><input value={catalog.Title} type={"text"}
-                                                       className={catalog.ID === undefined ? "admin-text-input updated" : "admin-text-input"}
+                                                // key={catalog.Title + catalog.saved}
+                                                       className={catalog.saved ? "admin-text-input" : "admin-text-input updated"}
                                                        onChange={(e) => {
                                                            catalog.Title = e.target.value
-                                                           e.target.classList.add('updated')
+                                                           catalog.saved = false
                                                            this.forceUpdate()
-                                                       }} ref={catalog.inputRef}/></td>
+                                                       }}/></td>
                                             <td>
                                                 <button className={'admin-table-button'} onClick={
                                                     (e) => {
-                                                        console.log(catalog)
-                                                        if (catalog.ID === undefined) catalog.ID = 666
-                                                        catalog.inputRef.current?.classList?.remove?.('updated')
-                                                        this.forceUpdate()
+                                                        this.saveCategory(catalog)
                                                     }
                                                 }><i className="ti-save"/>
                                                 </button>
                                             </td>
                                             <td>
-                                                <Link className={'admin-table-button'} to={`/edit_catalog_products/${catalog.ID}`}><i className="ti-menu-alt"/>
+                                                <Link className={'admin-table-button'}
+                                                      to={`/edit_catalog_products/${catalog.ID}`}><i
+                                                    className="ti-menu-alt"/>
                                                 </Link>
                                             </td>
                                             <td>
-                                                <button className={'admin-table-button'} onClick={() => {
-                                                    this.setState({
-                                                        catalogs: this.state.catalogs.filter((value) => value !== catalog)
-                                                    })
-                                                }}><i className="ti-trash"/></button>
+                                                <button className={'admin-table-button'} onClick={() => this.deleteCatalog(catalog)}><i className="ti-trash"/></button>
                                             </td>
                                         </tr>
                                     )
                                 })}
                                 <tr>
-                                    <td/>
-                                    <td/>
-                                    <td/>
-                                    <td/>
+                                    <td colSpan={4}/>
                                     <td>
                                         <button className={'admin-table-button'} onClick={() => {
-                                            this.state.catalogs.push({ID: undefined, Title: ''})
+                                            this.state.catalogs.push({ID: undefined, Title: '', saved: false})
                                             this.forceUpdate()
                                         }}><i className="ti-plus"/>
                                         </button>

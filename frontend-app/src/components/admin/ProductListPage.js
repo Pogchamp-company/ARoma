@@ -1,8 +1,8 @@
 import React, {Component} from "react";
 import {Link} from "react-router-dom";
-import {serverUrl} from "./ServerUrl"
+import {serverUrl} from "../ServerUrl"
 
-export default class ProductsEditPage extends Component {
+export default class ProductListPage extends Component {
     constructor(props) {
         super(props);
         this.state = {

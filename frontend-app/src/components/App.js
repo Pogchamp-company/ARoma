@@ -11,11 +11,11 @@ import CartPage from "./CartPage";
 import useToken from "./useToken";
 import useCart from "./useCart";
 import ScrollToTop from "./ScrollToTop";
-import CatalogsEditPage from "./CatalogsEditPage";
+import CatalogsEditPage from "./admin/CatalogsEditPage";
 import OrderStep2Page from "./OrderStep2Page";
-import ProductsEditPage from "./ProductsEditPage";
+import ProductListPage from "./admin/ProductListPage";
 import OrdersPage from "./OrdersPage";
-import ProductEditPage from "./ProductEditPage";
+import ProductEditPage from "./admin/ProductEditPage";
 
 export default function App() {
     const {token, setToken} = useToken()
@@ -34,8 +34,8 @@ export default function App() {
                 <Route exact path="/search_products"
                        render={routerProps => (<SearchProductsPage cart={cart} {...routerProps}/>)}/>
                 <Route path="/product/:productId" render={routeProps => (<ProductPage cart={cart} {...routeProps}/>)}/>
-                <Route path="/edit_catalogs" render={routeProps => (<CatalogsEditPage {...routeProps}/>)}/>
-                <Route path="/edit_catalog_products/:catalogId" render={routeProps => (<ProductsEditPage {...routeProps}/>)}/>
+                <Route path="/edit_catalogs" render={routeProps => (<CatalogsEditPage token={token} {...routeProps}/>)}/>
+                <Route path="/edit_catalog_products/:catalogId" render={routeProps => (<ProductListPage {...routeProps}/>)}/>
                 <Route path="/edit_product/:productId" render={routeProps => (<ProductEditPage token={token} {...routeProps}/>)}/>
                 <Route path="/step2/:orderId" render={routeProps => (<OrderStep2Page token={token} {...routeProps}/>)}/>
                 <Route path="/orders" render={routeProps => (<OrdersPage token={token} {...routeProps}/>)}/>
