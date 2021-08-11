@@ -5,6 +5,7 @@ import (
 	"aroma/models"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
 
 func UpdateProductInfo(context *gin.Context) {
@@ -75,11 +76,11 @@ func UpdateCatalogInfo(context *gin.Context) {
 			})
 			return
 		}
-		catalogID = string(rune(catalog.ID))
+		catalogID = strconv.Itoa(catalog.ID)
 	}
 	context.JSON(http.StatusOK, gin.H{
-		"ok":        true,
-		"catalogID": catalogID,
+		"ok": true,
+		"ID": catalogID,
 	})
 }
 
