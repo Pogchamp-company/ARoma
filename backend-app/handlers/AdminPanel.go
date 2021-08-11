@@ -46,15 +46,9 @@ func UpdateProductInfo(context *gin.Context) {
 
 func UpdateCatalogInfo(context *gin.Context) {
 	catalogID := context.Request.URL.Query().Get("catalogID")
-	if catalogID == "" {
-		context.JSON(http.StatusBadRequest, gin.H{
-			"errors": "Missing catalog id",
-		})
-		return
-	}
 	var c int64
 	models.Db.Model(&models.Catalog{}).Where("id = ?", catalogID).Count(&c)
-	if c == 0 {
+	if c == 0 && catalogID != "" {
 		context.JSON(http.StatusNotFound, gin.H{
 			"errors": "This catalog does not exists",
 		})
@@ -68,12 +62,24 @@ func UpdateCatalogInfo(context *gin.Context) {
 		})
 		return
 	}
-	models.Db.Model(&models.Catalog{}).Where("id = ?", catalogID).
-		Updates(models.Catalog{
-			Title: credentials.Title,
-		})
+	if catalogID != "" {
+		models.Db.Model(&models.Catalog{}).Where("id = ?", catalogID).
+			Updates(models.Catalog{
+				Title: credentials.Title,
+			})
+	} else {
+		catalog, err := models.NewCatalog(credentials.Title)
+		if err != nil {
+			context.JSON(http.StatusInternalServerError, gin.H{
+				"errors": "Error when trying delete record",
+			})
+			return
+		}
+		catalogID = string(rune(catalog.ID))
+	}
 	context.JSON(http.StatusOK, gin.H{
-		"ok": true,
+		"ok":        true,
+		"catalogID": catalogID,
 	})
 }
 

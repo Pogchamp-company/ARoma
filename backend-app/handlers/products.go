@@ -104,6 +104,7 @@ func SearchProducts(context *gin.Context) {
 	}
 	query.Preload("Catalog").Preload("Photos").
 		Offset(int(ProductsPageLimit * (thisPage - 1))).Limit(int(ProductsPageLimit)).
+		Order("id asc").
 		Find(&products)
 	apiProducts := []map[string]interface{}{}
 	for _, product := range products {

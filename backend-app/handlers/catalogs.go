@@ -21,7 +21,7 @@ func GetCatalog(context *gin.Context) {
 
 func GetAllCatalogs(context *gin.Context) {
 	var catalogs []models.Catalog
-	models.Db.Find(&catalogs)
+	models.Db.Order("id asc").Find(&catalogs)
 	var response []map[string]interface{}
 	var count int64 = 0
 	for _, catalog := range catalogs {
