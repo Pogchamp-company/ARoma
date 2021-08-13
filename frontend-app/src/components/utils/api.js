@@ -67,10 +67,42 @@ function getOrdersList(token, history, setToken, successCallback, errorCallback=
         });
 }
 
+function getShippingMethods(successCallback, errorCallback=null) {
+    fetch(`${serverUrl}/order/shipping_methods`)
+        .then(response => response.json())
+        .then(shipping_methods_json => {
+            successCallback(shipping_methods_json.ShippingMethods)
+        })
+        .catch((e) => {
+            if (errorCallback !== null) errorCallback(e)
+            else console.log('getShippingMethods error: ', e)
+        });
+
+}
+
+function checkCoupon(coupon, successCallback, errorCallback=null) {
+    fetch(`${serverUrl}/order/check_coupon?couponTitle=${coupon}`, {cache: "no-cache"})
+        .then((response) => {
+            if (response.ok) {
+                return response.json()
+            }
+            if (response.status === 404) throw new Error('No coupon found')
+            if (response.status === 410) throw new Error('Your coupon expired')
+        })
+        .then(catalog_json => successCallback(catalog_json.Coupon))
+        .catch((e) => {
+            if (errorCallback !== null) errorCallback(e)
+            else console.log('checkCoupon error: ', e)
+        });
+
+}
+
 export {
     getProduct,
     getAllCatalogs,
     getCatalog,
     getOrdersList,
     getTopProducts,
+    getShippingMethods,
+    checkCoupon,
 }

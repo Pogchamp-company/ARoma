@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import {Link} from "react-router-dom";
+import {checkCoupon, getShippingMethods} from "./utils/api";
 
 export default class CartPage extends Component {
     constructor(props) {
@@ -11,51 +12,31 @@ export default class CartPage extends Component {
             couponStr: '',
             coupon: undefined,
         }
-        this.couponInputRef = React.createRef()
         this.updateShippingMethods()
     }
 
     updateShippingMethods() {
-        fetch(`${serverUrl}/order/shipping_methods`)
-            .then(response => response.json())
-            .then(catalog_json => {
-                this.setState({
-                    shippingMethods: catalog_json["ShippingMethods"],
-                    currentShippingMethod: catalog_json["ShippingMethods"][0]
-                })
-                console.log(this.state)
+        getShippingMethods(methods => this.setState({
+                shippingMethods: methods,
+                currentShippingMethod: methods[0]
             })
-            .catch((e) => console.log('TopProducts some error', e));
-
+        )
     }
 
     applyCoupon(event) {
-        fetch(`${serverUrl}/order/check_coupon?couponTitle=${this.state.couponStr}`, {cache: "no-cache"})
-            .then((response) => {
-                console.log(response)
-                if (response.ok) {
-                    this.setState({couponErr: undefined})
-                    return response.json()
-                }
-                if (response.status === 404) this.setState({couponErr: 'No coupon found'})
-                if (response.status === 410) this.setState({couponErr: 'Your coupon expired'})
-                this.setState({coupon: undefined})
+        checkCoupon(this.state.couponStr, coupon => {
+            this.setState({
+                coupon: coupon
             })
-            .then(catalog_json => {
-                this.setState({
-                    coupon: catalog_json['Coupon']
-                })
-                // this.setState({shippingMethods: catalog_json["ShippingMethods"]})
-                this.couponInputRef.current.classList.remove('invalid')
-                this.couponInputRef.current.classList.add('valid')
-                console.log(catalog_json)
-            })
-            .catch((e) => {
-                this.couponInputRef.current.classList.remove('valid')
-                this.couponInputRef.current.classList.add('invalid')
-                console.log('TopProducts some error', e)
-            });
+            // this.setState({shippingMethods: catalog_json["ShippingMethods"]})
+            this.setState({couponErr: null})
 
+        }, error => {
+            this.setState({
+                coupon: undefined,
+                couponErr: error.message
+            })
+        })
     }
 
     getTotal() {
@@ -132,7 +113,8 @@ export default class CartPage extends Component {
                                         }}>
                                             <div className="media">
                                                 <div className="d-flex">
-                                                    <img src={`https://picsum.photos/id/${item.product.ID}/263/280`} style={{"--index": index}} className={"cart-image"} alt=""/>
+                                                    <img src={`https://picsum.photos/id/${item.product.ID}/263/280`}
+                                                         style={{"--index": index}} className={"cart-image"} alt=""/>
                                                 </div>
                                                 <div className="media-body">
                                                     <p>{item.product.Title}</p>
@@ -179,12 +161,10 @@ export default class CartPage extends Component {
                                     <td/>
                                     <td colSpan={3}>
                                         <div className="cupon_text d-flex">
-                                            <input type="text" placeholder="Coupon Code" value={this.state.couponStr}
-                                                   onChange={e => {
-                                                       this.setState({
-                                                           couponStr: e.target.value
-                                                       })
-                                                   }} ref={this.couponInputRef}/>
+                                            <input type="text" placeholder="Coupon Code"
+                                                   value={this.state.couponStr}
+                                                   onChange={e => {this.setState({couponStr: e.target.value})}}
+                                                   className={this.state.couponErr === undefined ? "" : (this.state.couponErr ? "invalid" : "valid")}/>
                                             <button onClick={e => this.applyCoupon(e)} className="primary-btn">Apply
                                             </button>
                                         </div>

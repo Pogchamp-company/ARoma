@@ -27,6 +27,7 @@ export default class ProductListPage extends Component {
                     <div style={{display: 'flex', alignItems: 'center'}}>
                         <Link className={'admin-table-button'} to={"/edit_catalogs"}><i className="ti-angle-left"/></Link>
                         <span className={"admin-catalog-title"}>{this.state.catalog.Title}</span>
+                        <Link className={'admin-table-button'} to={`/new_product/${this.state.catalog.ID}`}><i className="ti-plus"/></Link>
                     </div>
                     <div className="cart_inner">
                         <div className="table-responsive">

@@ -7,13 +7,32 @@ export default class ProductEditPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            product: undefined,
+            product: {
+                "Attributes": {},
+                "Catalog": {
+                    "ID": this.props.match.params.catalogId,
+                    "Products": null,
+                    "Title": "ПК в сборе",
+                },
+                "Description": "",
+                "ID": null,
+                "LongDescription": "",
+                "Photos": [],
+                "Price": 0,
+                "QuantityInStock": 0,
+                "Title": "",
+                "ViewsCount": 0
+            },
             attributes: []
         }
         this.updateAllProduct()
     }
 
     updateAllProduct() {
+        if (this.props.match.params.productId == null) {
+            return
+        }
+        console.log(this.props.match.params.productId)
         getProduct(this.props.match.params.productId, product => {
             this.setState({
                 product: product,
@@ -79,7 +98,17 @@ export default class ProductEditPage extends Component {
     }
 
     saveProduct() {
-        console.log(this.state.product)
+        const attributes = {}
+        console.log(this.state.attributes)
+
+        this.state.attributes.forEach(attrObj => {
+            let parsedValue = parseFloat(attrObj.value)
+            if (isNaN(parsedValue)) parsedValue = attrObj.value
+            attributes[attrObj.key] = parsedValue
+
+        })
+
+        console.log(attributes)
 
         const data = new FormData();
 
@@ -88,8 +117,9 @@ export default class ProductEditPage extends Component {
         data.set('QuantityInStock', this.state.product.QuantityInStock)
         data.set('Description', this.state.product.Description)
         data.set('LongDescription', this.state.product.LongDescription)
+        data.set('Attributes', JSON.stringify(attributes))
 
-        fetch(`${serverUrl}/admin/product?productID=${this.state.product.ID}`, {
+        fetch(this.state.product.ID !== null ? `${serverUrl}/admin/product?productID=${this.state.product.ID}` : `${serverUrl}/admin/product?catalogID=${this.state.product.Catalog.ID}`, {
             method: "POST",
             headers: {
                 'Authorization': this.props.token
@@ -101,6 +131,7 @@ export default class ProductEditPage extends Component {
             })
             .then(jsonResponse => {
                 console.log(jsonResponse)
+                if (this.state.product.ID === null) this.props.history.push(`/edit_product/${jsonResponse.productID}`)
             }).catch(e => console.log(e))
     }
 
@@ -120,7 +151,9 @@ export default class ProductEditPage extends Component {
                                     obj.value = event.target.value
                                     this.forceUpdate()
                                 }} value={obj.value} placeholder={"Title"}/>
-                                <button onClick={() => this.setState({attributes: this.state.attributes.filter(value => value !== obj)})}><i className={'ti-trash'}/></button>
+                                <button
+                                    onClick={() => this.setState({attributes: this.state.attributes.filter(value => value !== obj)})}>
+                                    <i className={'ti-trash'}/></button>
                             </div>
                         )
                     })
@@ -130,6 +163,7 @@ export default class ProductEditPage extends Component {
     }
 
     render() {
+        console.log(this.state.product)
         if (this.state.product === undefined) {
             return ''
         }
@@ -187,7 +221,8 @@ export default class ProductEditPage extends Component {
                             return {
                                 attributes: [...prev.attributes, {key: '', value: ''}]
                             }
-                        })}>Add attribute</button>
+                        })}>Add attribute
+                        </button>
                         <div className={"admin-product-image-container"}>
                             {this.state.product.Photos.map((photo) => {
                                 return (
@@ -198,11 +233,15 @@ export default class ProductEditPage extends Component {
                                     </div>
                                 )
                             })}
-                            <label className="custom-file-upload">
-                                <input type="file" accept="image/*" multiple
-                                       onChange={(event) => this.uploadProductPhotos(event.target.files)}/>
-                                +
-                            </label>
+                            {
+                                this.state.product.ID !== null ? (
+                                    <label className="custom-file-upload">
+                                        <input type="file" accept="image/*" multiple
+                                               onChange={(event) => this.uploadProductPhotos(event.target.files)}/>
+                                        +
+                                    </label>
+                                ) : ''
+                            }
                         </div>
                         <button className={"button admin-product-save"} onClick={() => this.saveProduct()}>Save</button>
                     </div>
