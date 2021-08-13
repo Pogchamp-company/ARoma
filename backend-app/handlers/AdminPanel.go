@@ -3,10 +3,29 @@ package handlers
 import (
 	"aroma/dto"
 	"aroma/models"
+	"encoding/json"
 	"github.com/gin-gonic/gin"
+	"github.com/jackc/pgtype"
 	"net/http"
 	"strconv"
 )
+
+func validateAttributes(marshaledAttributes string) bool {
+	var attributes map[string]interface{}
+	err := json.Unmarshal([]byte(marshaledAttributes), &attributes)
+	if err != nil {
+		return false
+	}
+	for _, attribute := range attributes {
+		switch attribute.(type) {
+		case string:
+		case int, int8, int16, int32, int64, float32, float64:
+		default:
+			return false
+		}
+	}
+	return true
+}
 
 func UpdateProductInfo(context *gin.Context) {
 	productID := context.Request.URL.Query().Get("productID")
@@ -33,24 +52,39 @@ func UpdateProductInfo(context *gin.Context) {
 		})
 		return
 	}
-	//attributes, _ := models.MarshalAttributes()
+	ok := validateAttributes(credentials.Attributes)
+	if !ok {
+		context.JSON(http.StatusBadRequest, gin.H{
+			"errors": "Invalid attributes",
+		})
+		return
+	}
 	if productID != "" {
-		models.Db.Model(&models.Product{}).Where("id = ?", productID).
+		err = models.Db.Model(&models.Product{}).Where("id = ?", productID).
 			Updates(models.Product{
 				Title:           credentials.Title,
 				Price:           credentials.Price,
 				Description:     credentials.Description,
 				LongDescription: credentials.LongDescription,
 				QuantityInStock: credentials.QuantityInStock,
-			})
+				Attributes: pgtype.JSONB{
+					Status: pgtype.Present,
+					Bytes:  []byte(credentials.Attributes),
+				},
+			}).Error
 	} else {
 		catalogID := context.Request.URL.Query().Get("catalogID")
 		var catalog models.Catalog
 		err = models.Db.First(&catalog, catalogID).Error
 		if err != nil {
+			context.JSON(http.StatusInternalServerError, gin.H{
+				"ok": false,
+			})
 			return
 		}
-		models.NewProduct(credentials.Title,
+		var attributes map[string]interface{}
+		_ = json.Unmarshal([]byte(credentials.Attributes), &attributes)
+		_, err = models.NewProduct(credentials.Title,
 			catalog,
 			credentials.Price,
 			credentials.QuantityInStock,
@@ -59,9 +93,15 @@ func UpdateProductInfo(context *gin.Context) {
 			map[string]interface{}{},
 		)
 	}
-	context.JSON(http.StatusOK, gin.H{
-		"ok": true,
-	})
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{
+			"ok": false,
+		})
+	} else {
+		context.JSON(http.StatusOK, gin.H{
+			"ok": true,
+		})
+	}
 }
 
 func UpdateCatalogInfo(context *gin.Context) {
