@@ -61,6 +61,7 @@ func UpdateProductInfo(context *gin.Context) {
 		})
 		return
 	}
+	var product models.Product
 	if productID != "" {
 		err = models.Db.Model(&models.Product{}).Where("id = ?", productID).
 			Updates(models.Product{
@@ -74,25 +75,33 @@ func UpdateProductInfo(context *gin.Context) {
 					Bytes:  []byte(credentials.Attributes),
 				},
 			}).Error
+		id, _ := strconv.ParseInt(productID, 10, 64)
+		product.ID = int(id)
 	} else {
 		catalogID := context.Request.URL.Query().Get("catalogID")
-		var catalog models.Catalog
-		err = models.Db.First(&catalog, catalogID).Error
-		if err != nil {
+		if catalogID == "" {
 			context.JSON(http.StatusInternalServerError, gin.H{
+				"errors": "Missing catalog id",
+			})
+			return
+		}
+		var catalog models.Catalog
+		models.Db.First(&catalog, catalogID)
+		if !catalog.ToBool() {
+			context.JSON(http.StatusNotFound, gin.H{
 				"ok": false,
 			})
 			return
 		}
 		var attributes map[string]interface{}
 		_ = json.Unmarshal([]byte(credentials.Attributes), &attributes)
-		_, err = models.NewProduct(credentials.Title,
+		product, err = models.NewProduct(credentials.Title,
 			catalog,
 			credentials.Price,
 			credentials.QuantityInStock,
 			credentials.Description,
 			credentials.LongDescription,
-			map[string]interface{}{},
+			attributes,
 		)
 	}
 	if err != nil {
@@ -101,7 +110,8 @@ func UpdateProductInfo(context *gin.Context) {
 		})
 	} else {
 		context.JSON(http.StatusOK, gin.H{
-			"ok": true,
+			"ok":        true,
+			"productID": product.ID,
 		})
 	}
 }
