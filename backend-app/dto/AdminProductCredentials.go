@@ -6,4 +6,5 @@ type UpdateProductCredentials struct {
 	Description     string  `form:"Description" validate:"required"`
 	LongDescription string  `form:"LongDescription" validate:"required"`
 	QuantityInStock int     `form:"QuantityInStock" validate:"required"`
+	Attributes      string  `form:"Attributes" validate:"required"`
 }

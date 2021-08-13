@@ -10,36 +10,55 @@ import (
 
 func UpdateProductInfo(context *gin.Context) {
 	productID := context.Request.URL.Query().Get("productID")
-	if productID == "" {
+	_, err := strconv.ParseInt(productID, 10, 64)
+	if productID != "" && err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
-			"errors": "Missing product id",
+			"errors": "Incorrect product id",
 		})
 		return
 	}
 	var c int64
 	models.Db.Model(&models.Product{}).Where("id = ?", productID).Count(&c)
-	if c == 0 {
+	if c == 0 && productID == "" {
 		context.JSON(http.StatusNotFound, gin.H{
 			"errors": "This product does not exists",
 		})
 		return
 	}
 	var credentials dto.UpdateProductCredentials
-	err := context.ShouldBind(&credentials)
+	err = context.ShouldBind(&credentials)
 	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{
 			"errors": err,
 		})
 		return
 	}
-	models.Db.Model(&models.Product{}).Where("id = ?", productID).
-		Updates(models.Product{
-			Title:           credentials.Title,
-			Price:           credentials.Price,
-			Description:     credentials.Description,
-			LongDescription: credentials.LongDescription,
-			QuantityInStock: credentials.QuantityInStock,
-		})
+	//attributes, _ := models.MarshalAttributes()
+	if productID != "" {
+		models.Db.Model(&models.Product{}).Where("id = ?", productID).
+			Updates(models.Product{
+				Title:           credentials.Title,
+				Price:           credentials.Price,
+				Description:     credentials.Description,
+				LongDescription: credentials.LongDescription,
+				QuantityInStock: credentials.QuantityInStock,
+			})
+	} else {
+		catalogID := context.Request.URL.Query().Get("catalogID")
+		var catalog models.Catalog
+		err = models.Db.First(&catalog, catalogID).Error
+		if err != nil {
+			return
+		}
+		models.NewProduct(credentials.Title,
+			catalog,
+			credentials.Price,
+			credentials.QuantityInStock,
+			credentials.Description,
+			credentials.LongDescription,
+			map[string]interface{}{},
+		)
+	}
 	context.JSON(http.StatusOK, gin.H{
 		"ok": true,
 	})

@@ -26,7 +26,7 @@ func NewProduct(title string,
 	quantityInStock int,
 	description string,
 	longDescription string,
-	attributes map[string]string) (Product, error) {
+	attributes map[string]interface{}) (Product, error) {
 	marshalAttrs, err := json.Marshal(attributes)
 	if err != nil {
 		return Product{}, err
@@ -45,6 +45,17 @@ func NewProduct(title string,
 	}
 	query := Db.Create(&product)
 	return product, query.Error
+}
+
+func MarshalAttributes(attributes map[string]interface{}) (pgtype.JSONB, error) {
+	marshalAttrs, err := json.Marshal(attributes)
+	if err != nil {
+		return pgtype.JSONB{}, err
+	}
+	return pgtype.JSONB{
+		Status: pgtype.Present,
+		Bytes:  marshalAttrs,
+	}, nil
 }
 
 func (obj Product) ToStr() string {
