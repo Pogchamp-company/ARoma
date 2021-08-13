@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import {Link} from "react-router-dom";
 import {serverUrl} from "./ServerUrl"
+import {getTopProducts} from "./utils/api";
 
 export default class TopProducts extends Component {
     constructor(props) {
@@ -12,13 +13,7 @@ export default class TopProducts extends Component {
     }
 
     updateProducts() {
-        fetch(`${serverUrl}/product/top`)
-            .then(response => response.json())
-            .then(catalog_json => {
-                this.setState({products: catalog_json["products"]})
-                console.log(this.state)
-            })
-            .catch((e) => console.log('TopProducts some error', e));
+        getTopProducts(products => this.setState({products: products}))
     }
 
     renderProducts() {

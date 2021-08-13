@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import {Link} from "react-router-dom";
 import {serverUrl} from "../ServerUrl"
+import {getCatalog, getAllCatalogs} from "../utils/api";
 
 export default class ProductListPage extends Component {
     constructor(props) {
@@ -16,15 +17,7 @@ export default class ProductListPage extends Component {
     }
 
     updateAllProduct() {
-        fetch(`${serverUrl}/catalog/${this.props.match.params.catalogId}`)
-            .then(response => response.json())
-            .then(catalog_json => {
-                console.log(catalog_json)
-                this.setState({
-                    catalog: catalog_json.obj
-                })
-            })
-            .catch((e) => console.log('some error', e));
+        getCatalog(this.props.match.params.catalogId, catalog => this.setState({catalog: catalog}))
     }
 
     render() {

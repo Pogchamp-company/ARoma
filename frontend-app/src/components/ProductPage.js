@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import TopProducts from "./TopProducts";
 import {serverUrl} from "./ServerUrl"
+import {getProduct} from "./utils/api";
 
 
 export default class ProductPage extends Component {
@@ -27,12 +28,7 @@ export default class ProductPage extends Component {
                 Photos: [],
             }
         }
-        fetch(`${serverUrl}/product/${this.productId}`)
-            .then(response => response.json())
-            .then(product_json => this.setState({
-                product: product_json.obj
-            }))
-            .catch((e) => console.log('some error', e));
+        getProduct(this.productId, product => this.setState({product: product}))
     }
 
     renderQuantity() {

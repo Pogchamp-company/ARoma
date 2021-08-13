@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import {Link} from "react-router-dom";
 import {serverUrl} from "../ServerUrl";
+import {getAllCatalogs} from "../utils/api";
 
 export default class CatalogsEditPage extends Component {
     constructor(props) {
@@ -12,19 +13,14 @@ export default class CatalogsEditPage extends Component {
     }
 
     updateAllCategories() {
-        fetch(`${serverUrl}/catalog`)
-            .then(response => response.json())
-            .then(catalog_json => {
-                this.setState({
-                    catalogs: catalog_json.catalogs.map((catalog) => {
-                        return {
-                            ...catalog,
-                            saved: true
-                        }
-                    })
-                })
+        getAllCatalogs(catalogs => this.setState({
+            catalogs: catalogs.map((catalog) => {
+                return {
+                    ...catalog,
+                    saved: true
+                }
             })
-            .catch((e) => console.log('some error', e));
+        }))
     }
 
     saveCategory(catalog) {

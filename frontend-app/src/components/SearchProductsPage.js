@@ -5,6 +5,7 @@ import NoUiSlider from "./NoUiSlider";
 import Paginator from "./Paginator";
 import ProductsContainer from "./ProductCard";
 import {serverUrl} from "./ServerUrl"
+import {getAllCatalogs} from "./utils/api";
 
 
 class EnumAttributeFilter extends Component {
@@ -208,14 +209,7 @@ export default class SearchProductsPage extends Component {
 
 
     updateAllCategories() {
-        fetch(`${serverUrl}/catalog`)
-            .then(response => response.json())
-            .then(catalog_json => {
-                this.setState({
-                    catalogs: catalog_json.catalogs
-                })
-            })
-            .catch((e) => console.log('some error', e));
+        getAllCatalogs(catalogs => this.setState({catalogs: catalogs}))
     }
 
     updateFilters() {

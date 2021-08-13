@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import {serverUrl} from "./ServerUrl";
 import OrderTotalBox from "./OrderTotalBox";
+import {getOrdersList} from "./utils/api";
 
 export default class OrdersPage extends Component {
     constructor(props) {
@@ -13,20 +14,7 @@ export default class OrdersPage extends Component {
     }
 
     updateOrders() {
-        let url = `${serverUrl}/order/all`
-        fetch(url, {
-            headers: {
-                'Authorization': this.props.token
-            }
-        })
-            .then(response => response.json())
-            .then(catalog_json => {
-                console.log(catalog_json)
-                this.setState({
-                    orders: catalog_json["orders"],
-                })
-            })
-            .catch((e) => console.log('fetchProducts some error', e));
+        getOrdersList(this.props.token, this.props.history, this.props.setToken, orders => this.setState({orders: orders}))
     }
 
     setCurrentOrder(order) {

@@ -54,8 +54,6 @@ class ProductCard extends Component {
     }
 
     render() {
-        console.log(this.props.product)
-        console.log(this.props.product.Photos)
         return (
             <div className={this.props.classList !== undefined ? this.props.classList : "col-md-6 col-lg-4"}>
                 <div key={this.props.product.ID.toString() + this.props.catalog}

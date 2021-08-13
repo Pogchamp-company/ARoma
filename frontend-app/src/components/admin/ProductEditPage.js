@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import {Link} from "react-router-dom";
 import {serverUrl} from "../ServerUrl"
+import {getProduct} from "../utils/api";
 
 export default class ProductEditPage extends Component {
     constructor(props) {
@@ -13,17 +14,14 @@ export default class ProductEditPage extends Component {
     }
 
     updateAllProduct() {
-        fetch(`${serverUrl}/product/${this.props.match.params.productId}`)
-            .then(response => response.json())
-            .then(catalog_json => {
-                this.setState({
-                    product: catalog_json.obj,
-                    attributes: Object.keys(catalog_json.obj.Attributes).map(key => {
-                        return {key: key, value: catalog_json.obj.Attributes[key]}
-                    })
+        getProduct(this.props.match.params.productId, product => {
+            this.setState({
+                product: product,
+                attributes: Object.keys(product.Attributes).map(key => {
+                    return {key: key, value: product.Attributes[key]}
                 })
             })
-            .catch((e) => console.log('some error', e));
+        })
     }
 
     uploadProductPhotos(files) {
