@@ -11,7 +11,12 @@ import (
 )
 
 func GetCatalog(context *gin.Context) {
-	catalogId, _ := strconv.ParseInt(context.Param("catalog_id"), 10, 64)
+	catalogId, err := strconv.ParseInt(context.Param("catalog_id"), 10, 64)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{
+			"errors": "Invalid id",
+		})
+	}
 	var catalog models.Catalog
 	catalog.LoadByID(int(catalogId))
 	context.JSON(http.StatusOK, gin.H{

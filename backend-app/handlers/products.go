@@ -3,9 +3,7 @@ package handlers
 import (
 	"aroma/config"
 	"aroma/models"
-	"aroma/services/attachments"
 	"encoding/json"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/mitchellh/mapstructure"
 	"gorm.io/gorm"
@@ -14,7 +12,12 @@ import (
 )
 
 func GetProduct(context *gin.Context) {
-	productId, _ := strconv.ParseInt(context.Param("product_id"), 10, 64)
+	productId, err := strconv.ParseInt(context.Param("product_id"), 10, 64)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{
+			"errors": "Invalid id",
+		})
+	}
 	var product models.Product
 	product.LoadByID(int(productId))
 	context.JSON(http.StatusOK, gin.H{
@@ -126,63 +129,5 @@ func TopProducts(context *gin.Context) {
 	}
 	context.JSON(http.StatusOK, gin.H{
 		"products": apiProducts,
-	})
-}
-
-func UploadProductPhoto(context *gin.Context) {
-	productID := context.Request.URL.Query().Get("productID")
-	var product models.Product
-	models.Db.First(&product, productID)
-	if !product.ToBool() {
-		context.AbortWithStatus(http.StatusBadRequest)
-		return
-	}
-	file, err := context.FormFile("photo")
-	if err != nil {
-		context.AbortWithStatus(http.StatusBadRequest)
-		return
-	}
-	minioManager := attachments.InitAttachmentManager("product-photos")
-	attachment, err := minioManager.Upload(file)
-	if err != nil {
-		fmt.Println(err)
-		context.AbortWithStatus(http.StatusInternalServerError)
-		return
-	}
-	err = models.Db.Exec("INSERT INTO product_attachment VALUES (?, ?)", productID, attachment.ID).Error
-
-	context.JSON(http.StatusOK, gin.H{
-		"attachmentID":  attachment.ID,
-		"attachmentURL": attachment.GetUrl(),
-	})
-}
-
-func DeleteProductPhoto(context *gin.Context) {
-	productID := context.Request.URL.Query().Get("productID")
-	attachmentID := context.Request.URL.Query().Get("attachmentID")
-	if productID == "" || attachmentID == "" {
-		context.AbortWithStatus(http.StatusBadRequest)
-		return
-	}
-	err := models.Db.Exec("DELETE FROM product_attachment WHERE product_id = ? AND attachment_id = ?", productID, attachmentID).Error
-	if err != nil {
-		context.AbortWithStatus(http.StatusInternalServerError)
-		return
-	}
-	models.Db.Delete(&models.Attachment{}, attachmentID)
-	context.JSON(http.StatusOK, gin.H{
-		"status": "ok",
-	})
-}
-
-func GetAttachmentUrl(context *gin.Context) {
-	attachmentID := context.Request.URL.Query().Get("attachmentID")
-	var attachment models.Attachment
-	query := models.Db.First(&attachment, attachmentID)
-	if query.Error != nil {
-		panic(query.Error)
-	}
-	context.JSON(http.StatusOK, gin.H{
-		"attachment_url": attachment.GetUrl(),
 	})
 }

@@ -3,7 +3,9 @@ package handlers
 import (
 	"aroma/dto"
 	"aroma/models"
+	"aroma/services/attachments"
 	"encoding/json"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgtype"
 	"net/http"
@@ -38,7 +40,7 @@ func UpdateProductInfo(context *gin.Context) {
 	}
 	var c int64
 	models.Db.Model(&models.Product{}).Where("id = ?", productID).Count(&c)
-	if c == 0 && productID == "" {
+	if c == 0 && productID != "" {
 		context.JSON(http.StatusNotFound, gin.H{
 			"errors": "This product does not exists",
 		})
@@ -163,4 +165,50 @@ func DeleteRecord(model interface{}, idParam string) gin.HandlerFunc {
 			"ok": true,
 		})
 	}
+}
+
+func UploadProductPhoto(context *gin.Context) {
+	productID := context.Request.URL.Query().Get("productID")
+	var product models.Product
+	models.Db.First(&product, productID)
+	if !product.ToBool() {
+		context.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+	file, err := context.FormFile("photo")
+	if err != nil {
+		context.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+	minioManager := attachments.InitAttachmentManager("product-photos")
+	attachment, err := minioManager.Upload(file)
+	if err != nil {
+		fmt.Println(err)
+		context.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+	err = models.Db.Exec("INSERT INTO product_attachment VALUES (?, ?)", productID, attachment.ID).Error
+
+	context.JSON(http.StatusOK, gin.H{
+		"attachmentID":  attachment.ID,
+		"attachmentURL": attachment.GetUrl(),
+	})
+}
+
+func DeleteProductPhoto(context *gin.Context) {
+	productID := context.Request.URL.Query().Get("productID")
+	attachmentID := context.Request.URL.Query().Get("attachmentID")
+	if productID == "" || attachmentID == "" {
+		context.AbortWithStatus(http.StatusBadRequest)
+		return
+	}
+	err := models.Db.Exec("DELETE FROM product_attachment WHERE product_id = ? AND attachment_id = ?", productID, attachmentID).Error
+	if err != nil {
+		context.AbortWithStatus(http.StatusInternalServerError)
+		return
+	}
+	models.Db.Delete(&models.Attachment{}, attachmentID)
+	context.JSON(http.StatusOK, gin.H{
+		"status": "ok",
+	})
 }
