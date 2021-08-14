@@ -112,7 +112,7 @@ function getOrder(orderId, context, history, successCallback, errorCallback = nu
 }
 
 function sendOrder(orderId, body, context, history, successCallback, errorCallback = null) {
-    let url = `${serverUrl}/order/send?orderID=${orderId}`
+    let url = `${serverUrl}/order/step2?orderID=${orderId}`
     loginRequiredFetch(context.token, history, context.setToken, url, {body: body, method: 'POST'})
         .then(response => response.json())
         .then(catalog_json => {

@@ -50,7 +50,7 @@ export default class OrderStep2Page extends Component {
         data.set("zip", this.references.zip.current.value)
         data.set("message", this.references.message.current.value)
 
-        sendOrder(this.state.order.ID, data, this.context, this.props.history, () => {
+        sendOrder(this.props.match.params.orderId, data, this.context, this.props.history, () => {
             console.log("orderrrrrrrr SenDeD!!!!!!!!")
         })
     }
