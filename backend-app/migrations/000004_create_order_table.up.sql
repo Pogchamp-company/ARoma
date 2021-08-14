@@ -10,7 +10,7 @@ CREATE TYPE order_status AS ENUM (
 
 CREATE TABLE orders
 (
-    id          SERIAL       NOT NULL CONSTRAINT orders_pkey PRIMARY KEY ,
+    id          SERIAL       NOT NULL CONSTRAINT orders_pkey PRIMARY KEY,
     status      order_status NOT NULL DEFAULT 'DRAFT',
     customer_id INT          NOT NULL CONSTRAINT order_user_id_fkey REFERENCES users
 );

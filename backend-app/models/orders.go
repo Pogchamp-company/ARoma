@@ -131,3 +131,22 @@ type CouponCode struct {
 	Sale      int
 	ExpiredAt pgtype.Date
 }
+
+type Address struct {
+	BaseModel
+	Country string
+	City    string
+	Route   string
+	ZipCode string
+}
+
+type OrderDetails struct {
+	OrderID     int
+	Order       Order
+	FirstName   string
+	LastName    string
+	PhoneNumber string
+	AddressID   int
+	Address     Address
+	ExtraInfo   string
+}

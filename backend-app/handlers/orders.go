@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"aroma/dto"
 	"aroma/models"
 	"encoding/json"
 	"github.com/gin-gonic/gin"
@@ -55,6 +56,69 @@ func CreateOrder(context *gin.Context) {
 	})
 }
 
+func SendOrder(context *gin.Context) {
+	orderID, err := strconv.ParseInt(context.Request.URL.Query().Get("orderID"), 10, 64)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{
+			"errors": "Incorrect id",
+		})
+		return
+	}
+	var order models.Order
+	models.Db.First(&order, orderID)
+	user, _ := context.Get("currentUser")
+	if order.CustomerID != user.(models.User).ID {
+		context.AbortWithStatus(http.StatusForbidden)
+		return
+	}
+	var credentials dto.OrderDetailsCredentials
+	err = context.ShouldBind(&credentials)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{
+			"errors": err,
+		})
+		return
+	}
+	address := models.Address{
+		Country: credentials.Country,
+		City:    credentials.City,
+		Route:   credentials.Route,
+		ZipCode: credentials.ZipCode,
+	}
+	err = models.Db.Create(&address).Error
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{
+			"errors": "Error when creating address object",
+		})
+		return
+	}
+	details := models.OrderDetails{
+		OrderID:     order.ID,
+		FirstName:   credentials.FirstName,
+		LastName:    credentials.LastName,
+		PhoneNumber: credentials.PhoneNumber,
+		ExtraInfo:   credentials.ExtraInfo,
+		AddressID:   address.ID,
+	}
+	err = models.Db.Create(&details).Error
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{
+			"errors": "Error when creating order details object",
+		})
+		return
+	}
+	err = models.Db.Model(&order).Update("status", "NOT_PAID").Error
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{
+			"errors": "Error when updating order status",
+		})
+		return
+	}
+	context.JSON(http.StatusOK, gin.H{
+		"ok": true,
+	})
+}
+
 func GetOrder(context *gin.Context) {
 	type ApiOrderProduct struct {
 		Title    string
@@ -67,7 +131,13 @@ func GetOrder(context *gin.Context) {
 		Sale           int
 		Products       []ApiOrderProduct
 	}
-	orderID, _ := strconv.ParseInt(context.Request.URL.Query().Get("orderID"), 10, 64)
+	orderID, err := strconv.ParseInt(context.Request.URL.Query().Get("orderID"), 10, 64)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{
+			"errors": "Incorrect id",
+		})
+		return
+	}
 	var order models.Order
 	models.Db.Preload("ShippingMethod").Preload("CouponCode").First(&order, orderID)
 	user, _ := context.Get("currentUser")
