@@ -1,11 +1,14 @@
 import React, {Component} from "react";
 import {Link} from "react-router-dom";
 import {serverUrl} from "../ServerUrl"
-import {getProduct} from "../utils/api";
+import {getProduct, removeProductPhoto, uploadProductPhoto} from "../utils/api";
+import {PropsContext} from "../Context";
 
 export default class ProductEditPage extends Component {
-    constructor(props) {
-        super(props);
+    static contextType = PropsContext
+
+    constructor(props, context) {
+        super(props, context);
         this.state = {
             product: {
                 "Attributes": {},
@@ -46,55 +49,21 @@ export default class ProductEditPage extends Component {
     uploadProductPhotos(files) {
         for (let i = 0; i < files.length; i++) {
             const file = files[i]
-            console.log(file)
-
-            const data = new FormData();
-
-            data.set('photo', file)
-
-            fetch(`${serverUrl}/product/photo?productID=${this.state.product.ID}`, { // Your POST endpoint
-                method: 'POST',
-                headers: {
-                    'Authorization': this.props.token
-                },
-                body: data,
-            }).then(
-                response => response.json() // if the response is a JSON object
-            ).then(
-                attachment_json => {
-                    console.log(attachment_json)
-                    this.state.product.Photos.push({
-                        ID: attachment_json.attachmentID,
-                        Url: attachment_json.attachmentURL,
-                    })
-                    this.forceUpdate()
-                }
-            ).catch(
-                error => console.log('error', error) // Handle the error response object
-            );
-
+            uploadProductPhoto(this.state.product.ID, file, this.context, this.props.history, attachment_json => {
+                this.state.product.Photos.push({
+                    ID: attachment_json.attachmentID,
+                    Url: attachment_json.attachmentURL,
+                })
+                this.forceUpdate()
+            })
         }
-        this.forceUpdate()
     }
 
     removeProductPhoto(photo) {
-        fetch(`${serverUrl}/product/photo?productID=${this.state.product.ID}&attachmentID=${photo.ID}`, {
-            method: 'DELETE',
-            headers: {
-                'Authorization': this.props.token
-            },
-        }).then(
-            response => response.json()
-        ).then(
-            attachment_json => {
-                console.log(attachment_json)
-                this.state.product.Photos = this.state.product.Photos.filter((value) => value !== photo)
-                this.forceUpdate()
-            }
-        ).catch(
-            error => console.log('error', error) // Handle the error response object
-        );
-
+        removeProductPhoto(this.state.product.ID, photo.ID, this.context, this.props.history, attachment_json => {
+            this.state.product.Photos = this.state.product.Photos.filter((value) => value !== photo)
+            this.forceUpdate()
+        })
     }
 
     saveProduct() {
@@ -136,7 +105,6 @@ export default class ProductEditPage extends Component {
     }
 
     renderProductAttributes() {
-        console.log(this.state.product)
         return (
             <div style={{width: "100%"}}>
                 {
@@ -163,7 +131,6 @@ export default class ProductEditPage extends Component {
     }
 
     render() {
-        console.log(this.state.product)
         if (this.state.product === undefined) {
             return ''
         }

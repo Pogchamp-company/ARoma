@@ -19,7 +19,6 @@ export default class OrderStep2Page extends Component {
             country: React.createRef(),
             city: React.createRef(),
             route: React.createRef(),
-            house: React.createRef(),
             zip: React.createRef(),
             message: React.createRef(),
         }

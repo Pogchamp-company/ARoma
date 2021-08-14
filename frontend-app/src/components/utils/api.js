@@ -1,6 +1,6 @@
 import {serverUrl} from "../ServerUrl";
 
-function getProduct(productID, successCallback, errorCallback=null) {
+function getProduct(productID, successCallback, errorCallback = null) {
     fetch(`${serverUrl}/product/${productID}`)
         .then(response => response.json())
         .then(product_json => successCallback(product_json.obj))
@@ -10,7 +10,7 @@ function getProduct(productID, successCallback, errorCallback=null) {
         });
 }
 
-function getAllCatalogs(successCallback, errorCallback=null) {
+function getAllCatalogs(successCallback, errorCallback = null) {
     fetch(`${serverUrl}/catalog`)
         .then(response => response.json())
         .then(catalog_json => successCallback(catalog_json.catalogs))
@@ -20,7 +20,7 @@ function getAllCatalogs(successCallback, errorCallback=null) {
         });
 }
 
-function getCatalog(catalogID, successCallback, errorCallback=null) {
+function getCatalog(catalogID, successCallback, errorCallback = null) {
     fetch(`${serverUrl}/catalog/${catalogID}`)
         .then(response => response.json())
         .then(catalog_json => successCallback(catalog_json.obj))
@@ -30,7 +30,7 @@ function getCatalog(catalogID, successCallback, errorCallback=null) {
         });
 }
 
-function getTopProducts(successCallback, errorCallback=null) {
+function getTopProducts(successCallback, errorCallback = null) {
     fetch(`${serverUrl}/product/top`)
         .then(response => response.json())
         .then(products_json => successCallback(products_json.products))
@@ -41,7 +41,7 @@ function getTopProducts(successCallback, errorCallback=null) {
 
 }
 
-function loginRequiredFetch(token, history, setToken, input, init={}) {
+function loginRequiredFetch(token, history, setToken, input, init = {}) {
     return fetch(input, {
         ...init,
         headers: {
@@ -57,7 +57,7 @@ function loginRequiredFetch(token, history, setToken, input, init={}) {
     })
 }
 
-function getOrdersList(token, history, setToken, successCallback, errorCallback=null) {
+function getOrdersList(token, history, setToken, successCallback, errorCallback = null) {
     loginRequiredFetch(token, history, setToken, `${serverUrl}/order/all`)
         .then(response => response.json())
         .then(catalog_json => successCallback(catalog_json.orders))
@@ -67,7 +67,7 @@ function getOrdersList(token, history, setToken, successCallback, errorCallback=
         });
 }
 
-function getShippingMethods(successCallback, errorCallback=null) {
+function getShippingMethods(successCallback, errorCallback = null) {
     fetch(`${serverUrl}/order/shipping_methods`)
         .then(response => response.json())
         .then(shipping_methods_json => {
@@ -80,7 +80,7 @@ function getShippingMethods(successCallback, errorCallback=null) {
 
 }
 
-function checkCoupon(coupon, successCallback, errorCallback=null) {
+function checkCoupon(coupon, successCallback, errorCallback = null) {
     fetch(`${serverUrl}/order/check_coupon?couponTitle=${coupon}`, {cache: "no-cache"})
         .then((response) => {
             if (response.ok) {
@@ -97,7 +97,7 @@ function checkCoupon(coupon, successCallback, errorCallback=null) {
 
 }
 
-function getOrder(orderId, context, history, successCallback, errorCallback=null) {
+function getOrder(orderId, context, history, successCallback, errorCallback = null) {
     let url = `${serverUrl}/order?orderID=${orderId}`
     loginRequiredFetch(context.token, history, context.setToken, url)
         .then(response => response.json())
@@ -111,7 +111,7 @@ function getOrder(orderId, context, history, successCallback, errorCallback=null
 
 }
 
-function sendOrder(orderId, body, context, history, successCallback, errorCallback=null) {
+function sendOrder(orderId, body, context, history, successCallback, errorCallback = null) {
     let url = `${serverUrl}/order/send?orderID=${orderId}`
     loginRequiredFetch(context.token, history, context.setToken, url, {body: body, method: 'POST'})
         .then(response => response.json())
@@ -125,6 +125,36 @@ function sendOrder(orderId, body, context, history, successCallback, errorCallba
 
 }
 
+function uploadProductPhoto(productId, photo_file, context, history, successCallback, errorCallback = null) {
+    const data = new FormData();
+
+    data.set('photo', photo_file)
+
+    loginRequiredFetch(context.token, history, context.setToken, `${serverUrl}/product/photo?productID=${productId}`, {
+        method: 'POST',
+        body: data,
+    })
+        .then(response => response.json())
+        .then(attachment_json => successCallback(attachment_json))
+        .catch((e) => {
+            if (errorCallback !== null) errorCallback(e)
+            else console.log('uploadProductPhoto error: ', e)
+        });
+}
+
+function removeProductPhoto(productId, photoId, context, history, successCallback, errorCallback = null) {
+
+    loginRequiredFetch(context.token, history, context.setToken, `${serverUrl}/product/photo?productID=${productId}&attachmentID=${photoId}`,
+        {method: 'DELETE'},
+    )
+        .then(response => response.json())
+        .then(attachment_json => successCallback(attachment_json))
+        .catch((e) => {
+            if (errorCallback !== null) errorCallback(e)
+            else console.log('removeProductPhoto error: ', e)
+        });
+}
+
 export {
     getProduct,
     getAllCatalogs,
@@ -135,4 +165,6 @@ export {
     checkCoupon,
     getOrder,
     sendOrder,
+    uploadProductPhoto,
+    removeProductPhoto,
 }

@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import {serverUrl} from "./ServerUrl";
 import OrderTotalBox from "./OrderTotalBox";
-import {getOrdersList} from "./utils/api";
+import {getOrder, getOrdersList} from "./utils/api";
 import {PropsContext} from "./Context";
 
 export default class OrdersPage extends Component {
@@ -20,33 +20,20 @@ export default class OrdersPage extends Component {
         getOrdersList(this.context.token, this.props.history, this.context.setToken, orders => this.setState({orders: orders}))
     }
 
-    setCurrentOrder(order) {
-        if (order.ID === this.state.currentIndex) {
+    setCurrentOrder(order_obj) {
+        if (order_obj.ID === this.state.currentIndex) {
             this.setState({currentIndex: -1})
             return
         }
-        let url = `${serverUrl}/order?orderID=${order.ID}`
-        if (order.order === undefined) {
-            fetch(url, {
-                headers: {
-                    'Authorization': this.context.token
-                }
-            })
-                .then(response => response.json())
-                .then(catalog_json => {
-                    order.order = catalog_json["order"]
-                    this.setState({
-                        currentIndex: order.ID
-                    })
+        if (order_obj.order === undefined) {
+            getOrder(order_obj.ID, this.context, this.props.history, order => {
+                order_obj.order = order
+                this.setState({
+                    currentIndex: order_obj.ID
                 })
-                .catch((e) => console.log('fetchProducts some error', e));
-
-        } else {
-            this.setState({
-                currentIndex: order.ID
             })
+        } else this.setState({currentIndex: order_obj.ID})
 
-        }
 
     }
 
