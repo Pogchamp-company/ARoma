@@ -97,6 +97,34 @@ function checkCoupon(coupon, successCallback, errorCallback=null) {
 
 }
 
+function getOrder(orderId, context, history, successCallback, errorCallback=null) {
+    let url = `${serverUrl}/order?orderID=${orderId}`
+    loginRequiredFetch(context.token, history, context.setToken, url)
+        .then(response => response.json())
+        .then(catalog_json => {
+            successCallback(catalog_json.order)
+        })
+        .catch((e) => {
+            if (errorCallback !== null) errorCallback(e)
+            else console.log('getOrder error: ', e)
+        });
+
+}
+
+function sendOrder(orderId, body, context, history, successCallback, errorCallback=null) {
+    let url = `${serverUrl}/order/send?orderID=${orderId}`
+    loginRequiredFetch(context.token, history, context.setToken, url, {body: body, method: 'POST'})
+        .then(response => response.json())
+        .then(catalog_json => {
+            successCallback(catalog_json)
+        })
+        .catch((e) => {
+            if (errorCallback !== null) errorCallback(e)
+            else console.log('sendOrder error: ', e)
+        });
+
+}
+
 export {
     getProduct,
     getAllCatalogs,
@@ -105,4 +133,6 @@ export {
     getTopProducts,
     getShippingMethods,
     checkCoupon,
+    getOrder,
+    sendOrder,
 }

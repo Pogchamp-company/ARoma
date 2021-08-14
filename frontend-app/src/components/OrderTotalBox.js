@@ -7,7 +7,6 @@ export default function OrderTotalBox(props) {
         }, 0)
     }
 
-
     return (
         <div className="order_box">
             <h2>Your Order</h2>
@@ -31,7 +30,9 @@ export default function OrderTotalBox(props) {
                         <a>Discount <span style={{color: 'green'}}>-{props.order.Sale}%</span></a>
                     </li> : ''
                 }
-                <li><a>Total <span>${props.Total}</span></a></li>
+                <li>
+                    <a>Total <span>${props.Total ? props.Total : subtotal(props.order) * (props.order.Sale ? (100 - props.order.Sale) : 100) / 100 + props.order.ShippingMethod.Price}</span></a>
+                </li>
             </ul>
             {props.children}
         </div>

@@ -16,32 +16,40 @@ import OrderStep2Page from "./OrderStep2Page";
 import ProductListPage from "./admin/ProductListPage";
 import OrdersPage from "./OrdersPage";
 import ProductEditPage from "./admin/ProductEditPage";
+import {PropsContext} from "./Context";
 
 export default function App() {
     const {token, setToken} = useToken()
     const cart = useCart();
 
     return (
-        <BrowserRouter>
-            <Header token={token} setToken={setToken} cart={cart}/>
-            <ScrollToTop/>
-            <Switch>
-                <Route exact path="/" render={routerProps => (<MainPage token={token} cart={cart} {...routerProps}/>)}/>
-                <Route exact path="/registration"
-                       render={routerProps => (<RegistrationPage setToken={setToken} {...routerProps}/>)}/>
-                <Route exact path="/login" render={routerProps => (<LoginPage setToken={setToken} {...routerProps}/>)}/>
-                <Route exact path="/cart" render={routerProps => (<CartPage token={token} cart={cart} {...routerProps}/>)}/>
-                <Route exact path="/search_products"
-                       render={routerProps => (<SearchProductsPage cart={cart} {...routerProps}/>)}/>
-                <Route path="/product/:productId" render={routeProps => (<ProductPage cart={cart} {...routeProps}/>)}/>
-                <Route path="/edit_catalogs" render={routeProps => (<CatalogsEditPage token={token} {...routeProps}/>)}/>
-                <Route path="/edit_catalog_products/:catalogId" render={routeProps => (<ProductListPage {...routeProps}/>)}/>
-                <Route path="/edit_product/:productId" render={routeProps => (<ProductEditPage token={token} {...routeProps}/>)}/>
-                <Route path="/new_product/:catalogId" render={routeProps => (<ProductEditPage token={token} {...routeProps}/>)}/>
-                <Route path="/step2/:orderId" render={routeProps => (<OrderStep2Page token={token} {...routeProps}/>)}/>
-                <Route path="/orders" render={routeProps => (<OrdersPage setToken={setToken} token={token} {...routeProps}/>)}/>
-            </Switch>
-            <Footer/>
-        </BrowserRouter>
+        // todo change props to context
+        <PropsContext.Provider value={{
+            setToken,
+            token,
+            cart,
+        }}>
+            <BrowserRouter>
+                <Header token={token} setToken={setToken} cart={cart}/>
+                <ScrollToTop/>
+                <Switch>
+                    <Route exact path="/" render={routerProps => (<MainPage token={token} cart={cart} {...routerProps}/>)}/>
+                    <Route exact path="/registration"
+                           render={routerProps => (<RegistrationPage setToken={setToken} {...routerProps}/>)}/>
+                    <Route exact path="/login" render={routerProps => (<LoginPage setToken={setToken} {...routerProps}/>)}/>
+                    <Route exact path="/cart" render={routerProps => (<CartPage token={token} cart={cart} {...routerProps}/>)}/>
+                    <Route exact path="/search_products"
+                           render={routerProps => (<SearchProductsPage cart={cart} {...routerProps}/>)}/>
+                    <Route path="/product/:productId" render={routeProps => (<ProductPage cart={cart} {...routeProps}/>)}/>
+                    <Route path="/edit_catalogs" render={routeProps => (<CatalogsEditPage token={token} {...routeProps}/>)}/>
+                    <Route path="/edit_catalog_products/:catalogId" render={routeProps => (<ProductListPage {...routeProps}/>)}/>
+                    <Route path="/edit_product/:productId" render={routeProps => (<ProductEditPage token={token} {...routeProps}/>)}/>
+                    <Route path="/new_product/:catalogId" render={routeProps => (<ProductEditPage token={token} {...routeProps}/>)}/>
+                    <Route path="/step2/:orderId" render={routeProps => (<OrderStep2Page token={token} {...routeProps}/>)}/>
+                    <Route path="/orders" render={routeProps => (<OrdersPage {...routeProps}/>)}/>
+                </Switch>
+                <Footer/>
+            </BrowserRouter>
+        </PropsContext.Provider>
     );
 }

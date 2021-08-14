@@ -2,10 +2,13 @@ import React, {Component} from "react";
 import {serverUrl} from "./ServerUrl";
 import OrderTotalBox from "./OrderTotalBox";
 import {getOrdersList} from "./utils/api";
+import {PropsContext} from "./Context";
 
 export default class OrdersPage extends Component {
-    constructor(props) {
-        super(props);
+    static contextType = PropsContext;
+
+    constructor(props, context) {
+        super(props, context);
         this.state = {
             currentIndex: -1,
             orders: []
@@ -14,7 +17,7 @@ export default class OrdersPage extends Component {
     }
 
     updateOrders() {
-        getOrdersList(this.props.token, this.props.history, this.props.setToken, orders => this.setState({orders: orders}))
+        getOrdersList(this.context.token, this.props.history, this.context.setToken, orders => this.setState({orders: orders}))
     }
 
     setCurrentOrder(order) {
@@ -26,7 +29,7 @@ export default class OrdersPage extends Component {
         if (order.order === undefined) {
             fetch(url, {
                 headers: {
-                    'Authorization': this.props.token
+                    'Authorization': this.context.token
                 }
             })
                 .then(response => response.json())
@@ -39,7 +42,6 @@ export default class OrdersPage extends Component {
                 .catch((e) => console.log('fetchProducts some error', e));
 
         } else {
-            console.log("akldssfksdkf")
             this.setState({
                 currentIndex: order.ID
             })

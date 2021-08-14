@@ -1,6 +1,5 @@
 import React, {Component} from "react";
 import {Link} from "react-router-dom";
-import {serverUrl} from "./ServerUrl"
 
 
 class ProductCard extends Component {

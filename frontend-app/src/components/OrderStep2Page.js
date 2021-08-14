@@ -1,41 +1,64 @@
 import React, {Component} from "react";
-import {serverUrl} from "./ServerUrl"
 import OrderTotalBox from "./OrderTotalBox";
+import {PropsContext} from "./Context";
+import {getOrder, sendOrder} from "./utils/api";
 
 export default class OrderStep2Page extends Component {
-    constructor(props) {
-        super(props);
+    static contextType = PropsContext
+
+    constructor(props, context) {
+        super(props, context);
         this.state = {
             order: undefined
         }
         this.updateOrder()
+        this.references = {
+            first: React.createRef(),
+            last: React.createRef(),
+            number: React.createRef(),
+            country: React.createRef(),
+            city: React.createRef(),
+            route: React.createRef(),
+            house: React.createRef(),
+            zip: React.createRef(),
+            message: React.createRef(),
+        }
     }
 
     updateOrder() {
-        let url = `${serverUrl}/order?orderID=${this.props.match.params.orderId}`
-        fetch(url, {
-            headers: {
-                'Authorization': this.props.token
-            }
-        })
-            .then(response => response.json())
-            .then(catalog_json => {
-                this.setState({
-                    order: catalog_json["order"],
-                })
-            })
-            .catch((e) => console.log('fetchProducts some error', e));
+        getOrder(this.props.match.params.orderId, this.context, this.props.history, order => this.setState({order: order}))
     }
 
-    subtotal() {
-        return this.state.order.Products.reduce((prev, curr, index) => {
-            return prev + curr.Price * curr.Quantity
-        }, 0)
+    isValid() {
+        return ['first', 'last', 'number', 'country', 'city', 'route', 'zip', 'message',
+        ].every(elem => {
+            return Boolean(this.references[elem].current.value)
+        })
+    }
+
+    handleSendOrder() {
+        console.log(this.isValid())
+        if (!this.isValid()) return
+
+        const data = new FormData();
+
+        data.set("first", this.references.first.current.value)
+        data.set("last", this.references.last.current.value)
+        data.set("phoneNumber", this.references.number.current.value)
+        data.set("country", this.references.country.current.value)
+        data.set("city", this.references.city.current.value)
+        data.set("route", this.references.route.current.value)
+        data.set("zip", this.references.zip.current.value)
+        data.set("message", this.references.message.current.value)
+
+        sendOrder(this.state.order.ID, data, this.context, this.props.history, () => {
+            console.log("orderrrrrrrr SenDeD!!!!!!!!")
+        })
     }
 
     render() {
         if (this.state.order === undefined) return ''
-        console.log(this.state)
+        console.log(this.context)
         return (
             <section className="checkout_area section-margin--small">
                 <div className="container">
@@ -45,101 +68,50 @@ export default class OrderStep2Page extends Component {
                                 <h3>Billing Details</h3>
                                 <form className="row contact_form" action="#" method="post" noValidate="novalidate">
                                     <div className="col-md-6 form-group p_star">
-                                        <input type="text" className="form-control" id="first" name="name"/>
-                                        <span className="placeholder" data-placeholder="First name"></span>
+                                        <input type="text" className="form-control" id="first"
+                                               ref={this.references['first']} name="name" placeholder="First name"/>
                                     </div>
                                     <div className="col-md-6 form-group p_star">
-                                        <input type="text" className="form-control" id="last" name="name"/>
-                                        <span className="placeholder" data-placeholder="Last name"></span>
+                                        <input type="text" className="form-control" id="last"
+                                               ref={this.references['last']} name="name" placeholder="Last name"/>
+                                    </div>
+                                    <div className="col-md-6 form-group p_star">
+                                        <input type="text" className="form-control" id="number"
+                                               ref={this.references['number']} name="number"
+                                               placeholder="Phone number"/>
+                                    </div>
+                                    <div className="col-md-12 form-group p_star">
+                                        <input type="text" className="form-control" id="country"
+                                               ref={this.references['country']} name="country"
+                                               placeholder="Country"/>
+                                    </div>
+                                    <div className="col-md-12 form-group p_star">
+                                        <input type="text" className="form-control" id="city"
+                                               ref={this.references['city']} name="city" placeholder="Town/City"/>
+                                    </div>
+                                    <div className="col-md-12 form-group p_star">
+                                        <input type="text" className="form-control" id="route"
+                                               ref={this.references['route']} name="route"
+                                               placeholder="Street, House"/>
                                     </div>
                                     <div className="col-md-12 form-group">
-                                        <input type="text" className="form-control" id="company" name="company"
-                                               placeholder="Company name"/>
-                                    </div>
-                                    <div className="col-md-6 form-group p_star">
-                                        <input type="text" className="form-control" id="number" name="number"/>
-                                        <span className="placeholder" data-placeholder="Phone number"></span>
-                                    </div>
-                                    <div className="col-md-6 form-group p_star">
-                                        <input type="text" className="form-control" id="email" name="compemailany"/>
-                                        <span className="placeholder" data-placeholder="Email Address"></span>
-                                    </div>
-                                    <div className="col-md-12 form-group p_star">
-                                        <select className="country_select">
-                                            <option value="1">Country</option>
-                                            <option value="2">Country</option>
-                                            <option value="4">Country</option>
-                                        </select>
-                                    </div>
-                                    <div className="col-md-12 form-group p_star">
-                                        <input type="text" className="form-control" id="add1" name="add1"/>
-                                        <span className="placeholder" data-placeholder="Address line 01"></span>
-                                    </div>
-                                    <div className="col-md-12 form-group p_star">
-                                        <input type="text" className="form-control" id="add2" name="add2"/>
-                                        <span className="placeholder" data-placeholder="Address line 02"></span>
-                                    </div>
-                                    <div className="col-md-12 form-group p_star">
-                                        <input type="text" className="form-control" id="city" name="city"/>
-                                        <span className="placeholder" data-placeholder="Town/City"></span>
-                                    </div>
-                                    <div className="col-md-12 form-group p_star">
-                                        <select className="country_select">
-                                            <option value="1">District</option>
-                                            <option value="2">District</option>
-                                            <option value="4">District</option>
-                                        </select>
-                                    </div>
-                                    <div className="col-md-12 form-group">
-                                        <input type="text" className="form-control" id="zip" name="zip"
+                                        <input type="text" className="form-control" id="zip"
+                                               ref={this.references['zip']} name="zip"
                                                placeholder="Postcode/ZIP"/>
                                     </div>
-                                    <div className="col-md-12 form-group">
-                                        <div className="creat_account">
-                                            <input type="checkbox" id="f-option2" name="selector"/>
-                                            <label htmlFor="f-option2">Create an account?</label>
-                                        </div>
-                                    </div>
                                     <div className="col-md-12 form-group mb-0">
-                                        <div className="creat_account">
-                                            <h3>Shipping Details</h3>
-                                            <input type="checkbox" id="f-option3" name="selector"/>
-                                            <label htmlFor="f-option3">Ship to a different address?</label>
-                                        </div>
-                                        <textarea className="form-control" name="message" id="message" rows="1"
+                                        <textarea className="form-control" name="message" id="message"
+                                                  ref={this.references['message']} rows="1"
                                                   placeholder="Order Notes"></textarea>
                                     </div>
                                 </form>
                             </div>
                             <div className="col-lg-4">
                                 <OrderTotalBox order={this.state.order} Total={0}>
-                                    <div className="payment_item">
-                                    <div className="radion_btn">
-                                        <input type="radio" id="f-option5" name="selector"/>
-                                        <label htmlFor="f-option5">Check payments</label>
-                                        <div className="check"></div>
-                                    </div>
-                                    <p>Please send a check to Store Name, Store Street, Store Town, Store State /
-                                        County,
-                                        Store Postcode.</p>
-                                </div>
-                                    <div className="payment_item active">
-                                        <div className="radion_btn">
-                                            <input type="radio" id="f-option6" name="selector"/>
-                                            <label htmlFor="f-option6">Paypal </label>
-                                            <img src="img/product/card.jpg" alt=""/>
-                                            <div className="check"></div>
-                                        </div>
-                                        <p>Pay via PayPal; you can pay with your credit card if you don’t have a PayPal
-                                            account.</p>
-                                    </div>
-                                    <div className="creat_account">
-                                        <input type="checkbox" id="f-option4" name="selector"/>
-                                        <label htmlFor="f-option4">I’ve read and accept the </label>
-                                        <a href="#">terms & conditions*</a>
-                                    </div>
                                     <div className="text-center">
-                                        <a className="button button-paypal" href="#">Proceed to Paypal</a>
+                                        <button className="button button-paypal"
+                                                onClick={() => this.handleSendOrder()}>Proceed to Оплата
+                                        </button>
                                     </div>
                                 </OrderTotalBox>
                             </div>
