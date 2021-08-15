@@ -169,6 +169,19 @@ function removeProductPhoto(productId, photoId, context, history, successCallbac
         });
 }
 
+function deleteProduct(productId, context, history, successCallback, errorCallback = null) {
+    loginRequiredFetch(context.token, history, context.setToken, `${serverUrl}/admin/product?productID=${productId}`,
+        {method: 'DELETE'},
+    )
+        .then(response => response.json())
+        .then(attachment_json => successCallback(attachment_json))
+        .catch((e) => {
+            if (errorCallback !== null) errorCallback(e)
+            else console.log('deleteProduct error: ', e)
+        });
+
+}
+
 export {
     getProduct,
     getAllCatalogs,
@@ -182,4 +195,5 @@ export {
     payOrder,
     uploadProductPhoto,
     removeProductPhoto,
+    deleteProduct,
 }

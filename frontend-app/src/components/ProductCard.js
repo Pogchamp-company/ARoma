@@ -1,11 +1,11 @@
 import React, {Component} from "react";
 import {Link} from "react-router-dom";
+import {PropsContext} from "./Context";
+import {deleteProduct} from "./utils/api";
 
 
 class ProductCard extends Component {
-    constructor(props) {
-        super(props);
-    }
+    static contextType = PropsContext;
 
     handleAddToCart(e, product) {
         if (this.props.cart.getAmount(product.ID) === this.props.product.QuantityInStock) return
@@ -72,15 +72,31 @@ class ProductCard extends Component {
                                          alt="Avatar"/>
                                     <ul className="card-product__imgOverlay">
                                         <li>
-                                            <Link to={`/product/${this.props.product.ID}`}><i className="ti-search"></i></Link>
+                                            <Link to={`/product/${this.props.product.ID}`}><i
+                                                className="ti-search"/></Link>
                                         </li>
                                         <li>
                                             <button onClick={(e) => this.handleAddToCart(e, this.props.product)}>
                                                 <i className="ti-shopping-cart"/></button>
                                         </li>
-                                        <li>
-                                            <Link to={`/edit_product/${this.props.product.ID}`}><i className="ti-pencil"></i></Link>
-                                        </li>
+                                        {
+                                            this.context.isAdmin() ? (
+                                                <>
+                                                    <li>
+                                                        <Link to={`/edit_product/${this.props.product.ID}`}><i
+                                                            className="ti-pencil"/></Link>
+                                                    </li>
+                                                    <li>
+                                                        <button onClick={e => {
+                                                            deleteProduct(this.props.product.ID, this.context, this.props.history, e => {
+                                                                window.location.reload()
+                                                            })
+                                                        }}><i className="ti-trash"/></button>
+                                                    </li>
+                                                </>
+                                            ) : ''
+                                        }
+
                                     </ul>
                                 </div>
                             </div>
@@ -100,15 +116,12 @@ class ProductCard extends Component {
 
 
 export default class ProductsContainer extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         return (
             <div className="row">
                 {this.props.products.map((product, index) => (
-                    <ProductCard catalog={this.props.catalog} classList={this.props.classList} product={product} index={index} cart={this.props.cart}/>
+                    <ProductCard catalog={this.props.catalog} classList={this.props.classList} product={product}
+                                 index={index} cart={this.props.cart}/>
                 ))}
             </div>
         )

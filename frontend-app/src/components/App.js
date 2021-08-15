@@ -20,13 +20,14 @@ import {PropsContext} from "./Context";
 import OrderStep3Page from "./order/OrderStep3Page";
 
 export default function App() {
-    const {token, setToken} = useToken()
+    const {token, setToken, isAdmin} = useToken()
     const cart = useCart();
 
     return (
         // todo change props to context
         <PropsContext.Provider value={{
             setToken,
+            isAdmin,
             token,
             cart,
         }}>

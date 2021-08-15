@@ -6,18 +6,27 @@ export default function useToken() {
     };
     const [token, setToken] = useState(getToken());
 
-    const saveToken = userToken => {
+    const saveToken = (userToken, isAdmin=false) => {
         if (userToken === undefined) {
             localStorage.removeItem('token')
+            localStorage.removeItem('admin')
         } else {
             localStorage.setItem('token', userToken)
+            localStorage.setItem('admin', isAdmin ? 'true' : 'false')
         }
-        console.log(localStorage)
         setToken(userToken);
     };
 
+    const isAdmin = () => {
+        const admin = localStorage.getItem('admin')
+        if (admin === undefined) return false
+
+        return admin === 'true'
+    }
+
     return {
         setToken: saveToken,
+        isAdmin,
         token
     }
 }

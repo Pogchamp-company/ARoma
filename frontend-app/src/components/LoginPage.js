@@ -46,7 +46,7 @@ export default class LoginPage extends Component {
                     console.log(response_json)
                     // this.props.history.push('/')
                     this.setState({bringBack: true})
-                    this.props.setToken(response_json.token)
+                    this.props.setToken(response_json.token, response_json.isAdmin)
                 })
                 .catch((e) => console.log('TopProducts some error', e));
         }
