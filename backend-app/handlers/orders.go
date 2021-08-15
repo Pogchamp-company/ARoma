@@ -119,6 +119,34 @@ func SendOrder(context *gin.Context) {
 	})
 }
 
+func PayOrder(context *gin.Context) {
+	orderID, err := strconv.ParseInt(context.Request.URL.Query().Get("orderID"), 10, 64)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{
+			"errors": "Incorrect id",
+		})
+		return
+	}
+	var order models.Order
+	models.Db.First(&order, orderID)
+	user, _ := context.Get("currentUser")
+	if order.CustomerID != user.(models.User).ID {
+		context.AbortWithStatus(http.StatusForbidden)
+		return
+	}
+	if order.Status != "NOT_PAID" {
+		context.AbortWithStatus(http.StatusForbidden)
+		return
+	}
+
+	// ToDo: Payment logic
+
+	models.Db.Model(&order).Update("status", "PAID")
+	context.JSON(http.StatusOK, gin.H{
+		"ok": true,
+	})
+}
+
 func GetOrder(context *gin.Context) {
 	type ApiOrderProduct struct {
 		Title    string
