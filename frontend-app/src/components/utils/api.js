@@ -1,4 +1,4 @@
-import {serverUrl} from "../ServerUrl";
+import {serverUrl} from "./ServerUrl";
 
 function getProduct(productID, successCallback, errorCallback = null) {
     fetch(`${serverUrl}/product/${productID}`)
@@ -125,6 +125,20 @@ function sendOrder(orderId, body, context, history, successCallback, errorCallba
 
 }
 
+function payOrder(orderId, context, history, successCallback, errorCallback = null) {
+    let url = `${serverUrl}/order/step3?orderID=${orderId}`
+    loginRequiredFetch(context.token, history, context.setToken, url, {method: 'POST'})
+        .then(response => response.json())
+        .then(catalog_json => {
+            successCallback(catalog_json)
+        })
+        .catch((e) => {
+            if (errorCallback !== null) errorCallback(e)
+            else console.log('payOrder error: ', e)
+        });
+
+}
+
 function uploadProductPhoto(productId, photo_file, context, history, successCallback, errorCallback = null) {
     const data = new FormData();
 
@@ -165,6 +179,7 @@ export {
     checkCoupon,
     getOrder,
     sendOrder,
+    payOrder,
     uploadProductPhoto,
     removeProductPhoto,
 }

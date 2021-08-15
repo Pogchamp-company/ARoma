@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {Link} from "react-router-dom";
-import {serverUrl} from "./ServerUrl"
+import {serverUrl} from "./utils/ServerUrl"
 import {getTopProducts} from "./utils/api";
 
 export default class TopProducts extends Component {

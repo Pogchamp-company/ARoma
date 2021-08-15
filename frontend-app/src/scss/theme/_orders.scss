@@ -76,6 +76,9 @@
     margin-right: 15px;
     font-family: 'Oswald', sans-serif;
     font-size: 20px;
+    display: inline-block;
+    width: 150px;
+    text-align: right;
   }
 }
 
@@ -104,4 +107,19 @@ $status_colors: (
   .orders-dropdown-status[data-status=#{$status_name}] {
     background-color: $status_color;
   }
+}
+
+.order-button {
+  background: white;
+  display: inline-block;
+  width: 160px;
+  white-space: nowrap;
+  margin: 3px;
+  text-align: center;
+  border-radius: 5px;
+  text-decoration: none;
+  color: black;
+}
+.order-button:hover {
+  background: #c9c9c9;
 }

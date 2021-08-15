@@ -1,7 +1,7 @@
 import React, {Component} from "react";
-import OrderTotalBox from "./OrderTotalBox";
-import {PropsContext} from "./Context";
-import {getOrder, sendOrder} from "./utils/api";
+import OrderTotalBox from "../OrderTotalBox";
+import {PropsContext} from "../Context";
+import {getOrder, sendOrder} from "../utils/api";
 
 export default class OrderStep2Page extends Component {
     static contextType = PropsContext
@@ -52,6 +52,7 @@ export default class OrderStep2Page extends Component {
 
         sendOrder(this.props.match.params.orderId, data, this.context, this.props.history, () => {
             console.log("orderrrrrrrr SenDeD!!!!!!!!")
+            this.props.history.push(`/step3/${this.props.match.params.orderId}`)
         })
     }
 

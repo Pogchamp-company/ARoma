@@ -4,7 +4,7 @@ import {Link} from "react-router-dom";
 import NoUiSlider from "./NoUiSlider";
 import Paginator from "./Paginator";
 import ProductsContainer from "./ProductCard";
-import {serverUrl} from "./ServerUrl"
+import {serverUrl} from "./utils/ServerUrl"
 import {getAllCatalogs} from "./utils/api";
 
 

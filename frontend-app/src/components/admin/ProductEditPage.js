@@ -1,8 +1,8 @@
 import React, {Component} from "react";
-import {Link} from "react-router-dom";
-import {serverUrl} from "../ServerUrl"
+import {serverUrl} from "../utils/ServerUrl"
 import {getProduct, removeProductPhoto, uploadProductPhoto} from "../utils/api";
 import {PropsContext} from "../Context";
+import TopProducts from "../TopProducts";
 
 export default class ProductEditPage extends Component {
     static contextType = PropsContext
@@ -100,7 +100,7 @@ export default class ProductEditPage extends Component {
             })
             .then(jsonResponse => {
                 console.log(jsonResponse)
-                if (this.state.product.ID === null) this.props.history.push(`/edit_product/${jsonResponse.productID}`)
+                this.props.history.push(`/product/${jsonResponse.productID}`)
             }).catch(e => console.log(e))
     }
 
@@ -126,94 +126,142 @@ export default class ProductEditPage extends Component {
                         )
                     })
                 }
+                <button className={"button admin-product-save"} onClick={() => this.setState(prev => {
+                    return {
+                        attributes: [...prev.attributes, {key: '', value: ''}]
+                    }
+                })}>Add attribute
+                </button>
+
             </div>
         )
     }
 
     render() {
-        if (this.state.product === undefined) {
-            return ''
-        }
+        console.log(this.state.product)
         return (
-            <section className="cart_area">
-                <div className="container">
-                    <div style={{display: 'flex', alignItems: 'center'}}>
-                        <Link className={'admin-table-button'}
-                              to={`/edit_catalog_products/${this.state.product.Catalog.ID}`}><i
-                            className="ti-angle-left"/></Link>
-                        <span className={"admin-catalog-title"}>{this.state.product.Title}</span>
-                    </div>
-                    <div className="cart_inner admin-product-inner">
-                        <div className={'admin-product-wrap'}>
-                            <span>Title</span>
-                            <input onChange={(event) => {
-                                this.state.product.Title = event.target.value
-                                this.forceUpdate()
-                            }} value={this.state.product.Title} placeholder={"Title"}/>
-                        </div>
-                        <div className={'admin-product-wrap'}>
-                            <span>Price</span>
-                            <input onChange={(event) => {
-                                this.state.product.Price = parseFloat(event.target.value)
-                                this.forceUpdate()
-                            }} value={this.state.product.Price} type={"number"} placeholder={"Price"}/>
-                        </div>
-                        <div className={'admin-product-wrap'}>
-                            <span>QuantityInStock</span>
-                            <input onChange={(event) => {
-                                this.state.product.QuantityInStock = parseFloat(event.target.value)
-                                this.forceUpdate()
-                            }} value={this.state.product.QuantityInStock} type={"number"}
-                                   placeholder={"QuantityInStock"}/>
-                        </div>
-                        <div className={'admin-product-wrap'}>
-                            <span>Description</span>
+            <div>
+                <div className="product_image_area">
+                    <div className="container">
+                        <div className="row s_product_inner">
+                            <div className="col-lg-6">
 
-                            <textarea value={this.state.product.Description} onChange={(event) => {
-                                this.state.product.Description = event.target.value
-                                this.forceUpdate()
-                            }}/>
-                        </div>
-                        <div className={'admin-product-wrap'}>
-                            <span>Long Description</span>
+                                <div className={"admin-product-image-container"}>
+                                    {this.state.product.Photos.map((photo) => {
+                                        return (
+                                            <div className={"admin-product-image-item"}>
+                                                <i className={"ti-close"}
+                                                   onClick={() => this.removeProductPhoto(photo)}/>
+                                                <img src={photo.Url}/>
+                                            </div>
+                                        )
+                                    })}
+                                    {
+                                        this.state.product.ID !== null ? (
+                                            <label className="custom-file-upload">
+                                                <input type="file" accept="image/*" multiple
+                                                       onChange={(event) => this.uploadProductPhotos(event.target.files)}/>
+                                                +
+                                            </label>
+                                        ) : ''
+                                    }
+                                </div>
 
-                            <textarea value={this.state.product.LongDescription} onChange={(event) => {
-                                this.state.product.LongDescription = event.target.value
-                                this.forceUpdate()
-                            }}/>
-                        </div>
-                        {this.renderProductAttributes()}
+                            </div>
+                            <div className="col-lg-5 offset-lg-1">
+                                <div className="s_product_text">
+                                    <h3>
+                                        <textarea onChange={(event) => {
+                                            this.state.product.Title = event.target.value
+                                            this.forceUpdate()
+                                        }} value={this.state.product.Title} placeholder={"Title"}/>
+                                    </h3>
+                                    <h2>$
+                                        <input onChange={(event) => {
+                                            this.state.product.Price = parseFloat(event.target.value)
+                                            this.forceUpdate()
+                                        }} value={this.state.product.Price} type={"number"} placeholder={"Price"}/>
+                                    </h2>
+                                    <ul className="list">
+                                        <li><a
+                                            className="active"><span>Category</span> : {this.state.product.Catalog.Title}
+                                        </a>
+                                        </li>
+                                        <li><a><span>Availibility</span> :
+                                            <input onChange={(event) => {
+                                                this.state.product.QuantityInStock = parseFloat(event.target.value)
+                                                this.forceUpdate()
+                                            }}
+                                                   value={this.state.product.QuantityInStock}
+                                                   type={"number"}
+                                                   placeholder={"QuantityInStock"}/>
 
-                        <button className={"button admin-product-save"} onClick={() => this.setState(prev => {
-                            return {
-                                attributes: [...prev.attributes, {key: '', value: ''}]
-                            }
-                        })}>Add attribute
-                        </button>
-                        <div className={"admin-product-image-container"}>
-                            {this.state.product.Photos.map((photo) => {
-                                return (
-                                    <div className={"admin-product-image-item"}>
-                                        <i className={"ti-close"}
-                                           onClick={() => this.removeProductPhoto(photo)}/>
-                                        <img src={photo.Url}/>
-                                    </div>
-                                )
-                            })}
-                            {
-                                this.state.product.ID !== null ? (
-                                    <label className="custom-file-upload">
-                                        <input type="file" accept="image/*" multiple
-                                               onChange={(event) => this.uploadProductPhotos(event.target.files)}/>
-                                        +
-                                    </label>
-                                ) : ''
-                            }
+                                        </a></li>
+                                    </ul>
+                                    <p>
+                                        <textarea style={{width: "100%"}} value={this.state.product.Description}
+                                                  onChange={(event) => {
+                                                      this.state.product.Description = event.target.value
+                                                      this.forceUpdate()
+                                                  }}/>
+                                    </p>
+                                    <button className={"button admin-product-save"} onClick={() => this.saveProduct()}>Save</button>
+
+                                </div>
+                            </div>
                         </div>
-                        <button className={"button admin-product-save"} onClick={() => this.saveProduct()}>Save</button>
                     </div>
                 </div>
-            </section>
-        )
+                <section className="product_description_area">
+                    <div className="container">
+                        <ul className="nav nav-tabs" id="myTab" role="tablist">
+                            <li className="nav-item">
+                                <a className="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab"
+                                   aria-controls="home" aria-selected="true">Description</a>
+                            </li>
+                            <li className="nav-item">
+                                <a className="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
+                                   aria-controls="profile"
+                                   aria-selected="false">Specification</a>
+                            </li>
+                        </ul>
+                        <div className="tab-content" id="myTabContent">
+                            <div className="tab-pane fade show active" id="home" role="tabpanel"
+                                 aria-labelledby="home-tab">
+                                <p>
+                                    <textarea style={{width: "100%"}} value={this.state.product.LongDescription} onChange={(event) => {
+                                        this.state.product.LongDescription = event.target.value
+                                        this.forceUpdate()
+                                    }}/></p>
+                            </div>
+                            <div className="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                                <div className="table-responsive">
+                                    <table className="table">
+                                        <tbody>
+                                        {this.renderProductAttributes()}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <section className="related-product-area section-margin--small mt-0">
+                    <TopProducts/>
+                </section>
+            </div>
+        );
+    }
+
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        $(".s_Product_carousel").owlCarousel({
+            items: 1,
+            autoplay: true,
+            autoplayTimeout: 5000,
+            loop: false,
+            nav: false,
+            dots: true,
+            autoHeight: true,
+        });
     }
 }

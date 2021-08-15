@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {Link, Redirect} from "react-router-dom";
-import {serverUrl} from "./ServerUrl"
+import {serverUrl} from "./utils/ServerUrl"
 
 
 export default class RegistrationPage extends Component {

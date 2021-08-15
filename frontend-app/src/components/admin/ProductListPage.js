@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {Link} from "react-router-dom";
-import {serverUrl} from "../ServerUrl"
+import {serverUrl} from "../utils/ServerUrl"
 import {getCatalog, getAllCatalogs} from "../utils/api";
 
 export default class ProductListPage extends Component {

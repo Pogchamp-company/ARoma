@@ -1,8 +1,9 @@
 import React, {Component} from "react";
-import {serverUrl} from "./ServerUrl";
-import OrderTotalBox from "./OrderTotalBox";
-import {getOrder, getOrdersList} from "./utils/api";
-import {PropsContext} from "./Context";
+import {serverUrl} from "../utils/ServerUrl";
+import OrderTotalBox from "../OrderTotalBox";
+import {getOrder, getOrdersList} from "../utils/api";
+import {PropsContext} from "../Context";
+import {Link} from "react-router-dom";
 
 export default class OrdersPage extends Component {
     static contextType = PropsContext;
@@ -57,6 +58,7 @@ export default class OrdersPage extends Component {
                                               data-status={value.Status}>{value.Status[0].toUpperCase() + value.Status.replace("_", " ").toLowerCase().slice(1)}</span>
                                     </div>
                                     <div className={"order-dropdown-right"}>
+                                        {this.renderRightButton(value)}
                                         <span className={"order-dropdown-price"}>${value.Total}</span>
                                         <div className={"orders-dropdown-arrow"}>
                                             <i className="ti-angle-right"/>
@@ -74,5 +76,16 @@ export default class OrdersPage extends Component {
                 }
             </section>
         )
+    }
+
+    renderRightButton(value) {
+        console.log(value)
+        if (value.Status === 'DRAFT') return (
+            <Link to={`/step2/${value.ID}`} className={"order-button"}>Step2</Link>
+        )
+        if (value.Status === 'NOT_PAID') return (
+            <Link to={`/step3/${value.ID}`} className={"order-button"}>Pay</Link>
+        )
+
     }
 }

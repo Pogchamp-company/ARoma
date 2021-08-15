@@ -12,11 +12,12 @@ import useToken from "./useToken";
 import useCart from "./useCart";
 import ScrollToTop from "./ScrollToTop";
 import CatalogsEditPage from "./admin/CatalogsEditPage";
-import OrderStep2Page from "./OrderStep2Page";
+import OrderStep2Page from "./order/OrderStep2Page";
 import ProductListPage from "./admin/ProductListPage";
-import OrdersPage from "./OrdersPage";
+import OrdersPage from "./order/OrdersPage";
 import ProductEditPage from "./admin/ProductEditPage";
 import {PropsContext} from "./Context";
+import OrderStep3Page from "./order/OrderStep3Page";
 
 export default function App() {
     const {token, setToken} = useToken()
@@ -45,7 +46,8 @@ export default function App() {
                     <Route path="/edit_catalog_products/:catalogId" render={routeProps => (<ProductListPage {...routeProps}/>)}/>
                     <Route path="/edit_product/:productId" render={routeProps => (<ProductEditPage token={token} {...routeProps}/>)}/>
                     <Route path="/new_product/:catalogId" render={routeProps => (<ProductEditPage token={token} {...routeProps}/>)}/>
-                    <Route path="/step2/:orderId" render={routeProps => (<OrderStep2Page token={token} {...routeProps}/>)}/>
+                    <Route path="/step2/:orderId" render={routeProps => (<OrderStep2Page {...routeProps}/>)}/>
+                    <Route path="/step3/:orderId" render={routeProps => (<OrderStep3Page {...routeProps}/>)}/>
                     <Route path="/orders" render={routeProps => (<OrdersPage {...routeProps}/>)}/>
                 </Switch>
                 <Footer/>
