@@ -43,13 +43,19 @@ export default function App() {
                     <Route exact path="/search_products"
                            render={routerProps => (<SearchProductsPage cart={cart} {...routerProps}/>)}/>
                     <Route path="/product/:productId" render={routeProps => (<ProductPage cart={cart} {...routeProps}/>)}/>
-                    <Route path="/edit_catalogs" render={routeProps => (<CatalogsEditPage token={token} {...routeProps}/>)}/>
-                    <Route path="/edit_catalog_products/:catalogId" render={routeProps => (<ProductListPage {...routeProps}/>)}/>
-                    <Route path="/edit_product/:productId" render={routeProps => (<ProductEditPage token={token} {...routeProps}/>)}/>
-                    <Route path="/new_product/:catalogId" render={routeProps => (<ProductEditPage token={token} {...routeProps}/>)}/>
+                    {
+                        isAdmin() ? (
+                            <>
+                                <Route path="/edit_catalogs" render={routeProps => (<CatalogsEditPage token={token} {...routeProps}/>)}/>
+                                <Route path="/edit_catalog_products/:catalogId" render={routeProps => (<ProductListPage {...routeProps}/>)}/>
+                                <Route path="/edit_product/:productId" render={routeProps => (<ProductEditPage token={token} {...routeProps}/>)}/>
+                                <Route path="/new_product/:catalogId" render={routeProps => (<ProductEditPage token={token} {...routeProps}/>)}/>
+                            </>
+                        ) : ''
+                    }
+                    <Route path="/orders" render={routeProps => (<OrdersPage {...routeProps}/>)}/>
                     <Route path="/step2/:orderId" render={routeProps => (<OrderStep2Page {...routeProps}/>)}/>
                     <Route path="/step3/:orderId" render={routeProps => (<OrderStep3Page {...routeProps}/>)}/>
-                    <Route path="/orders" render={routeProps => (<OrdersPage {...routeProps}/>)}/>
                 </Switch>
                 <Footer/>
             </BrowserRouter>

@@ -1,10 +1,9 @@
 import React, {Component} from "react";
 import {Link} from "react-router-dom";
+import {PropsContext} from "./Context";
 
 export default class Header extends Component {
-    constructor(props) {
-        super(props);
-    }
+    static contextType = PropsContext;
 
     changeThemeToDark = () => {
         document.documentElement.setAttribute("data-theme", "dark") // set theme to dark
@@ -17,7 +16,7 @@ export default class Header extends Component {
     }
 
     render() {
-        const tolalCartAmount = this.props.cart.totalAmount();
+        const tolalCartAmount = this.context.cart.totalAmount();
         return (
             <header className="header_area">
                 <div className="main_menu">
@@ -57,15 +56,19 @@ export default class Header extends Component {
                                     <li className="nav-item">
                                         <Link to={"/orders"}><i className="ti-shopping-cart-full"/></Link>
                                     </li>
-                                    <li className="nav-item">
-                                        <Link to={"/edit_catalogs"}><i className="ti-pencil"/></Link>
-                                    </li>
-                                    {this.props.token === undefined ?
+                                    {
+                                        this.context.isAdmin() ? (
+                                            <li className="nav-item">
+                                                <Link to={"/edit_catalogs"}><i className="ti-pencil"/></Link>
+                                            </li>
+                                        ) : ''
+                                    }
+                                    {this.context.token === undefined ?
                                         <li className="nav-item"><Link className="button button-header"
                                                                        to="/login">Login</Link></li> :
                                         <li className="nav-item"><a className="button button-header" onClick={(e) => {
                                             console.log("dsdasdasdasd")
-                                            this.props.setToken(undefined)
+                                            this.context.setToken(undefined)
                                             document.getElementsByClassName('menu-bar')[0].classList.add('play')
                                         }
                                         }>Logout</a></li>}
