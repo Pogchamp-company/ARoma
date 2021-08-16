@@ -15,6 +15,7 @@ type appConfig struct {
 	MinioSecure       bool
 	JWTSecretKey      string
 	ProductsPageLimit int
+	OrdersPageLimit   int
 }
 
 func getEnvWithDefault(key, fallback string) string {
@@ -25,11 +26,15 @@ func getEnvWithDefault(key, fallback string) string {
 	return value
 }
 
-func getConfig() *appConfig {
-	ProductsPageLimit, err := strconv.ParseInt(getEnvWithDefault("PRODUCTS", "12"), 10, 64)
+func parseIntVar(key, fallback string) int {
+	value, err := strconv.ParseInt(getEnvWithDefault(key, fallback), 10, 64)
 	if err != nil {
 		panic(err)
 	}
+	return int(value)
+}
+
+func getConfig() *appConfig {
 	return &appConfig{
 		Debug:             getEnvWithDefault("GIN_MODE", gin.DebugMode) == gin.ReleaseMode,
 		PostgresqlUri:     getEnvWithDefault("POSTGRESQL_URI", "postgresql://postgres@localhost:5432/aroma"),
@@ -38,7 +43,8 @@ func getConfig() *appConfig {
 		MinioSecretKey:    getEnvWithDefault("MINIO_SECRET_KEY", "minio123"),
 		MinioSecure:       getEnvWithDefault("MINIO_SECRET_KEY", "") != "",
 		JWTSecretKey:      getEnvWithDefault("JWT_SECRET_KEY", "secret"),
-		ProductsPageLimit: int(ProductsPageLimit),
+		ProductsPageLimit: parseIntVar("PRODUCTS_PAGE_LIMIT", "12"),
+		OrdersPageLimit:   parseIntVar("ORDERS_PAGE_LIMIT", "6"),
 	}
 }
 

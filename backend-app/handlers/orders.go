@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"aroma/config"
 	"aroma/dto"
 	"aroma/models"
 	"encoding/json"
@@ -204,8 +205,24 @@ func GetOrdersList(context *gin.Context) {
 	}
 	currentUser, _ := context.Get("currentUser")
 	var orders []models.Order
-	err := models.Db.Preload("ShippingMethod").Preload("CouponCode").
-		Where("customer_id = ?", currentUser.(models.User).ID).Find(&orders).Error
+	query := models.Db.Model(&models.Order{}).Preload("ShippingMethod").Preload("CouponCode").
+		Where("customer_id = ?", currentUser.(models.User).ID)
+	if !currentUser.(models.User).IsAdmin {
+		query = query.Where("customer_id = ?", currentUser.(models.User).ID)
+	}
+	var count int64
+	query.Count(&count)
+	OrdersPageLimit := int64(config.Config.OrdersPageLimit)
+	pagesCount := count / OrdersPageLimit
+	if count%OrdersPageLimit != 0 {
+		pagesCount += 1
+	}
+	page := context.Request.URL.Query().Get("page")
+	if page == "" {
+		page = "1"
+	}
+	thisPage, _ := strconv.ParseInt(page, 10, 64)
+	err := query.Offset(int(OrdersPageLimit * (thisPage - 1))).Limit(int(OrdersPageLimit)).Find(&orders).Error
 	if err != nil {
 		panic(err)
 		return
@@ -219,7 +236,8 @@ func GetOrdersList(context *gin.Context) {
 		})
 	}
 	context.JSON(http.StatusOK, gin.H{
-		"orders": result,
+		"orders":     result,
+		"pagesCount": pagesCount,
 	})
 }
 
