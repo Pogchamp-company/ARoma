@@ -256,3 +256,31 @@ func UpdateOrderTrackingNumber(context *gin.Context) {
 		"ok": true,
 	})
 }
+
+func UpdateOrderStatus(status models.OrderStatus) gin.HandlerFunc {
+	return func(context *gin.Context) {
+		orderID, err := strconv.ParseInt(context.Request.URL.Query().Get("orderID"), 10, 64)
+		if err != nil {
+			context.JSON(http.StatusBadRequest, gin.H{
+				"errors": "Incorrect id",
+			})
+			return
+		}
+		var count int64
+		models.Db.Model(&models.Order{}).Where("id = ?", orderID).Count(&count)
+		if count == 0 {
+			context.JSON(http.StatusNotFound, gin.H{
+				"errors": "Order not found",
+			})
+			return
+		}
+		err = models.Db.Model(&models.Order{}).Where("id = ?", orderID).Update("status", status).Error
+		if err != nil {
+			context.AbortWithStatus(http.StatusInternalServerError)
+			return
+		}
+		context.JSON(http.StatusOK, gin.H{
+			"ok": true,
+		})
+	}
+}

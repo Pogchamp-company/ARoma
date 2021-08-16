@@ -14,4 +14,6 @@ func initAdminPanelRoutes() {
 	App.DELETE("/admin/product", access_decorators.AdminRoleRequired(handlers.DeleteRecord(&models.Product{}, "productID")))
 	App.DELETE("/product/photo", access_decorators.AdminRoleRequired(handlers.DeleteProductPhoto))
 	App.PUT("/order/update_tracking_number", access_decorators.AdminRoleRequired(handlers.UpdateOrderTrackingNumber))
+	App.PUT("/order/to_awaiting_receipt", access_decorators.AdminRoleRequired(handlers.UpdateOrderStatus("AWAITING_RECEIPT")))
+	App.PUT("/order/to_completed", access_decorators.AdminRoleRequired(handlers.UpdateOrderStatus("COMPLETED")))
 }
