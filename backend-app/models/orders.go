@@ -27,6 +27,7 @@ func (p OrderStatus) Value() (driver.Value, error) {
 
 type Order struct {
 	BaseModel
+	UpdatedAt        pgtype.Timestamp
 	Status           OrderStatus
 	CustomerID       int
 	Customer         User

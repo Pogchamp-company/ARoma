@@ -209,6 +209,8 @@ func GetOrdersList(context *gin.Context) {
 		Where("customer_id = ?", currentUser.(models.User).ID)
 	if !currentUser.(models.User).IsAdmin {
 		query = query.Where("customer_id = ?", currentUser.(models.User).ID)
+	} else {
+		query = query.Where("status NOT IN ('DRAFT', 'NOT_PAID')")
 	}
 	var count int64
 	query.Count(&count)
@@ -222,7 +224,7 @@ func GetOrdersList(context *gin.Context) {
 		page = "1"
 	}
 	thisPage, _ := strconv.ParseInt(page, 10, 64)
-	err := query.Offset(int(OrdersPageLimit * (thisPage - 1))).Limit(int(OrdersPageLimit)).Find(&orders).Error
+	err := query.Offset(int(OrdersPageLimit * (thisPage - 1))).Limit(int(OrdersPageLimit)).Order("updated_at desc").Find(&orders).Error
 	if err != nil {
 		panic(err)
 		return
