@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import OrderTotalBox from "../OrderTotalBox";
-import {getOrder, getOrdersList, trackOrder} from "../utils/api";
+import {completeOrder, deliverOrder, getOrder, getOrdersList, trackOrder} from "../utils/api";
 import {PropsContext} from "../Context";
 import {Link} from "react-router-dom";
 import Paginator from "../Paginator";
@@ -134,6 +134,21 @@ export default class OrdersPage extends Component {
         if (value.Status === 'NOT_PAID') return (
             <Link to={`/step3/${value.ID}`} className={"order-button"}>Pay</Link>
         )
-
+        if (value.Status === 'SHIPMENT') return (
+            <a href={"#"} className={"order-button"} onClick={e => {
+                deliverOrder(value.ID, this.context, this.props.history, success_json => {
+                    console.log(success_json)
+                    window.location.reload()
+                })
+            }}>Delivered</a>
+        )
+        if (value.Status === 'AWAITING_RECEIPT') return (
+            <a href={"#"} className={"order-button"} onClick={e => {
+                completeOrder(value.ID, this.context, this.props.history, success_json => {
+                    console.log(success_json)
+                    window.location.reload()
+                })
+            }}>Received</a>
+        )
     }
 }

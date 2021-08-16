@@ -10,6 +10,14 @@ export default function OrderTotalBox(props) {
     return (
         <div className="order_box">
             <h2>Your Order</h2>
+            {
+                props.order.TrackingNumber ? (
+                    <ul className="list tracking-number-area">
+                        <li><a><h4>Tracking number <span>{props.order.TrackingNumber}</span></h4></a></li>
+                    </ul>
+
+                ) : ''
+            }
             <ul className="list">
                 <li><a><h4>Product <span>Total</span></h4></a></li>
                 {props.order.Products.map((product, index) => {

@@ -150,6 +150,32 @@ function trackOrder(orderId, trackingNumber, context, history, successCallback, 
         });
 }
 
+function deliverOrder(orderId, context, history, successCallback, errorCallback = null) {
+    let url = `${serverUrl}/order/to_awaiting_receipt?orderID=${orderId}`
+    loginRequiredFetch(context.token, history, context.setToken, url, {method: 'PUT'})
+        .then(response => response.json())
+        .then(success_json => {
+            successCallback(success_json)
+        })
+        .catch((e) => {
+            if (errorCallback !== null) errorCallback(e)
+            else console.log('deliverOrder error: ', e)
+        });
+}
+
+function completeOrder(orderId, context, history, successCallback, errorCallback = null) {
+    let url = `${serverUrl}/order/to_completed?orderID=${orderId}`
+    loginRequiredFetch(context.token, history, context.setToken, url, {method: 'PUT'})
+        .then(response => response.json())
+        .then(success_json => {
+            successCallback(success_json)
+        })
+        .catch((e) => {
+            if (errorCallback !== null) errorCallback(e)
+            else console.log('completeOrder error: ', e)
+        });
+}
+
 function uploadProductPhoto(productId, photo_file, context, history, successCallback, errorCallback = null) {
     const data = new FormData();
 
@@ -208,4 +234,6 @@ export {
     removeProductPhoto,
     deleteProduct,
     trackOrder,
+    deliverOrder,
+    completeOrder,
 }
