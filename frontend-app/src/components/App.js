@@ -43,6 +43,9 @@ export default function App() {
                     <Route exact path="/search_products"
                            render={routerProps => (<SearchProductsPage cart={cart} {...routerProps}/>)}/>
                     <Route path="/product/:productId" render={routeProps => (<ProductPage cart={cart} {...routeProps}/>)}/>
+                    <Route path="/orders" render={routeProps => (<OrdersPage {...routeProps}/>)}/>
+                    <Route path="/step2/:orderId" render={routeProps => (<OrderStep2Page {...routeProps}/>)}/>
+                    <Route path="/step3/:orderId" render={routeProps => (<OrderStep3Page {...routeProps}/>)}/>
                     {
                         isAdmin() ? (
                             <>
@@ -53,9 +56,6 @@ export default function App() {
                             </>
                         ) : ''
                     }
-                    <Route path="/orders" render={routeProps => (<OrdersPage {...routeProps}/>)}/>
-                    <Route path="/step2/:orderId" render={routeProps => (<OrderStep2Page {...routeProps}/>)}/>
-                    <Route path="/step3/:orderId" render={routeProps => (<OrderStep3Page {...routeProps}/>)}/>
                 </Switch>
                 <Footer/>
             </BrowserRouter>

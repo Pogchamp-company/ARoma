@@ -42,31 +42,32 @@ export default class Header extends Component {
                                 </ul>
 
                                 <ul className="nav-shop">
-                                    <li id="cart-icon" className="nav-item">
-                                        {
-                                            tolalCartAmount <= 0
-                                                ? <a><i className="ti-shopping-cart"></i><span
-                                                    id={"cart-icon-number"}
-                                                    className="nav-shop__circle">{tolalCartAmount > 99 ? '99+' : tolalCartAmount}</span></a>
-                                                : <Link to="/cart"><i className="ti-shopping-cart"/><span
-                                                    id={"cart-icon-number"}
-                                                    className="nav-shop__circle">{tolalCartAmount > 99 ? '99+' : tolalCartAmount}</span></Link>
-                                        }
-                                    </li>
-                                    <li className="nav-item">
-                                        <Link to={"/orders"}><i className="ti-shopping-cart-full"/></Link>
-                                    </li>
                                     {
                                         this.context.isAdmin() ? (
                                             <li className="nav-item">
                                                 <Link to={"/edit_catalogs"}><i className="ti-pencil"/></Link>
                                             </li>
-                                        ) : ''
+                                        ) : (
+                                            <li id="cart-icon" className="nav-item">
+                                                {tolalCartAmount <= 0
+                                                        ? <a><i className="ti-shopping-cart"></i><span
+                                                            id={"cart-icon-number"}
+                                                            className="nav-shop__circle">{tolalCartAmount > 99 ? '99+' : tolalCartAmount}</span></a>
+                                                        : <Link to="/cart"><i className="ti-shopping-cart"/><span
+                                                            id={"cart-icon-number"}
+                                                            className="nav-shop__circle">{tolalCartAmount > 99 ? '99+' : tolalCartAmount}</span></Link>
+                                                }
+                                            </li>
+
+                                        )
                                     }
+                                    <li className="nav-item">
+                                        <Link to={"/orders"}><i className="ti-shopping-cart-full"/></Link>
+                                    </li>
                                     {this.context.token === undefined ?
                                         <li className="nav-item"><Link className="button button-header"
                                                                        to="/login">Login</Link></li> :
-                                        <li className="nav-item"><a className="button button-header" onClick={(e) => {
+                                        <li className="nav-item"><a className="button button-header" href={'#'} onClick={(e) => {
                                             console.log("dsdasdasdasd")
                                             this.context.setToken(undefined)
                                             document.getElementsByClassName('menu-bar')[0].classList.add('play')

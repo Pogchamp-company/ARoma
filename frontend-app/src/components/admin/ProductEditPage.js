@@ -72,7 +72,7 @@ export default class ProductEditPage extends Component {
 
         this.state.attributes.forEach(attrObj => {
             let parsedValue = parseFloat(attrObj.value)
-            if (isNaN(parsedValue)) parsedValue = attrObj.value
+            if (isNaN(parsedValue) || isNaN(attrObj.value)) parsedValue = attrObj.value
             attributes[attrObj.key] = parsedValue
 
         })
@@ -138,7 +138,6 @@ export default class ProductEditPage extends Component {
     }
 
     render() {
-        console.log(this.state.product)
         return (
             <div>
                 <div className="product_image_area">

@@ -13,7 +13,7 @@ function getProduct(productID, successCallback, errorCallback = null) {
 function getAllCatalogs(successCallback, errorCallback = null) {
     fetch(`${serverUrl}/catalog`)
         .then(response => response.json())
-        .then(catalog_json => successCallback(catalog_json.catalogs))
+        .then(success_json => successCallback(success_json.catalogs))
         .catch((e) => {
             if (errorCallback !== null) errorCallback(e)
             else console.log('getCatalogs error: ', e)
@@ -23,7 +23,7 @@ function getAllCatalogs(successCallback, errorCallback = null) {
 function getCatalog(catalogID, successCallback, errorCallback = null) {
     fetch(`${serverUrl}/catalog/${catalogID}`)
         .then(response => response.json())
-        .then(catalog_json => successCallback(catalog_json.obj))
+        .then(success_json => successCallback(success_json.obj))
         .catch((e) => {
             if (errorCallback !== null) errorCallback(e)
             else console.log('getCatalog error: ', e)
@@ -57,10 +57,10 @@ function loginRequiredFetch(token, history, setToken, input, init = {}) {
     })
 }
 
-function getOrdersList(token, history, setToken, successCallback, errorCallback = null) {
-    loginRequiredFetch(token, history, setToken, `${serverUrl}/order/all`)
+function getOrdersList(page, token, history, setToken, successCallback, errorCallback = null) {
+    loginRequiredFetch(token, history, setToken, `${serverUrl}/order/all?page=${page}`)
         .then(response => response.json())
-        .then(catalog_json => successCallback(catalog_json.orders))
+        .then(success_json => successCallback(success_json))
         .catch((e) => {
             if (errorCallback !== null) errorCallback(e)
             else console.log('GetOrdersList error: ', e)
@@ -77,7 +77,6 @@ function getShippingMethods(successCallback, errorCallback = null) {
             if (errorCallback !== null) errorCallback(e)
             else console.log('getShippingMethods error: ', e)
         });
-
 }
 
 function checkCoupon(coupon, successCallback, errorCallback = null) {
@@ -89,7 +88,7 @@ function checkCoupon(coupon, successCallback, errorCallback = null) {
             if (response.status === 404) throw new Error('No coupon found')
             if (response.status === 410) throw new Error('Your coupon expired')
         })
-        .then(catalog_json => successCallback(catalog_json.Coupon))
+        .then(success_json => successCallback(success_json.Coupon))
         .catch((e) => {
             if (errorCallback !== null) errorCallback(e)
             else console.log('checkCoupon error: ', e)
@@ -101,8 +100,8 @@ function getOrder(orderId, context, history, successCallback, errorCallback = nu
     let url = `${serverUrl}/order?orderID=${orderId}`
     loginRequiredFetch(context.token, history, context.setToken, url)
         .then(response => response.json())
-        .then(catalog_json => {
-            successCallback(catalog_json.order)
+        .then(success_json => {
+            successCallback(success_json.order)
         })
         .catch((e) => {
             if (errorCallback !== null) errorCallback(e)
@@ -115,8 +114,8 @@ function sendOrder(orderId, body, context, history, successCallback, errorCallba
     let url = `${serverUrl}/order/step2?orderID=${orderId}`
     loginRequiredFetch(context.token, history, context.setToken, url, {body: body, method: 'POST'})
         .then(response => response.json())
-        .then(catalog_json => {
-            successCallback(catalog_json)
+        .then(success_json => {
+            successCallback(success_json)
         })
         .catch((e) => {
             if (errorCallback !== null) errorCallback(e)
@@ -129,14 +128,26 @@ function payOrder(orderId, context, history, successCallback, errorCallback = nu
     let url = `${serverUrl}/order/step3?orderID=${orderId}`
     loginRequiredFetch(context.token, history, context.setToken, url, {method: 'POST'})
         .then(response => response.json())
-        .then(catalog_json => {
-            successCallback(catalog_json)
+        .then(success_json => {
+            successCallback(success_json)
         })
         .catch((e) => {
             if (errorCallback !== null) errorCallback(e)
             else console.log('payOrder error: ', e)
         });
+}
 
+function trackOrder(orderId, trackingNumber, context, history, successCallback, errorCallback = null) {
+    let url = `${serverUrl}/order/update_tracking_number?orderID=${orderId}&trackingNumber=${trackingNumber}`
+    loginRequiredFetch(context.token, history, context.setToken, url, {method: 'PUT'})
+        .then(response => response.json())
+        .then(success_json => {
+            successCallback(success_json)
+        })
+        .catch((e) => {
+            if (errorCallback !== null) errorCallback(e)
+            else console.log('trackOrder error: ', e)
+        });
 }
 
 function uploadProductPhoto(productId, photo_file, context, history, successCallback, errorCallback = null) {
@@ -196,4 +207,5 @@ export {
     uploadProductPhoto,
     removeProductPhoto,
     deleteProduct,
+    trackOrder,
 }

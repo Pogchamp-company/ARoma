@@ -75,10 +75,6 @@ class ProductCard extends Component {
                                             <Link to={`/product/${this.props.product.ID}`}><i
                                                 className="ti-search"/></Link>
                                         </li>
-                                        <li>
-                                            <button onClick={(e) => this.handleAddToCart(e, this.props.product)}>
-                                                <i className="ti-shopping-cart"/></button>
-                                        </li>
                                         {
                                             this.context.isAdmin() ? (
                                                 <>
@@ -94,7 +90,13 @@ class ProductCard extends Component {
                                                         }}><i className="ti-trash"/></button>
                                                     </li>
                                                 </>
-                                            ) : ''
+                                            ) : (
+                                                <li>
+                                                    <button
+                                                        onClick={(e) => this.handleAddToCart(e, this.props.product)}>
+                                                        <i className="ti-shopping-cart"/></button>
+                                                </li>
+                                            )
                                         }
 
                                     </ul>

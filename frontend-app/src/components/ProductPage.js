@@ -1,13 +1,15 @@
 import React, {Component} from "react";
 import TopProducts from "./TopProducts";
-import {serverUrl} from "./utils/ServerUrl"
 import {getProduct} from "./utils/api";
 import {Link} from "react-router-dom";
+import {PropsContext} from "./Context";
 
 
 export default class ProductPage extends Component {
-    constructor(props) {
-        super(props);
+    static contextType = PropsContext;
+
+    constructor(props, context) {
+        super(props, context);
         this.productId = parseInt(this.props.match.params.productId);
         this.state = {
             amount: this.props.cart.getAmount(this.productId),
@@ -33,6 +35,7 @@ export default class ProductPage extends Component {
     }
 
     renderQuantity() {
+        if (this.context.isAdmin()) return ''
         if (this.state.amount === 0) {
             return (
                 <div className="product_count">
@@ -54,7 +57,6 @@ export default class ProductPage extends Component {
         this.setState({
             amount: this.props.cart.addToCart(this.state.product, amount)
         })
-        // this.props.cart.addToCart(this.state.product, amount)
     }
 
     onAmountChange(e) {
@@ -90,25 +92,30 @@ export default class ProductPage extends Component {
                                 <div className="owl-carousel owl-theme s_Product_carousel">
                                     {
                                         this.state.product.Photos.map((photo) => {
-                                            return <img src={photo.Url} style={{width: '500px', height: '500px', margin: '5px'}}/>
+                                            return <img src={photo.Url}
+                                                        style={{width: '500px', height: '500px', margin: '5px'}}/>
                                         })
                                     }
                                 </div>
                             </div>
                             <div className="col-lg-5 offset-lg-1">
                                 <div className="s_product_text">
-                                    <h3>{this.state.product.Title}</h3>
+                                    <h3>
+                                        {this.state.product.Title}
+                                        <Link to={`/edit_product/${this.state.product.ID}`} style={{margin: "0 5px"}}><i
+                                        className="ti-pencil"/></Link>
+                                    </h3>
                                     <h2>${this.state.product.Price}</h2>
                                     <ul className="list">
                                         <li><a className="active"
                                                href="#"><span>Category</span> : {this.state.product.Catalog.Title}</a>
                                         </li>
-                                        <li><a href="#"><span>Availibility</span> : {this.state.product.QuantityInStock}</a></li>
+                                        <li><a href="#"><span>Availibility</span> : {this.state.product.QuantityInStock}
+                                        </a></li>
                                     </ul>
                                     <p>{this.state.product.Description}</p>
                                     {this.renderQuantity()}
                                 </div>
-                                <Link to={`/edit_product/${this.state.product.ID}`}><i className="ti-pencil"/></Link>
                             </div>
                         </div>
                     </div>
@@ -127,7 +134,8 @@ export default class ProductPage extends Component {
                             </li>
                         </ul>
                         <div className="tab-content" id="myTabContent">
-                            <div className="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                            <div className="tab-pane fade show active" id="home" role="tabpanel"
+                                 aria-labelledby="home-tab">
                                 <p>{this.state.product.LongDescription}</p>
                             </div>
                             <div className="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
@@ -151,13 +159,13 @@ export default class ProductPage extends Component {
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         $(".s_Product_carousel").owlCarousel({
-            items:1,
-            autoplay:true,
+            items: 1,
+            autoplay: true,
             autoplayTimeout: 5000,
-            loop:false,
-            nav:false,
-            dots:true,
-            autoHeight:true,
+            loop: false,
+            nav: false,
+            dots: true,
+            autoHeight: true,
         });
     }
 }

@@ -1,9 +1,34 @@
 import React, {Component} from "react";
-import {serverUrl} from "../utils/ServerUrl";
 import OrderTotalBox from "../OrderTotalBox";
-import {getOrder, getOrdersList} from "../utils/api";
+import {getOrder, getOrdersList, trackOrder} from "../utils/api";
 import {PropsContext} from "../Context";
 import {Link} from "react-router-dom";
+import Paginator from "../Paginator";
+
+
+class TrackNumberForm extends Component {
+    static contextType = PropsContext;
+
+    constructor(props, content) {
+        super(props, content);
+        this.numberRef = React.createRef()
+    }
+
+    render() {
+        return (
+            <>
+                <input placeholder={"Tracking number"} ref={this.numberRef}/>
+                <button onClick={e => {
+                    trackOrder(this.props.orderID, this.numberRef.current.value, this.context, this.props.history, success_json => {
+                        console.log(success_json)
+                        window.location.reload()
+                    })
+                }}>Save
+                </button>
+            </>
+        )
+    }
+}
 
 export default class OrdersPage extends Component {
     static contextType = PropsContext;
@@ -12,13 +37,21 @@ export default class OrdersPage extends Component {
         super(props, context);
         this.state = {
             currentIndex: -1,
-            orders: []
+            orders: [],
+            currentPage: 1,
+            pagesCount: 1
         }
         this.updateOrders()
     }
 
     updateOrders() {
-        getOrdersList(this.context.token, this.props.history, this.context.setToken, orders => this.setState({orders: orders}))
+        getOrdersList(this.state.currentPage, this.context.token, this.props.history, this.context.setToken, orders_json => {
+            console.log(orders_json)
+            this.setState({
+                orders: orders_json.orders,
+                pagesCount: orders_json.pagesCount
+            })
+        })
     }
 
     setCurrentOrder(order_obj) {
@@ -38,18 +71,28 @@ export default class OrdersPage extends Component {
 
     }
 
+    setPage(page) {
+        this.state.currentPage = page
+        this.updateOrders()
+    }
+
+
     render() {
         return (
             <section className={"orders__section"}>
+                {this.state.pagesCount > 1 ?
+                    <Paginator setPage={page => this.setPage(page)} page={this.state.currentPage}
+                               pagesCount={this.state.pagesCount}/> : ''}
                 {
                     this.state.orders.map((value, index) => {
                         return (
                             <div
-                                className={this.state.currentIndex === value.ID ? "orders-dropdown opened" : "orders-dropdown"}
-                                onClick={(e) => {
-                                    this.setCurrentOrder(value)
-                                }}>
-                                <div className={"orders-dropdown-header"}>
+                                className={this.state.currentIndex === value.ID ? "orders-dropdown opened" : "orders-dropdown"}>
+                                <div className={"orders-dropdown-header"}
+                                     onClick={(e) => {
+                                         this.setCurrentOrder(value)
+                                     }}>
+
                                     <div className={"order-dropdown-left"}>
                                         <span className={"order-dropdown-id"}>
                                             Order #{value.ID}
@@ -67,7 +110,13 @@ export default class OrdersPage extends Component {
                                 </div>
                                 <div className={"orders-dropdown-content"}>
                                     {
-                                        value.order !== undefined ? <OrderTotalBox order={value.order} Total={value.Total}></OrderTotalBox> : ''
+                                        value.Status === 'PAID' ? (
+                                            <TrackNumberForm orderID={value.ID}/>
+                                        ) : ''
+                                    }
+                                    {
+                                        value.order !== undefined ?
+                                            <OrderTotalBox order={value.order} Total={value.Total}/> : ''
                                     }
                                 </div>
                             </div>
@@ -79,7 +128,6 @@ export default class OrdersPage extends Component {
     }
 
     renderRightButton(value) {
-        console.log(value)
         if (value.Status === 'DRAFT') return (
             <Link to={`/step2/${value.ID}`} className={"order-button"}>Step2</Link>
         )
