@@ -36,6 +36,7 @@ type Order struct {
 	CouponCodeID     int
 	CouponCode       CouponCode
 	Products         []Product `gorm:"many2many:product_order"`
+	OrderDetails     OrderDetails
 }
 
 type ProductCredentials struct {
@@ -142,12 +143,12 @@ type Address struct {
 }
 
 type OrderDetails struct {
-	OrderID     int
-	Order       Order
-	FirstName   string
-	LastName    string
-	PhoneNumber string
-	AddressID   int
-	Address     Address
-	ExtraInfo   string
+	OrderID        int
+	FirstName      string
+	LastName       string
+	PhoneNumber    string
+	AddressID      int
+	Address        Address
+	ExtraInfo      string
+	TrackingNumber string
 }

@@ -158,6 +158,7 @@ func GetOrder(context *gin.Context) {
 		Status         models.OrderStatus
 		ShippingMethod models.ShippingMethod
 		Sale           int
+		TrackingNumber string
 		Products       []ApiOrderProduct
 	}
 	orderID, err := strconv.ParseInt(context.Request.URL.Query().Get("orderID"), 10, 64)
@@ -168,9 +169,9 @@ func GetOrder(context *gin.Context) {
 		return
 	}
 	var order models.Order
-	models.Db.Preload("ShippingMethod").Preload("CouponCode").First(&order, orderID)
+	models.Db.Preload("ShippingMethod").Preload("CouponCode").Preload("OrderDetails").First(&order, orderID)
 	user, _ := context.Get("currentUser")
-	if order.CustomerID != user.(models.User).ID {
+	if order.CustomerID != user.(models.User).ID || !user.(models.User).IsAdmin {
 		context.AbortWithStatus(http.StatusForbidden)
 		return
 	}
@@ -192,6 +193,7 @@ func GetOrder(context *gin.Context) {
 			Status:         order.Status,
 			ShippingMethod: order.ShippingMethod,
 			Sale:           order.CouponCode.Sale,
+			TrackingNumber: order.OrderDetails.TrackingNumber,
 			Products:       orderProducts,
 		},
 	})
