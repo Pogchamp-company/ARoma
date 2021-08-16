@@ -171,7 +171,7 @@ func GetOrder(context *gin.Context) {
 	var order models.Order
 	models.Db.Preload("ShippingMethod").Preload("CouponCode").Preload("OrderDetails").First(&order, orderID)
 	user, _ := context.Get("currentUser")
-	if order.CustomerID != user.(models.User).ID || !user.(models.User).IsAdmin {
+	if order.CustomerID != user.(models.User).ID && !user.(models.User).IsAdmin {
 		context.AbortWithStatus(http.StatusForbidden)
 		return
 	}
