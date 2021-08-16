@@ -246,7 +246,7 @@ func UpdateOrderTrackingNumber(context *gin.Context) {
 		})
 		return
 	}
-	err = models.Db.Model(&models.OrderDetails{OrderID: int(orderID)}).Update("tracking_number", trackingNumber).Error
+	err = models.Db.Model(&models.OrderDetails{}).Where("order_id = ?", orderID).Update("tracking_number", trackingNumber).Error
 	err = models.Db.Model(&models.Order{}).Where("id = ?", orderID).Update("status", "SHIPMENT").Error
 	if err != nil {
 		context.AbortWithStatus(http.StatusInternalServerError)
