@@ -10,18 +10,10 @@ Shop powered with Golang and ReactJS
 
 ## Run
 ### Serve golang (api) server
-```shell
-cd backend-app
-go mod init
-go build .
-```
+[Docs](https://github.com/Pogchamp-company/ARoma/blob/master/backend-app/README.md)
+
 ### Serve node (frontend) server
-```shell
-cd frontend-app
-npm install
-npm run build
-node nodeapp/app.js
-```
+[Docs](https://github.com/Pogchamp-company/ARoma/blob/master/frontend-app/README.md)
 
 ## Tasks
 * [Trello Desk](https://trello.com/b/odFHaFib/aroma)
@@ -29,7 +21,7 @@ node nodeapp/app.js
 
 ## Authors
 
-* **Roman Alexandrov** - *Backend (fffff)* - [Github](https://github.com/AlexandrovRoman)
+* **Roman Alexandrov** - *Backend* - [Github](https://github.com/AlexandrovRoman)
 * **Artem Golovin** - *Frontend* - [Github](https://github.com/RustyGuard)
 
 ## License
