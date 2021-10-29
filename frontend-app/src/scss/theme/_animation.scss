@@ -1,0 +1,202 @@
+.card-product {
+  opacity: 0;
+  //animation: 0.5s ease-out 0.05s 1 cardAppearance;
+  animation-name: cardAppearance;
+  animation-duration: 0.5s;
+  animation-delay: calc(var(--index) * 100ms);
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+}
+
+@keyframes cardAppearance {
+  0% {
+    opacity: 0;
+    transform: scale(0.75) translateY(-10%);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.common-filter {
+  //opacity: 0;
+  animation-name: commonFilterAppearance;
+  animation-duration: 0.5s;
+  //animation-delay: 0;
+  //animation-timing-function: ease-in;
+  animation-fill-mode: forwards;
+  transform: scaleY(0.1);
+  transform-origin: top;
+}
+
+@keyframes commonFilterAppearance {
+  0% {
+    transform: scaleY(0.1);
+    transform-origin: top;
+  }
+  100% {
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+}
+
+.flip-card {
+  background-color: transparent;
+  width: 263px;
+  height: 280px;
+  perspective: 1000px;
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+}
+
+.flip-card:hover .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-card-front, .flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.flip-card-front {
+  background-color: #bbb;
+  color: black;
+}
+
+.flip-card-back {
+  background-color: #7b838a;
+  color: white;
+  transform: rotateY(180deg);
+}
+
+.card-back-img {
+  width: 263px;
+  height: 280px;
+  filter: blur(2px);
+
+  position: absolute;
+  left: 0;
+}
+
+.card-front-img {
+  width: 263px;
+  height: 280px;
+
+}
+
+.hero-banner::before {
+  transform: translateX(-500%);
+
+  animation-name: containerShowUp;
+  animation-duration: 1000ms;
+  animation-fill-mode: forwards;
+}
+
+.hero-banner__img{
+  //transform: translateX(-500%);
+  opacity: 0;
+
+  animation-name: opacityShowUp;
+  animation-duration: 750ms;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-out;
+}
+
+.hero-banner__content {
+  //transform: translateX(-500%);
+  opacity: 0;
+
+  animation-name: opacityShowUp;
+  animation-duration: 750ms;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-out;
+  animation-delay: 500ms;
+}
+
+@keyframes opacityShowUp {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+
+}
+
+@keyframes containerShowUp {
+  50% {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.header_area {
+  position: sticky;
+  top: 0;
+  //z-index: 100000000;
+  background: white;
+  margin-bottom: 10px;
+}
+
+#app {
+  margin-top: 10px;
+}
+
+.cart-image {
+  opacity: 0;
+  animation-delay: calc(var(--index) * 300ms + 500ms);
+  width: 150px;
+  height: 150px;
+  animation-name: opacityShowUp;
+  animation-duration: 500ms;
+  animation-fill-mode: forwards;
+}
+
+.cart-table tr {
+  opacity: 0;
+  transform: scaleY(0);
+  animation-name: trShowUp;
+  animation-fill-mode: forwards;
+  animation-duration: 500ms;
+  animation-delay: calc(var(--index) * 200ms);
+}
+
+@keyframes trShowUp {
+  50% {
+    opacity: 0;
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  100% {
+    opacity: 1;
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+}
+
+.filter-bar {
+  position: sticky;
+  top: 89px;
+  z-index: 1000000000;
+  margin-right: -9px;
+}
+
+.justify-center {
+  justify-content: center;
+}

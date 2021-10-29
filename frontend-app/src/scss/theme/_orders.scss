@@ -1,0 +1,137 @@
+.orders__section {
+  padding: 5px 20vw;
+  min-height: 75vh;
+}
+
+.orders-dropdown {
+  //margin: 5px 20vw;
+  margin: 5px;
+  transform: scaleY(0);
+  transform-origin: top;
+  animation-name: ordersShowUp;
+  animation-fill-mode: forwards;
+  animation-duration: 0.5s;
+  animation-timing-function: ease-in;
+}
+
+@keyframes ordersShowUp {
+  0% {
+    transform: scaleY(0);
+  }
+  100% {
+    transform: scaleY(1);
+  }
+}
+
+.orders-dropdown-header {
+  position: relative;
+  background: #384aeb;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: white;
+  cursor: pointer;
+}
+
+.orders-dropdown-content {
+  background: #E0E0E0;
+  //height: 0;
+  //display: none;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 600ms;
+}
+
+.orders-dropdown-arrow {
+  display: inline-block;
+  transform: rotate(0);
+  transition: transform 0.5s ease-in;
+}
+
+.orders-dropdown.opened .orders-dropdown-content {
+  max-height: 1000px;
+  transition: max-height 1500ms;
+}
+
+.orders-dropdown.opened .orders-dropdown-arrow {
+  transform: rotate(90deg);
+}
+
+.order-dropdown-left {
+  .order-dropdown-id {
+    margin: 0 30px;
+    display: inline-block;
+    width: 90px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 20px;
+    white-space: nowrap;
+  }
+}
+
+.order-dropdown-right {
+  margin-right: 10px;
+
+  .order-dropdown-price {
+    margin: 3px;
+    margin-right: 15px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 20px;
+    display: inline-block;
+    width: 150px;
+    text-align: right;
+  }
+}
+
+.orders-dropdown-status {
+  background: white;
+  //padding: 5px;
+  //margin: 3px;
+  display: inline-block;
+  width: 160px;
+  white-space: nowrap;
+  margin: 3px;
+  text-align: center;
+  border-radius: 5px;
+}
+
+$status_colors: (
+        DRAFT: #bdbdbd,
+        NOT_PAID: #d62020,
+        PAID: #00b2c2,
+        SHIPMENT: #d12e2e,
+        AWAITING_RECEIPT: #e67e17,
+        COMPLETED: #33c928,
+);
+
+@each $status_name, $status_color in $status_colors {
+  .orders-dropdown-status[data-status=#{$status_name}] {
+    background-color: $status_color;
+  }
+}
+
+.order-button {
+  background: white;
+  display: inline-block;
+  width: 160px;
+  white-space: nowrap;
+  margin: 3px;
+  text-align: center;
+  border-radius: 5px;
+  text-decoration: none;
+  color: black;
+}
+.order-button:hover {
+  background: #c9c9c9;
+}
+
+@media (max-width: 900px) {
+  .orders-dropdown-header {
+    flex-direction: column;
+  }
+}
+
+.tracking-number-area {
+  margin-bottom: 15px;
+  font-weight: bold;
+  border-bottom: 1px solid #dddddd;
+}

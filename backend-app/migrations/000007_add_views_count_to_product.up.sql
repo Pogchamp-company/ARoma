@@ -1,0 +1,2 @@
+ALTER TABLE products
+    ADD COLUMN views_count INT NOT NULL DEFAULT 0;

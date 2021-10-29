@@ -1,0 +1,141 @@
+@import "variables";
+
+.admin-table-button {
+  color: #002347;
+  border: none;
+  background: #bac7ff;
+  width: 33px;
+  height: 33px;
+}
+
+a.admin-table-button {
+  padding: 5px 8px;
+
+}
+
+.admin-table-button:hover {
+  background: #8d97c2;
+  color: #0056b3;
+}
+
+.admin-text-input {
+  padding-left: 30px;
+  outline: none;
+  box-shadow: none;
+}
+
+.admin-text-input.updated {
+  border: 2px solid #edb11a;
+}
+
+.admin-catalog-title {
+  font-size: 50px;
+  color: black;
+  font-weight: bold;
+  margin: 5px;
+}
+
+.admin-product-attribute {
+  width: 100%;
+  white-space: nowrap;
+  input {
+    width: 45%;
+  }
+}
+
+.admin-product-inner {
+  span {
+    float: left;
+    width: 150px;
+    margin-right: 5px;
+  }
+}
+
+.admin-product-inner {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  padding: 0 18vw;
+}
+
+.admin-product-wrap {
+  white-space: nowrap;
+  width: 100%;
+  margin: 5px 0;
+
+  span {
+    width: 20%;
+  }
+
+  input, textarea {
+    width: 80%;
+  }
+}
+
+.admin-product-save {
+  margin: 5px auto;
+}
+
+.admin-product-image-container {
+  //display: flex;
+  //justify-content: center;
+  display: grid;
+  justify-content: center;
+  grid-template-columns: repeat(3, 1fr);
+  margin: 0 auto;
+  grid-gap: 10px;
+}
+
+.admin-product-image-item {
+  position: relative;
+  display: inline-block;
+  width:fit-content;
+  height:fit-content;
+
+  img {
+    width: 50px;
+    height: 50px;
+  }
+  i {
+    position: absolute;
+    background-color: red;
+    border-radius: 10px;
+    color: black;
+    right: 0;
+    border: black 1px;
+  }
+}
+
+.custom-file-upload {
+  margin: 5px;
+  background: #00a900;
+  color: black;
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 32px;
+  input {
+    //display: none;
+    width: 50px;
+    height: 50px;
+    opacity: 0;
+    position: absolute;
+  }
+}
+
+.admin-product-attribute {
+  margin: 5px 0;
+  input {
+    margin: 0 5px;
+  }
+}
+
+.admin-catalog-plus {
+  background: #f9f9ff;
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  position: absolute;
+}

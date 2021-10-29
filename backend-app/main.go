@@ -1,34 +1,109 @@
 package main
 
 import (
+	"aroma/config"
+	"aroma/middlewares"
+	"aroma/routes"
+	"aroma/seeds"
+	"aroma/services/attachments"
+	"flag"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"os"
-)
-import (
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
+	"os/exec"
 )
 
 func main() {
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
-		os.Getenv("DB_HOST"),
-		os.Getenv("DB_USER"),
-		os.Getenv("DB_PASSWORD"),
-		os.Getenv("DB_NAME"),
-		os.Getenv("DB_PORT"),
-	)
-	println("Running with dsn: ", dsn)
+	flag.Parse()
+	command := flag.Arg(0)
+	switch command {
+	case "runserver":
+		runServer()
+	case "db":
+		dbCommands()
+	case "init_buckets":
+		attachments.InitBuckets()
+	default:
+		help()
+	}
+}
 
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	println("db ", db)
-	println("err ", err)
+func help() {
+	fmt.Println("Tools for manage ARoma project.")
+	fmt.Println("\nUsage:")
+	fmt.Println("\n\tgo run . <command> [arguments]")
+	fmt.Println("\nThe commands are:")
+	fmt.Println("\n\trunserver\t\t\t\trun rest-api server")
+	fmt.Println("\tdb migrate [optional: migrationName]\tcreate new migration for database")
+	fmt.Println("\tdb upgrade\t\t\t\texecute up migrations")
+	fmt.Println("\tdb downgrade\t\t\t\texecute down migrations")
+	fmt.Println("\tdb seed [optional: seedName]\t\texecute all seeders")
+	fmt.Println("\tinit_buckets\t\t\t\tInitialize minio buckets")
+}
 
-	r := gin.Default()
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
-	})
-	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+func runServer() {
+	var App = routes.App
+	App.Use(middlewares.HeadersMiddleware())
+	routes.InitRoutes()
+	App.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+}
+
+func dbCommands() {
+	dbCommand := flag.Arg(1)
+	switch dbCommand {
+	case "upgrade":
+		upgradeDb()
+	case "downgrade":
+		downgradeDb()
+	case "migrate":
+		migrateDb()
+	case "seed":
+		runSeeds()
+	}
+}
+
+func runSeeds() {
+	seedName := flag.Arg(2)
+	seedsByNames := seeds.GetAllSeeds()
+	if seedName != "" {
+		if seed, ok := seedsByNames[seedName]; ok {
+			seed()
+		} else {
+			fmt.Printf("Seed %s does not exist", seedName)
+		}
+	} else {
+		for _, seederFunc := range seedsByNames {
+			seederFunc()
+		}
+	}
+
+}
+
+func upgradeDb() {
+	executeDbCommand("-database", config.Config.PostgresqlUri, "-path", "migrations", "up")
+}
+
+func downgradeDb() {
+	executeDbCommand("-database", config.Config.PostgresqlUri, "-path", "migrations", "down", "1")
+}
+
+func migrateDb() {
+	migrationName := flag.Arg(2)
+	args := []string{"create", "-ext", "sql", "-dir", "migrations"}
+	args = append(args, "-seq")
+	args = append(args, migrationName)
+	executeDbCommand(args...)
+}
+
+func executeDbCommand(arg ...string) {
+	// construct `go version` command
+	cmd := exec.Command("migrate", arg...)
+
+	// configure `Stdout` and `Stderr`
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stdout
+
+	// run command
+	if err := cmd.Run(); err != nil {
+		fmt.Println("Error:", err)
+	}
 }

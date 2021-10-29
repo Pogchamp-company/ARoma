@@ -1,0 +1,13 @@
+html {
+  --bg: #ffffff;
+  --bg-panel: #434343;
+  --color-heading: #0077ff;
+  --color-text: #B5B5B5;
+}
+
+html[data-theme='dark'] {
+  --bg: #333333;
+  --bg-panel: #434343;
+  --color-heading: #0077ff;
+  --color-text: #B5B5B5;
+}
