@@ -1,8 +1,27 @@
 import * as React from "react";
-import {Link} from "react-router-dom";
-import {getTopProducts} from "../utils/api";
 import {useEffect, useState} from "react";
+import {getTopProducts} from "../utils/api";
 import "./TopProducts.scss"
+import {TextWithSizeLimit} from "../TextWithSizeLimit";
+import {ProductPreviewImage} from "../ProductPreviewImage";
+
+function TopProductCard({product, index}: { product: any, index: number }) {
+    return (
+        <a onClick={() => {
+            window.location.href = `/product/${product.ID}`
+        }}>
+            <div className="top-product-item">
+                <ProductPreviewImage product={product} style={{width: '75px', height: '75px'}}/>
+                <div className="desc">
+                    <p className={'title'}>
+                        <TextWithSizeLimit text={product.Title} limit={35}/>
+                    </p>
+                    <div className="price">${product.Price}</div>
+                </div>
+            </div>
+        </a>
+    )
+}
 
 export default function TopProducts() {
     const [products, setProducts] = useState([])
@@ -10,46 +29,6 @@ export default function TopProducts() {
     function updateProducts() {
         getTopProducts(products => setProducts(products))
     }
-
-    function renderProducts() {
-        if (!products) return ''
-        const items = []
-
-        for (let i = 0; i < 4; i++) {
-            const item = []
-            for (let j = 0; j < 3; j++) {
-                item.push(renderProductCard(i * 3 + j))
-            }
-            items.push(
-                <div className="col-sm-6 col-xl-3 mb-4 mb-xl-0">
-                    <div className="single-search-product-wrapper">
-                        {item}
-                    </div>
-                </div>
-            )
-        }
-
-        return (
-            <div className="row mt-30">
-                {items}
-            </div>
-        )
-    }
-
-    function renderProductCard(index) {
-        const product = products[parseInt(index)]
-        if (!product) return ''
-        return (
-            <div className="single-search-product d-flex">
-                <a onClick={() => {window.location.href=`/product/${product.ID}`}}><img src="/img/product/product-sm-1.png" alt=""/></a>
-                <div className="desc">
-                    <a onClick={() => {window.location.href=`/product/${product.ID}`}} className="title">{product.Title}</a>
-                    <div className="price">${product.Price}</div>
-                </div>
-            </div>
-        )
-    }
-
 
     useEffect(updateProducts, [])
 
@@ -59,7 +38,11 @@ export default function TopProducts() {
                 <p>Popular Item in the market</p>
                 <h2>Top <span className="section-intro__style">Products</span></h2>
             </div>
-            {renderProducts()}
+            <div className={'top-product-container'}>
+                {
+                    products.map((value, index) => <TopProductCard product={value} index={index}/>)
+                }
+            </div>
         </div>
     )
 }

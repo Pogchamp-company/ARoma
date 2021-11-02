@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import OrderTotalBox from "../OrderTotalBox";
-import {PropsContext} from "../Context";
+import {PropsContext} from "../Context.ts";
 import {getOrder, sendOrder} from "../utils/api";
 
 export default class OrderStep2Page extends Component {

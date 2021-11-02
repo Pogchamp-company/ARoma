@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import TopProducts from "./TopProducts/TopProducts.tsx";
 import {getProduct} from "./utils/api";
 import {Link} from "react-router-dom";
-import {PropsContext} from "./Context";
+import {PropsContext} from "./Context.ts";
 
 
 export default class ProductPage extends Component {

@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import {serverUrl} from "../utils/ServerUrl"
 import {getProduct, removeProductPhoto, uploadProductPhoto} from "../utils/api";
-import {PropsContext} from "../Context";
+import {PropsContext} from "../Context.ts";
 import TopProducts from "../TopProducts/TopProducts.tsx";
 
 export default class ProductEditPage extends Component {

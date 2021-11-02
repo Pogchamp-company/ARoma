@@ -16,7 +16,7 @@ import OrderStep2Page from "./order/OrderStep2Page";
 import ProductListPage from "./admin/ProductListPage";
 import OrdersPage from "./order/OrdersPage";
 import ProductEditPage from "./admin/ProductEditPage";
-import {PropsContext} from "./Context";
+import {PropsContext} from "./Context.ts";
 import OrderStep3Page from "./order/OrderStep3Page";
 
 export default function App() {
@@ -32,10 +32,10 @@ export default function App() {
             cart,
         }}>
             <BrowserRouter>
-                <Header token={token} setToken={setToken} cart={cart}/>
+                <Header/>
                 <ScrollToTop/>
                 <Switch>
-                    <Route exact path="/" render={routerProps => (<MainPage token={token} cart={cart} {...routerProps}/>)}/>
+                    <Route exact path="/" component={MainPage}/>
                     <Route exact path="/registration"
                            render={routerProps => (<RegistrationPage setToken={setToken} {...routerProps}/>)}/>
                     <Route exact path="/login" render={routerProps => (<LoginPage setToken={setToken} {...routerProps}/>)}/>

@@ -3,7 +3,7 @@ import TopProducts from "./TopProducts/TopProducts.tsx";
 import {Link} from "react-router-dom";
 import NoUiSlider from "./NoUiSlider";
 import Paginator from "./Paginator/Paginator";
-import ProductsContainer from "./ProductCard";
+import ProductsContainer from "./ProductCard.tsx";
 import {serverUrl} from "./utils/ServerUrl"
 import {getAllCatalogs} from "./utils/api";
 
