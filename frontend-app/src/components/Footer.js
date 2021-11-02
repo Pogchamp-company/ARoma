@@ -64,9 +64,8 @@ export default class Footer extends Component {
                             <p className="col-lg-12 footer-text text-center">
                                 Copyright &copy;
                                 <script>document.write(new Date().getFullYear());</script>
-                                All rights reserved | This template is made with <i className="fa fa-heart"
-                                                                                    aria-hidden="true"></i> by <a
-                                href="https://colorlib.com" target="_blank">Colorlib</a>
+                                All rights reserved | This template is made by <a
+                                href="https://github.com/Pogchamp-company" target="_blank">Pogchamp Company</a>
                             </p>
                         </div>
                     </div>

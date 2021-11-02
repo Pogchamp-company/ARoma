@@ -1,8 +1,8 @@
 import React, {Component, createRef} from "react";
-import TopProducts from "./TopProducts";
+import TopProducts from "./TopProducts/TopProducts.tsx";
 import {Link} from "react-router-dom";
 import NoUiSlider from "./NoUiSlider";
-import Paginator from "./Paginator";
+import Paginator from "./Paginator/Paginator";
 import ProductsContainer from "./ProductCard";
 import {serverUrl} from "./utils/ServerUrl"
 import {getAllCatalogs} from "./utils/api";
@@ -249,7 +249,7 @@ export default class SearchProductsPage extends Component {
                                                                name="catalog"
                                                                checked={this.state.currentCatalog === ""}
                                                                onChange={() => this.setCurrentCatalog("")}/><label
-                                htmlFor={0}>All</label></li>
+                                htmlFor={"0"}>All</label></li>
                             {this.state.catalogs.map(catalog => (
                                 <li className="filter-list"><input className="pixel-radio"
                                                                    type="radio" id={catalog.ID}

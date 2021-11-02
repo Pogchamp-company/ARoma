@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import TopProducts from "./TopProducts";
+import TopProducts from "./TopProducts/TopProducts.tsx";
 import {getProduct} from "./utils/api";
 import {Link} from "react-router-dom";
 import {PropsContext} from "./Context";

@@ -3,7 +3,7 @@ import OrderTotalBox from "../OrderTotalBox";
 import {completeOrder, deliverOrder, getOrder, getOrdersList, trackOrder} from "../utils/api";
 import {PropsContext} from "../Context";
 import {Link} from "react-router-dom";
-import Paginator from "../Paginator";
+import Paginator from "../Paginator/Paginator";
 
 
 class TrackNumberForm extends Component {

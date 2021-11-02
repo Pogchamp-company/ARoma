@@ -8,8 +8,13 @@ module.exports = {
         path: path.resolve(__dirname, "./static/bundles"),
         filename: "[name].js",
     },
+    devtool: "source-map",
+    resolve: {
+        extensions: ["", ".webpack.js", ".web.js", ".ts", ".tsx", ".js"],
+    },
     module: {
         rules: [
+            {test: /\.tsx?$/, loader: "ts-loader"},
             {
                 test: /\.s[ac]ss$/i,
                 use: [

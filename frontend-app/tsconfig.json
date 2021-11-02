@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "allowJs": true,
+    "outDir": "./built",
+    "jsx": "react",
+//    "checkJs": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "include": [
+    "src/**/*"
+  ]
+}

@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {serverUrl} from "../utils/ServerUrl"
 import {getProduct, removeProductPhoto, uploadProductPhoto} from "../utils/api";
 import {PropsContext} from "../Context";
-import TopProducts from "../TopProducts";
+import TopProducts from "../TopProducts/TopProducts.tsx";
 
 export default class ProductEditPage extends Component {
     static contextType = PropsContext
@@ -82,8 +82,8 @@ export default class ProductEditPage extends Component {
         const data = new FormData();
 
         data.set('Title', this.state.product.Title)
-        data.set('Price', this.state.product.Price)
-        data.set('QuantityInStock', this.state.product.QuantityInStock)
+        data.set('Price', this.state.product.Price.toString())
+        data.set('QuantityInStock', this.state.product.QuantityInStock.toString())
         data.set('Description', this.state.product.Description)
         data.set('LongDescription', this.state.product.LongDescription)
         data.set('Attributes', JSON.stringify(attributes))

@@ -66,7 +66,7 @@ export default class OrderStep2Page extends Component {
                         <div className="row">
                             <div className="col-lg-8">
                                 <h3>Billing Details</h3>
-                                <form className="row contact_form" action="#" method="post" noValidate="novalidate">
+                                <form className="row contact_form" action="#" method="post" noValidate={true}>
                                     <div className="col-md-6 form-group p_star">
                                         <input type="text" className="form-control" id="first"
                                                ref={this.references['first']} name="name" placeholder="First name"/>
@@ -101,7 +101,7 @@ export default class OrderStep2Page extends Component {
                                     </div>
                                     <div className="col-md-12 form-group mb-0">
                                         <textarea className="form-control" name="message" id="message"
-                                                  ref={this.references['message']} rows="1"
+                                                  ref={this.references['message']} rows={1}
                                                   placeholder="Order Notes"></textarea>
                                     </div>
                                 </form>

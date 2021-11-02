@@ -1,29 +1,24 @@
-import React, {Component} from "react";
+import * as React from "react";
 import {Link} from "react-router-dom";
-import {serverUrl} from "./utils/ServerUrl"
-import {getTopProducts} from "./utils/api";
+import {getTopProducts} from "../utils/api";
+import {useEffect, useState} from "react";
+import "./TopProducts.scss"
 
-export default class TopProducts extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            products: []
-        }
-        this.updateProducts()
+export default function TopProducts() {
+    const [products, setProducts] = useState([])
+
+    function updateProducts() {
+        getTopProducts(products => setProducts(products))
     }
 
-    updateProducts() {
-        getTopProducts(products => this.setState({products: products}))
-    }
-
-    renderProducts() {
-        if (!this.state.products) return ''
+    function renderProducts() {
+        if (!products) return ''
         const items = []
 
         for (let i = 0; i < 4; i++) {
             const item = []
             for (let j = 0; j < 3; j++) {
-                item.push(this.renderProductCard(i * 3 + j))
+                item.push(renderProductCard(i * 3 + j))
             }
             items.push(
                 <div className="col-sm-6 col-xl-3 mb-4 mb-xl-0">
@@ -41,8 +36,8 @@ export default class TopProducts extends Component {
         )
     }
 
-    renderProductCard(index) {
-        const product = this.state.products[parseInt(index)]
+    function renderProductCard(index) {
+        const product = products[parseInt(index)]
         if (!product) return ''
         return (
             <div className="single-search-product d-flex">
@@ -55,15 +50,16 @@ export default class TopProducts extends Component {
         )
     }
 
-    render() {
-        return (
-            <div className="container">
-                <div className="section-intro pb-60px">
-                    <p>Popular Item in the market</p>
-                    <h2>Top <span className="section-intro__style">Products</span></h2>
-                </div>
-                {this.renderProducts()}
+
+    useEffect(updateProducts, [])
+
+    return (
+        <div className="container">
+            <div className="section-intro pb-60px">
+                <p>Popular Item in the market</p>
+                <h2>Top <span className="section-intro__style">Products</span></h2>
             </div>
-        )
-    }
+            {renderProducts()}
+        </div>
+    )
 }
