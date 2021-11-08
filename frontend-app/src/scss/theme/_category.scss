@@ -43,6 +43,25 @@
   }
 }
 
+.search-input-v2 {
+  border: 1px solid #eee;
+  font-size: 14px;
+  color: #999999;
+  height: 38px;
+  padding-left: 15px;
+
+  &:focus {
+    outline: 0;
+    box-shadow: none;
+  }
+
+  &::placeholder {
+    color: #999999;
+  }
+
+  margin: 5px;
+}
+
 //--------- Start storting -----------//
 .sorting {
   margin-top: 10px;

@@ -320,3 +320,21 @@
     transform: translateY(7px);
   }
 }
+
+.primary-btn {
+  height: 40px;
+  padding: 0px 44px;
+  line-height: 38px;
+  text-transform: capitalize;
+  background: $primary-color;
+  border-radius: 30px;
+  color: $white !important;
+  font-weight: 500;
+
+  &:hover {
+    color: black !important;
+    &:before {
+      left: 240px;
+    }
+  }
+}

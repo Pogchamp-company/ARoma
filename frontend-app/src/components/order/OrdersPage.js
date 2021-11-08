@@ -17,13 +17,13 @@ class TrackNumberForm extends Component {
     render() {
         return (
             <>
-                <input placeholder={"Tracking number"} ref={this.numberRef}/>
+                <input className={'search-input-v2'} placeholder={"Tracking number"} ref={this.numberRef}/>
                 <button onClick={e => {
                     trackOrder(this.props.orderID, this.numberRef.current.value, this.context, this.props.history, success_json => {
                         console.log(success_json)
                         window.location.reload()
                     })
-                }}>Save
+                }} className={'primary-btn'}>Save
                 </button>
             </>
         )
@@ -110,13 +110,12 @@ export default class OrdersPage extends Component {
                                 </div>
                                 <div className={"orders-dropdown-content"}>
                                     {
-                                        value.Status === 'PAID' ? (
+                                        (value.Status === 'PAID' && this.context.isAdmin()) && (
                                             <TrackNumberForm orderID={value.ID}/>
-                                        ) : ''
+                                        )
                                     }
                                     {
-                                        value.order !== undefined ?
-                                            <OrderTotalBox order={value.order} Total={value.Total}/> : ''
+                                        value.order !== undefined && <OrderTotalBox order={value.order} Total={value.Total}/>
                                     }
                                 </div>
                             </div>

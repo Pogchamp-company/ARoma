@@ -102,15 +102,18 @@ export default class ProductPage extends Component {
                                 <div className="s_product_text">
                                     <h3>
                                         {this.state.product.Title}
-                                        <Link to={`/edit_product/${this.state.product.ID}`} style={{margin: "0 5px"}}><i
-                                        className="ti-pencil"/></Link>
+                                        {this.context.isAdmin() && (
+                                            <Link to={`/edit_product/${this.state.product.ID}`}
+                                                  style={{margin: "0 5px"}}><i
+                                                className="ti-pencil"/></Link>
+                                        )}
                                     </h3>
                                     <h2>${this.state.product.Price}</h2>
                                     <ul className="list">
                                         <li><a className="active"
                                                href="#"><span>Category</span> : {this.state.product.Catalog.Title}</a>
                                         </li>
-                                        <li><a href="#"><span>Availibility</span> : {this.state.product.QuantityInStock}
+                                        <li><a href="#"><span>Availability</span> : {this.state.product.QuantityInStock}
                                         </a></li>
                                     </ul>
                                     <p>{this.state.product.Description}</p>
