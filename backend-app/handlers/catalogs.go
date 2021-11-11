@@ -52,13 +52,13 @@ type StringValue struct {
 	Count int
 }
 
-func searchInStringValuesArray(arr []StringValue, title string) (StringValue, bool) {
-	for _, stringValue := range arr {
+func searchInStringValuesArray(arr []StringValue, title string) (StringValue, int) {
+	for i, stringValue := range arr {
 		if stringValue.Title == title {
-			return stringValue, true
+			return stringValue, i
 		}
 	}
-	return StringValue{}, false
+	return StringValue{}, -1
 }
 
 func updateStringAttributeValue(attribute *Attribute, value string) {
@@ -67,8 +67,10 @@ func updateStringAttributeValue(attribute *Attribute, value string) {
 	if err != nil {
 		return
 	}
-	if stringValue, ok := searchInStringValuesArray(oldValue, value); ok {
+	if stringValue, i := searchInStringValuesArray(oldValue, value); i != -1 {
 		stringValue.Count += 1
+		oldValue = append(oldValue[:i], oldValue[i+1:]...)
+		oldValue = append(oldValue, stringValue)
 	} else {
 		oldValue = append(oldValue, StringValue{
 			Title: value,
