@@ -48,7 +48,7 @@ export default class OrdersPage extends Component {
         getOrdersList(this.state.currentPage, this.context.token, this.props.history, this.context.setToken, orders_json => {
             console.log(orders_json)
             this.setState({
-                orders: orders_json.orders,
+                orders: orders_json.orders || [],
                 pagesCount: orders_json.pagesCount
             })
         })
@@ -83,6 +83,9 @@ export default class OrdersPage extends Component {
                 {this.state.pagesCount > 1 ?
                     <Paginator setPage={page => this.setPage(page)} page={this.state.currentPage}
                                pagesCount={this.state.pagesCount}/> : ''}
+                {
+                    this.state.orders.length === 0 && <div>No orders currently</div>
+                }
                 {
                     this.state.orders.map((value, index) => {
                         return (
@@ -127,6 +130,7 @@ export default class OrdersPage extends Component {
     }
 
     renderRightButton(value) {
+        if (!this.context.isAdmin()) return <></>
         if (value.Status === 'DRAFT') return (
             <Link to={`/step2/${value.ID}`} className={"order-button"}>Step2</Link>
         )

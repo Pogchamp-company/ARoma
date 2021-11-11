@@ -207,8 +207,7 @@ func GetOrdersList(context *gin.Context) {
 	}
 	currentUser, _ := context.Get("currentUser")
 	var orders []models.Order
-	query := models.Db.Model(&models.Order{}).Preload("ShippingMethod").Preload("CouponCode").
-		Where("customer_id = ?", currentUser.(models.User).ID)
+	query := models.Db.Model(&models.Order{}).Preload("ShippingMethod").Preload("CouponCode")
 	if !currentUser.(models.User).IsAdmin {
 		query = query.Where("customer_id = ?", currentUser.(models.User).ID)
 	} else {
