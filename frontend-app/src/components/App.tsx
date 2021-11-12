@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import {BrowserRouter, Route, Switch,} from "react-router-dom";
 import MainPage from "./MainPage";
 import SearchProductsPage from "./SearchProductsPage";
@@ -16,7 +16,7 @@ import OrderStep2Page from "./order/OrderStep2Page";
 import ProductListPage from "./admin/ProductListPage";
 import OrdersPage from "./order/OrdersPage";
 import ProductEditPage from "./admin/ProductEditPage";
-import {PropsContext} from "./Context.ts";
+import {PropsContext} from "./Context";
 import OrderStep3Page from "./order/OrderStep3Page";
 
 export default function App() {
@@ -24,7 +24,6 @@ export default function App() {
     const cart = useCart();
 
     return (
-        // todo change props to context
         <PropsContext.Provider value={{
             setToken,
             isAdmin,
@@ -38,14 +37,14 @@ export default function App() {
                     <Route exact path="/" component={MainPage}/>
                     <Route exact path="/registration"
                            render={routerProps => (<RegistrationPage setToken={setToken} {...routerProps}/>)}/>
-                    <Route exact path="/login" render={routerProps => (<LoginPage setToken={setToken} {...routerProps}/>)}/>
-                    <Route exact path="/cart" render={routerProps => (<CartPage token={token} cart={cart} {...routerProps}/>)}/>
+                    <Route exact path="/login" component={LoginPage}/>
+                    <Route exact path="/cart" component={CartPage}/>
                     <Route exact path="/search_products"
                            render={routerProps => (<SearchProductsPage cart={cart} {...routerProps}/>)}/>
                     <Route path="/product/:productId" render={routeProps => (<ProductPage cart={cart} {...routeProps}/>)}/>
-                    <Route path="/orders" render={routeProps => (<OrdersPage {...routeProps}/>)}/>
-                    <Route path="/step2/:orderId" render={routeProps => (<OrderStep2Page {...routeProps}/>)}/>
-                    <Route path="/step3/:orderId" render={routeProps => (<OrderStep3Page {...routeProps}/>)}/>
+                    <Route path="/orders" component={OrdersPage}/>
+                    <Route path="/step2/:orderId" component={OrderStep2Page}/>
+                    <Route path="/step3/:orderId" component={OrderStep3Page}/>
                     {
                         isAdmin() ? (
                             <>

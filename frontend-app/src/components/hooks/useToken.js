@@ -15,7 +15,7 @@ export default function useToken() {
             localStorage.setItem('admin', isAdmin ? 'true' : 'false')
         }
         setToken(userToken);
-    };
+    }
 
     const isAdmin = () => {
         const admin = localStorage.getItem('admin')

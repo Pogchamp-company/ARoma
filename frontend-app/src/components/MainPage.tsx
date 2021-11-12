@@ -1,8 +1,9 @@
-import React, {useContext, useEffect, useState} from "react";
+import * as React from "react";
 import {Link} from "react-router-dom";
-import ProductsContainer from "./ProductCard.tsx";
+import ProductsContainer from "./ProductCard";
 import {getTopProducts} from "./utils/api";
-import {PropsContext} from "./Context.ts";
+import {PropsContext} from "./Context";
+import {useContext, useEffect, useState} from "react";
 
 export default function MainPage() {
     const context = useContext(PropsContext)
@@ -68,8 +69,7 @@ export default function MainPage() {
                         <p>Popular Item in the market</p>
                         <h2>Trending <span className="section-intro__style">Product</span></h2>
                     </div>
-                    <ProductsContainer cart={context.cart}
-                                       products={trendingProducts}
+                    <ProductsContainer products={trendingProducts}
                                        catalog={0}
                                        classList={"col-md-6 col-lg-4 col-xl-3"}/>
                 </div>

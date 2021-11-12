@@ -3,7 +3,7 @@ import "jquery"
 import "bootstrap"
 import "owl.carousel/dist/owl.carousel.min"
 
-import App from "./components/App";
+import App from "./components/App.tsx";
 import React from "react";
 import {render} from "react-dom";
 

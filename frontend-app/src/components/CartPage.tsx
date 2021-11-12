@@ -1,10 +1,12 @@
-import React, {useContext, useEffect, useState} from "react";
+import * as React from "react";
 import {Link} from "react-router-dom";
 import {checkCoupon, getShippingMethods} from "./utils/api";
 import {PropsContext} from "./Context";
 import {useHistory} from "react-router-dom/cjs/react-router-dom";
 import useCoupon from "./hooks/useCoupon";
 import {ProductPreviewImage} from "./ProductPreviewImage";
+import {useContext, useEffect, useState} from "react";
+import {serverUrl} from "./utils/ServerUrl";
 
 
 export default function CartPage(props) {
@@ -105,14 +107,14 @@ export default function CartPage(props) {
                             </thead>
                             <tbody>
                             {context.cart.getCart().map((item, index) => (
-                                <tr style={{'--index': index}}>
+                                <tr style={{'--index': index} as React.CSSProperties}>
                                     <td style={{
                                         width: '727px'
                                     }}>
                                         <div className="media">
                                             <div className="d-flex">
                                                 <ProductPreviewImage product={item.product}
-                                                                     style={{"--index": index}}
+                                                                     style={{"--index": index} as React.CSSProperties}
                                                                      className={"cart-image"}/>
                                             </div>
                                             <div className="media-body">
@@ -125,7 +127,7 @@ export default function CartPage(props) {
                                     </td>
                                     <td>
                                         <div className="product_count">
-                                            <input type="number" name="qty" id="sst" maxLength="12"
+                                            <input type="number" name="qty" id="sst" maxLength={12}
                                                    value={item.amount}
                                                    title="Quantity:"
                                                    className="input-text qty"
@@ -165,7 +167,7 @@ export default function CartPage(props) {
                                                onChange={e => setCouponStr(e.target.value)}
                                                className={couponErr === undefined ? "" : (couponErr ? "invalid" : "valid")}/>
 
-                                        <button onClick={e => applyCoupon(e)} className="primary-btn">Apply</button>
+                                        <button onClick={() => applyCoupon()} className="primary-btn">Apply</button>
                                     </div>
                                     <br/>
                                     {coupon !== undefined ?
@@ -198,10 +200,10 @@ export default function CartPage(props) {
                                             {shippingMethods.map((shippingMethod, index) => {
                                                 return (
                                                     <li><label
-                                                        htmlFor={index}>{shippingMethod.Title}:
+                                                        htmlFor={index.toString()}>{shippingMethod.Title}:
                                                         ${shippingMethod.Price}</label><input
                                                         className="pixel-radio"
-                                                        type="radio" id={index}
+                                                        type="radio" id={index.toString()}
                                                         name="catalog"
                                                         value={shippingMethod.ID}
                                                         checked={currentShippingMethod?.ID === shippingMethod.ID}

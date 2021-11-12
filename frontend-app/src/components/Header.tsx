@@ -1,6 +1,7 @@
-import React, {useContext} from "react";
+import * as React from "react";
 import {Link} from "react-router-dom";
-import {PropsContext} from "./Context.ts";
+import {PropsContext} from "./Context";
+import {useContext} from "react";
 
 
 export default function Header() {
@@ -59,7 +60,7 @@ export default function Header() {
                                                                    to="/login">Login</Link></li> :
                                     <li className="nav-item"><a className="button button-header" href={'#'}
                                                                 onClick={() => {
-                                                                    console.log("dsdasdasdasd")
+                                                                    console.log("Logging out")
                                                                     context.setToken(undefined)
                                                                     document.getElementsByClassName('menu-bar')[0].classList.add('play')
                                                                 }

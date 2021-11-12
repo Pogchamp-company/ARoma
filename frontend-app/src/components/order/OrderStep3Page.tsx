@@ -1,7 +1,8 @@
-import React, {useContext} from "react";
-import {PropsContext} from "../Context.ts";
+import * as React from "react";
+import {PropsContext} from "../Context";
 import {payOrder} from "../utils/api";
 import {useHistory, useParams} from "react-router-dom/cjs/react-router-dom";
+import {useContext} from "react";
 
 export default function OrderStep3Page() {
     const context = useContext(PropsContext)

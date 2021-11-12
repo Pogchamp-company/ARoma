@@ -3,7 +3,7 @@ import * as React from "react";
 interface PropsTypes {
     cart: any
     token: string | undefined
-    setToken: (token: string) => void
+    setToken: (userToken: string, isAdmin?: boolean) => void
     isAdmin: () => boolean
 }
 
